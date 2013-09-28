@@ -1,0 +1,43 @@
+				
+<% include ../partials/header.ejs %>
+
+<div class="jumbotron sub">
+	<div class="container">
+		<h1>Account</h1>
+	</div>
+	
+</div>
+
+<div class="container">
+
+
+	<h3>Games</h3>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Status</th>
+					<th>Opponent</th>
+					<th>Settings</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<% for (var i = 0; i < games.length; i++) { %>
+					<tr>
+						<td><%= games[i].id %></td>
+						<td><a href="/game/play/<%= games[i].id %>"><strong><%= games[i].name %></strong></a></td>
+						<td><em><%= games[i].state %></em></td>
+						<td><%= games[i].player2 %></td>
+						<td><%= games[i].settings %></td>
+					</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<% include ../partials/footer.ejs %>

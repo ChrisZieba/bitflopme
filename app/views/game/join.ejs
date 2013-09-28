@@ -1,0 +1,59 @@
+<% include ../partials/header.ejs %>
+
+<div class="jumbotron sub">
+	<div class="container">
+		<h1>Join a Game</h1>
+		<p><em>You can also start your own game</em></p>
+	</div>
+	
+</div>
+
+<div class="container">
+
+
+	<h3>Games</h3>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Creator</th>
+					<th>Settings</th>
+					<th>Join</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				
+				<% for (var i = 0; i < games.length; i++) { %>
+					<% if (games[i].state == 'PLAYING') { %>
+						<tr class="danger">
+					<% } else { %>
+						<tr>
+					<% } %>
+						<td><%= games[i].name %></td>
+						<td><%= games[i].creator.name %></td>
+						<td><%= games[i].settings %></td>
+						<td>
+							<form class="form-inline" role="form" method="post" action="/game/join">
+								<input type="hidden" name="_csrf" value="<%= token %>"/>
+								<input type="hidden" name="_game" value="<%= games[i].id %>"/>
+								<div class="form-group">
+									<input type="password" name="password" class="form-control" id="exampleInputEmail2" placeholder="Enter Security Code">
+								</div>
+								<div class="form-group">
+									<input type="submit" class="btn btn-success" value="Join" />
+								</div>
+							</form>
+
+						</td>
+					</tr>
+				<% } %>
+
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<% include ../partials/footer.ejs %>

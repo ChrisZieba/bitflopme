@@ -1,0 +1,418 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html,
+body {
+	height: 100%;
+
+	background-repeat: no-repeat;
+}
+
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.buffer { margin:10px 0; }
+
+.center {
+     float: none;
+     margin-left: auto;
+     margin-right: auto;
+     display: block;
+}
+
+
+/* Wrapper for page content to push down footer */
+#game {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 15px 15px;
+
+background-image: url('/img/grain.png');
+background-repeat: repeat;
+
+background-color: #272E33;
+}
+
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+
+
+code {
+  font-size: 80%;
+}
+
+.navbar {
+
+margin:0;
+border-radius:0;
+}
+
+.navbar-default .navbar-brand {
+	color: #999999;
+}
+
+.navbar-default .navbar-brand:hover {
+  color: #FFFFFF;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: #999999;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #FFFFFF;
+
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	color: #FFFFFF;
+
+}
+
+.btn {
+  margin-top: 1px;
+  margin-right: 2px;
+  margin-bottom: 1px;
+}
+
+.table {
+
+
+	text-align: center;
+	min-height:200px;
+ 	border-color: #272E33;
+ 	border-style: solid;
+ 	border-width: 15px;
+ 	border-radius: 100px;
+ 	padding:20px 25px;
+ 	margin-top:10px;
+
+}
+
+.table .board {
+	text-align: left;
+}
+
+.player-container {
+
+	color: #FFF;
+
+	overflow: hidden;
+	padding:10px;
+}
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+.history {
+	
+	height:300px;
+	padding-left: 1px;
+	padding-right: 1px;
+
+
+
+}
+
+.history ul.events {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 100%;
+	list-style: none;
+	margin:0;
+	padding: 0;
+}
+
+.history ul.events li {
+	color: #FCFCA2;
+	font-size: 12px;
+}
+
+
+.opponent-video {
+
+	margin-bottom:1px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    overflow: hidden;
+
+    position: relative;
+}
+
+.opponent-video video {
+	width:100%;
+	height:100%;
+	overflow: hidden;
+	background-color: #333;
+
+
+}
+
+.player-video video {
+	width:100%;
+	height:100%;
+
+}
+.player {
+	background: #333;
+	color: #FFF;
+	overflow: hidden;
+
+    border:1px solid #000;
+
+ 	-moz-box-shadow:    inset 0 0 1px #ffffff;
+   -webkit-box-shadow: inset 0 0 1px #ffffff;
+   box-shadow:         inset 0 0 1px #ffffff;
+   padding: 5px 10px 8px 10px;
+
+}
+
+
+.opponent {
+	/* IE10 Consumer Preview */ 
+	background-color: #272E33;
+
+	overflow: hidden;
+
+    border:2px solid #272E33;
+
+   padding: 2px;
+
+}
+
+.opp-player-data {
+
+	position: absolute;
+	bottom: 0px;
+	left: 15px;
+	padding:15px;
+
+}
+
+.opp-player-options {
+
+	position: absolute;
+	top: 0px;
+	left: 18px;
+	right:18px;
+	padding:15px;
+
+}
+
+.action-btn {
+	display: inline-block;
+}
+.opp-player-co {
+
+}
+
+.opp-player-cards {
+
+}
+
+.player-turn {
+	
+
+    
+}
+
+ul.cards {
+	list-style: none;
+	margin:0;
+	padding: 0;
+	line-height: 1;
+}
+
+ul.cards li {
+	display: inline-block;
+	margin:0;
+	padding:0;
+}
+
+.card {
+	background-color: #FFFFFF;
+	margin:2px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	overflow: hidden;
+	width: 60px;
+	height: 90px;
+	display: inline-block;
+	box-shadow: 0 1px 4px #002C00;
+	-ie-box-shadow: 0 1px 4px #002c00;
+	-moz-box-shadow: 0 1px 4px #002c00;
+	-webkit-box-shadow: 0 1px 4px #002C00;
+
+}
+.card-sm {
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	padding:4px;
+	width: 90px;
+	height: 123px;
+}
+
+.card-xs {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:1px;
+	width: 30px;
+	height: 45px;
+}
+
+.card span {
+	width:100%;
+	height:100%;
+	float: left;
+	background-image: url('../img/spritz.png');
+	background-repeat: no-repeat;
+}
+
+
+ul.cards li.card:nth-child(2) {
+	margin-left:-35px;
+}
+
+ul.cards li.card-xs:nth-child(2) {
+	margin-left:-1px;
+}
+
+span.chip-count {
+	padding: 2px 4px;
+	font-size: 120%;
+	color: #C7254E;
+	white-space: nowrap;
+	background-color: #F9F2F4;
+	border-radius: 4px;
+	font-weight: 700;
+}
+
+span.player-action {
+	padding: 2px 4px;
+	font-size: 80%;
+	color: #F9F2F4;
+	text-transform: uppercase;
+	white-space: nowrap;
+	background-color: #A2332E;
+	border-radius: 4px;
+	font-weight: 700;
+
+    border:1px solid #000;
+
+ 	-moz-box-shadow:    inset 0 0 1px #ffffff;
+   -webkit-box-shadow: inset 0 0 1px #ffffff;
+   box-shadow:         inset 0 0 1px #ffffff;
+}
+
+span.player-name {
+	color: #f0f0f0;
+	white-space: nowrap;
+	font-style: italic;
+	font-weight: 700;
+	padding: 2px 4px;
+	background-color:#000;
+	border-radius: 4px;
+}
+
+span.blind-bet {
+	padding: 1px 2px;
+	font-size: 80%;
+	color: #e1e1e1;
+	white-space: nowrap;
+	background-color: #595959;
+	border-radius: 4px;
+}
+
+span.dealer-button {
+	padding: 1px 4px;
+	font-size: 80%;
+	color: #000000;
+	white-space: nowrap;
+	background-color: #F2EE7B;
+	border-radius: 8px;
+	font-weight: 700;
+}
+
+.card span.card-AS { background-position: -0px -0px; }
+.card span.card-KS { background-position: -60px -0px; }
+.card span.card-QS { background-position: -120px -0px; }
+.card span.card-JS { background-position: -180px -0px; }
+.card span.card-TS { background-position: -240px -0px; }
+.card span.card-9S { background-position: -300px -0px; }
+.card span.card-8S { background-position: -360px -0px; }
+.card span.card-7S { background-position: -420px -0px; }
+.card span.card-6S { background-position: -480px -0px; }
+.card span.card-5S { background-position: -540px -0px; }
+.card span.card-4S { background-position: -600px -0px; }
+.card span.card-3S { background-position: -660px -0px; }
+.card span.card-2S { background-position: -720px -0px; }
+
+.card span.card-AC { background-position: -0px -90px; }
+.card span.card-KC { background-position: -60px -90px; }
+.card span.card-QC { background-position: -120px -90px; }
+.card span.card-JC { background-position: -180px -90px; }
+.card span.card-TC { background-position: -240px -90px; }
+.card span.card-9C { background-position: -300px -90px; }
+.card span.card-8C { background-position: -360px -90px; }
+.card span.card-7C { background-position: -420px -90px; }
+.card span.card-6C { background-position: -480px -90px; }
+.card span.card-5C { background-position: -540px -90px; }
+.card span.card-4C { background-position: -600px -90px; }
+.card span.card-3C { background-position: -660px -90px; }
+.card span.card-2C { background-position: -720px -90px; }
+
+.card span.card-AH { background-position: -0px -180px; }
+.card span.card-KH { background-position: -60px -180px; }
+.card span.card-QH { background-position: -120px -180px; }
+.card span.card-JH { background-position: -180px -180px; }
+.card span.card-TH { background-position: -240px -180px; }
+.card span.card-9H { background-position: -300px -180px; }
+.card span.card-8H { background-position: -360px -180px; }
+.card span.card-7H { background-position: -420px -180px; }
+.card span.card-6H { background-position: -480px -180px; }
+.card span.card-5H { background-position: -540px -180px; }
+.card span.card-4H { background-position: -600px -180px; }
+.card span.card-3H { background-position: -660px -180px; }
+.card span.card-2H { background-position: -720px -180px; }
+
+.card span.card-AD { background-position: -0px -270px; }
+.card span.card-KD { background-position: -60px -270px; }
+.card span.card-QD { background-position: -120px -270px; }
+.card span.card-JD { background-position: -180px -270px; }
+.card span.card-TD { background-position: -240px -270px; }
+.card span.card-9D { background-position: -300px -270px; }
+.card span.card-8D { background-position: -360px -270px; }
+.card span.card-7D { background-position: -420px -270px; }
+.card span.card-6D { background-position: -480px -270px; }
+.card span.card-5D { background-position: -540px -270px; }
+.card span.card-4D { background-position: -600px -270px; }
+.card span.card-3D { background-position: -660px -270px; }
+.card span.card-2D { background-position: -720px -270px; }
+
+.card span.card-00 { background-position: -780px -0px; }
+
+.card-sm span.card-5D { background-position: -664px -1505px; }
+.card-xs span.card-7S { background-position: -0px -1621px }

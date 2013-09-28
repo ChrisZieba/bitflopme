@@ -1,0 +1,72 @@
+<% include ../partials/header.ejs %>
+
+<div class="jumbotron sub">
+	<div class="container">
+		<h1>Start a new heads up match</h1>
+		<p><em>Last night I stayed up late playing poker with Tarot cards. I got a full house and four people died. Read more at</em></p>
+	</div>
+	
+</div>
+
+<div class="container">
+	
+
+	<div class="row">
+
+
+		<div class='col-sm-6'>  
+
+			<form role="form" method="post" action="">
+
+				<input type="hidden" name="_csrf" value="<%= token %>"/>
+				
+				<div class='form-group'>
+					<label for="form_match_player1">Table Name</label>
+					<input class="form-control" id="form_match_player1" name="name" size="30" type="text" />
+					<span class="help-block">This can help your opponent find the desired game.</span>
+				</div>
+
+
+				<div class='form-group'>
+					<label for="f-g-password">Security Code</label>
+					<input class="form-control" id="f-g-password" name="password" size="30" type="text" />
+					<span class="help-block">A game must have a security code to prevent unauthorized players from joining.</span>
+				</div>
+
+
+				<h4>Settings</h4>
+
+				<div class='form-group'>
+					<label for="user_lastname">Make this table private</label>
+				    <div class="input-group">
+
+				      <span class="input-group-addon">
+				        <input type="checkbox" name="private" id="form_match_private">
+				      </span>
+				      <input name="ssd" type="text" id="form_match_password" class="form-control" placeholder="a security word is required only if this table is provate">
+				    </div><!-- /input-group -->
+				</div>
+
+				<div class='form-group'>
+					<input class="btn btn-primary btn-lg" id="user_lastname" type="submit" />
+				</div>
+
+			</form>
+		</div>
+
+		<div class="col-sm-4">
+			<h4>Things to keep in mind</h4>
+
+			<p>A really easy way of implementing this is to use connect-flash, a middleware for express that leverages the session middleware built into express to pass 'flash' messages to the next request.It means you don't need to add fields to track urls or messages to the form or route patterns for your views.</p>
+			<dl class="dl-horizontal">
+				<dt>BitCoin</dt>
+				<dd>If both parties agree to pay</dd>
+			</dl>
+
+		</div>
+	</div>
+
+
+</div>
+
+<% include ../partials/footer.ejs %>

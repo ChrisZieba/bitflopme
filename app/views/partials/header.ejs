@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+		<% if (settings.env === 'development') { %>
+			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
+			<link href="/css/site.css" rel="stylesheet" media="screen" />
+		<% } else { %>
+			<link href="css/site.css" rel="stylesheet" media="screen" />
+		<% } %>
+	</head>
+
+
+	<body>
+
+		<!-- Wrap all page content here -->
+		<div id="wrap">
+
+			<!-- Fixed navbar -->
+			<div class="navbar navbar-default navbar-fixed-top">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="/">bitflop.me</a>
+					</div>
+					<div class="collapse navbar-collapse">
+						<ul class="nav navbar-nav">
+							<li><a href="/">Home</a></li>
+							<li><a href="/about">About</a></li>
+							<li><a href="/contact">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<% if (user.authenticated) { %>
+								<li>
+									<div class="btn-group">
+										<button type="button" class="btn btn-default btn-sm"><a href="/account" class="action"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a></button>
+										<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" role="menu">
+											<li><a href="#">My Games</a></li>
+											<li><a href="#">Another action</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="/logout">Separated link</a></li>
+										</ul>
+									</div>
+								</li>
+							<% } else { %>
+								<li><a href="/login" class="action"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-log-in"></span> Login or Register</button></a></li>
+							<% } %>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
