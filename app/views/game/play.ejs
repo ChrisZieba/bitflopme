@@ -19,7 +19,16 @@
 			<script src="/socket.io/socket.io.js"></script>
 
 		<% } else { %>
-			<link href="css/site.css" rel="stylesheet" media="screen" />
+			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
+			<link href="/css/game.css" rel="stylesheet" media="screen" />
+			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
+
+			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room %>'};</script>
+			<script src="/js/vendor/angular.js"></script>
+			<script src="/js/vendor/adapter.js"></script>
+			<script src="/js/vendor/angular-slider.js"></script>
+			<script src="/js/app.js"></script>
+			<script src="/socket.io/socket.io.js"></script>
 		<% } %>
 	</head>
 
