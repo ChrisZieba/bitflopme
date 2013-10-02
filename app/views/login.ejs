@@ -3,7 +3,7 @@
 
 <div class="jumbotron sub">
 	<div class="container">
-		<h1>Login or Register</h1>
+		<h1>Login</h1>
 	</div>
 	
 </div>
@@ -19,63 +19,57 @@
 		<div class="col-sm-4">  
 
 			<div class="row">
-				<div class="col-sm-12 well">  
+				<div class="col-sm-12">  
 
-					<h4>Login</h4>
+					
 
-					<form role="form" method="post" action="/login">
-
-						<input type="hidden" name="_csrf" value="<%= token %>"/>
-						<input type="text" name="username" class="form-control mg-top-bot-5" placeholder="Username" autofocus="">
-						<input type="password" name="password" class="form-control mg-top-bot-5" placeholder="Password">
+					<form role="form" method="post" action="/login" class="well">
+						<h4>Login</h4>
 						<div class="form-group">
-
-								<div class="checkbox">
-									<label>
-										<input type="checkbox"> Remember me
-									</label>
-								</div>
-
+							<input type="hidden" name="_csrf" value="<%= token %>"/>
 						</div>
+
+						<div class="form-group <% if (errors.username) { %>has-error<% } %>">
+							<input type="text" name="loginUsername" class="form-control mg-top-bot-5" placeholder="Username">
+							<% if (errors.loginUsername) { %>
+								<div class="alert alert-danger"><p><%= errors.loginUsername.msg %></p></div>
+							<% } %>
+						</div>
+
+						<div class="form-group <% if (errors.loginPassword) { %>has-error<% } %>">
+							<input type="password" name="loginPassword" class="form-control mg-top-bot-5" placeholder="Password">
+							<% if (errors.loginPassword) { %>
+								<div class="alert alert-danger"><p><%= errors.loginPassword.msg %></p></div>
+							<% } %>
+						</div>
+
 						<div class="form-group">
-							<input type="submit" class="btn btn-primary mg-top-bot-5" value="Login" />
+							<div class="checkbox">
+								<label>
+									<input type="checkbox"> Remember me
+								</label>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<input type="submit" class="btn btn-block btn-primary mg-top-bot-5" value="Login" />
 						</div>
 
 
 					</form>
 				</div>
 			</div>
-
 			<div class="row">
-				<div class="col-sm-12 well">  
-					<h4>Register</h4>
-					<p>All you need is a username and password. <strong>No email required.</strong> We limit data collected about you and your use of the platform. See our <a href="">privacy policy</a>.</p>
-					<form role="form" method="post" action="/register">
+				<div class="col-sm-12">  
 
-
-						<input type="hidden" name="_csrf" value="<%= token %>"/>
-						<input type="text" name="username" class="form-control mg-top-bot-5" placeholder="Username" autofocus="">
-						<input type="password" name="password" class="form-control mg-top-bot-5" placeholder="Password">
-						<input type="password" name="password_confirm" class="form-control mg-top-bot-5" placeholder="Confirm your password">
-						<input type="text" name="username" class="form-control mg-top-bot-5" placeholder="Optional Email" autofocus="">
-						<div class="form-group">
-							<input type="submit" class="btn btn-success mg-top-bot-5" value="Register" />
-						</div>
-
-					</form>
+					<a href="/register" class="btn btn-default btn-block">Not a member yet? <strong>Register Here</strong></a>
 
 				</div>
 			</div>
-			
-
-		
-
-
-
 		</div>
 
 		<div class="col-sm-8">  
-			<h3>How is bitflop.me different?</h3>
+			<h3>A playing experience like no other!</h3>
 			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
 
 			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
@@ -83,7 +77,7 @@
 			<div class="row">
 				<div class="col-sm-6">  
 
-					<h4>BitCoin</h4>
+					<h4>No email required</h4>
 
 					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
 

@@ -8,20 +8,13 @@ exports.Counters = db.model('Counters', new Schema({
     users : { type: Number, required: true },
 }));
 
-exports.Rules = db.model('Rules', new Schema({
-    id : { type: Number, required: true },
-    player1 : { type: String, required: true },
-    player2 : { type: String, required: true },
-    settings : { type: Schema.Types.Mixed, required: true }
-}));
-
 /* 
     Possible States are NEW, ONGOING, SAVED
 */
 exports.Games = db.model('Games', new Schema({
     id : { type: Number, required: true },
     name: { type: String, required: true },
-    password : { type: String, required: true },
+    passcode : { type: String, required: false },
     creator : { type: Schema.Types.Mixed, required: true },
     // POSSIBLE STATES ['NEW','PLAYING','FINISHED']
     state: { type: String, required: true, default: 'NEW' },

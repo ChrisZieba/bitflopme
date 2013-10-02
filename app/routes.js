@@ -22,65 +22,22 @@ module.exports = function (app) {
 		} else {
 			res.render('login.ejs', { 
 				title: 'bitflop.me',
-				user: res.locals.user
+				user: res.locals.user,
+				errors: {}
 			});
 		}
 
 	});
 
-	app.post('/login', function (req, res) {
-		req.check('username', 'The username is required').notEmpty();
-		req.check('password', 'The password is required').notEmpty();
-		req.sanitize('username');
-		req.sanitize('password');
-
-		var errors = req.validationErrors(); 
-
-		if (!errors) {
-			models.Users.findOne({ 'username': req.param('username') }, function (err, user) {
-				if (err) throw err;
-
-				if (user) {
-					bcrypt.compare(req.param('password'), user.password, function(err, match) {
-						if (err) throw err;
-
-						if (match) {
-							// the password was found!
-							req.session.user = {
-								id: user.id,
-								name: user.username,
-								authenticated: true,
-								//	This keeps track of what game rooms the user is in
-								rooms: []
-							};
-							res.redirect(req.session.refererURL || '/');	
-						} else {
-							res.render('login.ejs', { 
-								title: 'bitflop.me',
-								errors: {
-									'name': 'password',
-									'msg': 'the password is not in the database or is wrong'
-								}
-							});
-						}
-					});
-				} else {
-					res.render('login.ejs', { 
-						title: 'bitflop.me',
-						user: res.locals.user,
-						errors: {
-							'name': 'password',
-							'msg': 'the password is not in the database or is wrong'
-						}
-					});
-				}
-			});
+	app.get('/register', function (req, res) {
+		//	Check if the user is logged in already
+		if (res.locals.user.authenticated) {
+			res.redirect('/');
 		} else {
-			// Show the errors on the form
-			res.render('login.ejs', { 
+			res.render('register.ejs', { 
 				title: 'bitflop.me',
 				user: res.locals.user,
-				errors: errors
+				errors: {}
 			});
 		}
 
@@ -90,9 +47,6 @@ module.exports = function (app) {
 	app.get('/logout', [middleware.validateUser], function (req, res) {
 
 		req.session.user = {};
-		//req.session = {};
-		//req.session.destroy();
-		//res.clearCookie('connect.sid', { path: '/' });
 		res.redirect('/');
 	});
 
@@ -129,6 +83,160 @@ module.exports = function (app) {
 			errors: {}
 		});
 	});
+
+	app.post('/login', function (req, res) {
+
+		req.check('loginUsername', 'The username is required.').notEmpty();
+		req.check('loginPassword', 'The password is required.').notEmpty();
+		req.sanitize('loginUsername');
+		req.sanitize('loginPassword');
+
+		var errors = req.validationErrors(true); 
+
+		if (!errors) {
+			models.Users.findOne({ 'username': req.param('loginUsername') }, function (err, user) {
+				if (err) throw err;
+
+				if (user) {
+					bcrypt.compare(req.param('loginPassword'), user.password, function(err, match) {
+						if (err) throw err;
+
+						if (match) {
+							// the password was found!
+							req.session.user = {
+								id: user.id,
+								name: user.username,
+								authenticated: true,
+								//	This keeps track of what game rooms the user is a player in
+								rooms: []
+							};
+							res.redirect(req.session.refererURL || '/');	
+						} else {
+							res.render('login.ejs', { 
+								title: 'bitflop.me',
+								errors: {
+									'loginPassword': {
+										'param': 'loginPassword',
+										'msg': 'The password or username entered is incorrect.'
+									}
+								}
+							});
+						}
+					});
+				} else {
+					res.render('login.ejs', { 
+						title: 'bitflop.me',
+						user: res.locals.user,
+						errors: {
+							'loginUsername': {
+								'param': 'loginUsername',
+								'msg': 'The username does not exist.'
+							}
+						}
+					});
+				}
+			});
+		} else {
+			// Show the errors on the form
+			res.render('login.ejs', { 
+				title: 'bitflop.me',
+				user: res.locals.user,
+				errors: errors
+			});
+		}
+
+	});
+
+	app.post('/register', function (req, res) {
+
+		req.check('registerUsername', 'The username is required.').notEmpty().len(2,15).isAlphanumeric();
+		req.check('registerPassword', 'The password is required.').notEmpty().len(6,55);
+		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
+		req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
+
+		req.sanitize('registerUsername');
+		req.sanitize('registerPassword');
+		req.sanitize('registerPasswordConfirm');
+		req.sanitize('registerTerms');
+
+		if (req.param('registerEmail')) {
+			req.check('registerEmail').isEmail();
+			req.sanitize('registerEmail');
+		}
+
+		var errors = req.validationErrors(true); 
+
+		if (!errors) {
+			// Check if the username is available
+			models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {
+				if (err) throw err;
+
+				if (checkUser) {
+					res.render('register.ejs', { 
+						title: 'bitflop.me',
+						user: res.locals.user,
+						errors: {
+							'registerUsername': {
+								'param': 'registerUsername',
+								'msg': 'The username is not available.'
+							}
+						}
+					});
+				} else {
+					// the username is available
+					bcrypt.hash(req.param('registerPassword'), 10, function(err, hash) {
+
+						if (err) throw err;
+
+						models.Counters.findOne({}, function (err, counter) {
+
+							var user = new models.Users;
+								// get the current count from the database and increment by to get the next interview
+							var count = counter.users + 1;	
+
+							user.id = count;
+							user.username = req.param('registerUsername');
+							user.password = hash;
+
+							if (req.param('registerEmail')) {
+								user.email = req.param('registerEmail');
+							}
+
+							user.save(function(err){
+								if (err) throw err;
+
+								//update the counter in the database
+								models.Counters.update({users: count}, function (err) {
+									if (err) throw err;
+
+									req.session.user = {
+										id: user.id,
+										name: user.username,
+										authenticated: true,
+										//	This keeps track of what game rooms the user is in
+										rooms: []
+									};
+									res.redirect(req.session.refererURL || '/account');	
+								});	
+							});
+
+
+						});
+					});
+				}
+			});
+		} else {
+			// Show the errors on the form
+			res.render('register.ejs', { 
+				title: 'bitflop.me',
+				user: res.locals.user,
+				errors: errors
+			});
+		}
+
+	});
+
+
 
 	app.post('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
 		// validate the input that came from the form\
@@ -235,49 +343,97 @@ module.exports = function (app) {
 
 	app.post('/game/new', [middleware.refererURL, middleware.validateUser], function (req, res) {
 		// validate the input that came from the form\
-		req.check('name', 'The game name is required').notEmpty();
-		req.check('password', 'The game security code is required').notEmpty();
-		req.sanitize('name');
-		req.sanitize('password');
+		req.check('tableName', 'The game name is required').notEmpty().notNull().len(1,25).isAlphanumeric();
+		//req.check('private', 'The game security code is required');
+		req.sanitize('tableName');
+		//req.sanitize('private');
 
-		var errors = req.validationErrors(); 
+		// optional field
+		//if (req.param('private')) {
+			//req.check('passcode', 'The passcode must be at least one character').notEmpty().notNull().len(1,55);
+			//req.sanitize('passcode');
+		//}
 
-		// If no errors were found we passed form validation
+		var errors = req.validationErrors(true); 
+
 		if (!errors) {
-			// get the current count of the game (auto-increment)
-			models.Counters.findOne({}, function (err, counter) {
-				var game = new models.Games();
-				var id = counter.games + 1;
+			// Check if the tablename is available
+			models.Games.findOne({ 'name': req.param('tableName') }, function (err, checkGame) {
+				if (err) throw err;
 
-				game.id = id;
-				game.name = req.param('name');
-				game.password = req.param('password');
-				game.creator = {
-					id: req.session.user.id,
-					name: req.session.user.name
-				};
-				//	Player1 is index0
-				game.players = [{
-					id: req.session.user.id,
-					name: req.session.user.name
-				}];
-				game.settings = {};
-				game.history = [];
-				game.rounds = [];
-				
-				game.save(function (err) {
+				if (checkGame) {
+					res.render('game/new.ejs', { 
+						title: 'bitflop.me',
+						user: res.locals.user,
+						errors: {
+							'tableName': {
+								'param': 'tableName',
+								'msg': 'That table name is in play. Please pick another.'
+							}
+						}
+					});
+				} else {
+					// the name is available
+
+
 					if (err) throw err;
 
-					//update the counter in the database
-					models.Counters.update({games: id}, function (err) {
-						if (err) throw err;
+					models.Counters.findOne({}, function (err, counter) {
 
-						if (req.session.user.rooms.indexOf(game.id.toString()) == -1) req.session.user.rooms.push(game.id.toString());
-						res.redirect('/game/play/' + id);
+						var game = new models.Games();
+						var count = counter.games + 1;	
 
-					});	
+						game.id = count;
+						game.name = req.param('tableName');
+						
+						//if (req.param('passcode')) {
+							//game.passcode = req.param('passcode');
+						//}
 
-				});
+						game.creator = {
+							id: req.session.user.id,
+							name: req.session.user.name
+						};
+
+						//	Player1 is index0
+						game.players = [{
+							id: req.session.user.id,
+							name: req.session.user.name
+						}];
+						game.settings = {
+					        smallBlind: 50,
+					        bigBlind: 100,
+					        minPlayers: 2,
+					        maxPlayers: 2,
+					        minBuyIn: 100,
+					        maxBuyIn: 1000,
+					        timer: {
+					            call: 30
+					        }
+						};
+						game.history = [];
+						game.rounds = [];
+						
+						game.save(function (err) {
+							if (err) throw err;
+
+							//update the counter in the database
+							models.Counters.update({games: count}, function (err) {
+								if (err) throw err;
+
+								var gameID = game.id.toString();
+
+								// here we are pushing a room the user is authorized to enter
+								if (req.session.user.rooms.indexOf(gameID) === -1) {
+									req.session.user.rooms.push(gameID);
+								}
+
+								res.redirect('/game/play/' + game.name);
+
+							});	
+						});
+					});
+				}
 			});
 		} else {
 			// Show the errors on the form
@@ -286,15 +442,14 @@ module.exports = function (app) {
 				user: res.locals.user,
 				errors: errors
 			});
-		}
-				
+		}		
 
 	});
 
 	/* 	The middleware will check that the game exists
 		We do not need to check if a user is looged in becuase anyone can view this page, only logged in users can sit and play
 	*/
-	app.get('/game/play/:id',  [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
+	app.get('/game/play/:tableName',  [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
 
 		var game = res.locals.game;
 
@@ -302,7 +457,10 @@ module.exports = function (app) {
 		res.render('game/play.ejs', { 
 			title: 'bitflop.me',
 			user: res.locals.user,
-			room: res.locals.game.id
+			room: {
+				id: res.locals.game.id,
+				name: res.locals.game.name
+			}
 		});
 		
 			

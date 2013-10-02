@@ -9,16 +9,17 @@ var models = require('./models');
 exports.validateGame = function (req, res, next) {
 
 
-	req.check('id', 'Invalid urlparam').notEmpty().isInt()
-	req.sanitize('id').toInt();
-//console.log(req.validationErrors());
+	req.check('tableName', 'Invalid url param').notEmpty().notNull().len(1,25).isAlphanumeric();
+	req.sanitize('tableName');
 
-	// validate the id, if its not valid we dont even bother checking the provledges
+	// validate the name, if its not valid we dont even bother checking the privledges
 	if (req.validationErrors()) {
-		res.status(404).render('404.ejs', {title: '404 - Page Not Found'});
+		res.status(404).render('404.ejs', {
+			title: '404 - Page Not Found'
+		});
 	} else {
 		// if the input is valid, get the data for the intview being requsted
-		models.Games.findOne({ 'id': req.param('id') }, function (err, game) {
+		models.Games.findOne({ 'name': req.param('tableName') }, function (err, game) {
 			if (err) throw err;
 
 			if (!game) {
@@ -28,9 +29,6 @@ exports.validateGame = function (req, res, next) {
 				res.locals.game = game;
 				next();
 			}
-
-
-
 		});
 	}
 };

@@ -14,56 +14,59 @@
 	<div class="row">
 
 
-		<div class='col-sm-6'>  
+		<div class='col-sm-12'>  
 
-			<form role="form" method="post" action="">
+			<h3>Shuffle up and Deal!</h3>
+			<p>A table name should be something unique that you can tell your friends so they can find you. Once you create the game you can simnply send the link to your opponent to start playing. <strong>Table names can only be letters and numbers. No spaces are allowed and the table name must be between 1 and 25 characters in length.</strong></p>
 
-				<input type="hidden" name="_csrf" value="<%= token %>"/>
+			<form class="form-horizontal" role="form" method="post" action="/game/new">
+
 				
-				<div class='form-group'>
-					<label for="form_match_player1">Table Name</label>
-					<input class="form-control" id="form_match_player1" name="name" size="30" type="text" />
-					<span class="help-block">This can help your opponent find the desired game.</span>
+				<input type="hidden" name="_csrf" value="<%= token %>"/>
+
+				<div class='form-group <% if (errors.tableName) { %>has-error<% } %>'>
+					
+					<div class="col-lg-2">
+						<label class="control-label">bitflop.me/game/play/</label>
+						
+					</div>
+					<div class="col-lg-7">
+						<input class="form-control mg-top-bot-5" name="tableName" size="30" type="text" placeholder="Table Name" />
+						<% if (errors.tableName) { %>
+							<div class="alert alert-danger"><p><%= errors.tableName.msg %></p></div>
+						<% } %>
+					</div>
+					
+					<div class="col-lg-3"><input type="submit" class="btn btn-block btn-success mg-top-bot-5" value="Create New Game" /></div>
+					
+
+
 				</div>
 
 
-				<div class='form-group'>
-					<label for="f-g-password">Security Code</label>
-					<input class="form-control" id="f-g-password" name="password" size="30" type="text" />
-					<span class="help-block">A game must have a security code to prevent unauthorized players from joining.</span>
-				</div>
+<!-- 				<div class='form-group <% if (errors.passcode) { %>has-error<% } %>'>
+					<label>Make this table private</label>
+					<p class="text-muted"><small>You can add a passcode to your table so only those with the password can join.</small></p>
+				    <div class="input-group mg-top-bot-5">
+
+				    	<span class="input-group-addon">
+				    		<input type="checkbox" name="private">
+				    	</span>
+				    	<input name="passcode" type="text" class="form-control " placeholder="a security word is required only if this table is provate">
+				    </div>
+
+					<% if (errors.passcode) { %>
+						<div class="alert alert-danger"><p><%= errors.passcode.msg %></p></div>
+					<% } %>
+				</div> -->
 
 
-				<h4>Settings</h4>
 
-				<div class='form-group'>
-					<label for="user_lastname">Make this table private</label>
-				    <div class="input-group">
-
-				      <span class="input-group-addon">
-				        <input type="checkbox" name="private" id="form_match_private">
-				      </span>
-				      <input name="ssd" type="text" id="form_match_password" class="form-control" placeholder="a security word is required only if this table is provate">
-				    </div><!-- /input-group -->
-				</div>
-
-				<div class='form-group'>
-					<input class="btn btn-primary btn-lg" id="user_lastname" type="submit" />
-				</div>
 
 			</form>
 		</div>
 
-		<div class="col-sm-4">
-			<h4>Things to keep in mind</h4>
 
-			<p>A really easy way of implementing this is to use connect-flash, a middleware for express that leverages the session middleware built into express to pass 'flash' messages to the next request.It means you don't need to add fields to track urls or messages to the form or route patterns for your views.</p>
-			<dl class="dl-horizontal">
-				<dt>BitCoin</dt>
-				<dd>If both parties agree to pay</dd>
-			</dl>
-
-		</div>
 	</div>
 
 

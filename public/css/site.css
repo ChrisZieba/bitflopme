@@ -49,8 +49,20 @@ body {
 
 }
 
+@font-face {
+    font-family: 'bikobold';
+    src: url('../font/biko/biko_bold.eot');
+    src: url('../font/biko/biko_bold.eot?#iefix') format('embedded-opentype'),
+         url('../font/biko/biko_bold.woff') format('woff'),
+         url('../font/biko/biko_bold.ttf') format('truetype'),
+         url('../font/biko/biko_bold.svg#bikobold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-	font-family: "Proxima_Nova_Bold", Helvetica, Arial, sans-serif;
+	font-family: "bikobold", Helvetica, Arial, sans-serif;
 	font-weight: normal;
 }
 
@@ -69,6 +81,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .jumbotron {
+
 	background-color: #e0e5e8;
 	background: -moz-radial-gradient(center, ellipse cover, #e0e5e8 0%, #c4c4c4 100%);
 	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#e0e5e8), color-stop(100%,#c4c4c4));
@@ -78,10 +91,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	background: radial-gradient(center, ellipse cover, #e0e5e8 0%,#c4c4c4 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0e5e8', endColorstr='#c4c4c4',GradientType=1 );
 	background-repeat: no-repeat;
-
 	border-bottom: 1px solid #c4c4c4;
-}
-	/*background-color: #FEBF0E;*/
+
 }
 .jumbotron .btn {
 	margin-top: 10px;
@@ -140,10 +151,21 @@ code {
 	font-size: 80%;
 }
 
+.alert {
+	padding-top:6px;
+	padding-bottom: 6px;
+	margin-bottom: 10px;
+}
+
+.nav .caret {
+	border-top-color: #000000;
+	border-bottom-color: #000000;
+}
+
 .navbar-default {
-	background-color: #3F3F3F;
+	background-color: #272E33;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
-	border-color: #DC2A26;
+	border-color: #999;
 	border-width: 0;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
 }
@@ -176,6 +198,19 @@ code {
 	padding-top: 10px;
 }
 
+.navbar > .container .navbar-brand {
+	margin-left: -15px;
+}
+
+.navbar-brand {
+
+	padding:3px 15px;
+}
+
+.btn-group {
+	padding-top:10px;
+}
+
 .col-bg-1 {
 	padding-top: 15px;
 	padding-bottom: 15px;
@@ -192,7 +227,7 @@ code {
 
 
 .sub {
-	color: #333333;
+	color: #999;
 }
 
 .sub h1 {

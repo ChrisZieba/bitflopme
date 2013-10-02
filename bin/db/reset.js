@@ -6,7 +6,7 @@ db.dropDatabase();
 
 
 db.counters.insert({
-    "games":54321,
+    "games":1,
     "users":3
 });
 
@@ -32,12 +32,12 @@ db.users.insert({
 });
 
 db.games.insert({
-    "id" : 54321,
+    "id" : 1,
     "creator" : {
         "name" : "ziebac",
         "id" : 1
     },
-    "password" : "walks",
+    "passcode" : "walks",
     "name" : "jesus",
     "rounds" : [],
     "events" : [],

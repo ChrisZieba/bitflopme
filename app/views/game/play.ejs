@@ -11,7 +11,7 @@
 			<link href="/css/game.css" rel="stylesheet" media="screen" />
 			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
 
-			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room %>'};</script>
+			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
 			<script src="/js/vendor/angular.js"></script>
 			<script src="/js/vendor/adapter.js"></script>
 			<script src="/js/vendor/angular-slider.js"></script>
@@ -23,7 +23,7 @@
 			<link href="/css/game.css" rel="stylesheet" media="screen" />
 			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
 
-			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room %>'};</script>
+			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
 			<script src="/js/vendor/angular.js"></script>
 			<script src="/js/vendor/adapter.js"></script>
 			<script src="/js/vendor/angular-slider.js"></script>
@@ -53,13 +53,21 @@
 				<div class="col-xs-12 col-sm-12 col-md-11 col-lg-8">
 					<div class="row">
 
-						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 opponent" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" >
+						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 opponent">
 
 							<div class="row" ng-cloak ng-show="game.opponent.name != null">
-								<div class="col-md-12 opponent-video">
-									<video id="remote-video" remote-video autoplay></video>
+								<div class="col-md-12">
+									<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video autoplay></video>
 
 									<div class="opp-player-data" ng-show="game.action.state != 'END'">
+
+
+										<div ng-cloak ng-show="game.opponent.folded == false">
+											<ul class="cards">
+												<li class="card"><span class="card-{{ game.opponent.cards[0] }}"></span></li>
+												<li class="card"><span class="card-{{ game.opponent.cards[1] }}"></span></li>
+											</ul>
+										</div>
 
 										<div ng-switch="game.opponent.name" class="opp-player-co">
 											<div ng-switch-when="null"><span class="player-name">Waiting for opponent ...</span> </div>
@@ -72,12 +80,6 @@
 											</div>
 										</div>
 
-										<div ng-cloak ng-show="game.opponent.folded == false">
-											<ul class="cards">
-												<li class="card"><span class="card-{{ game.opponent.cards[0] }}"></span></li>
-												<li class="card"><span class="card-{{ game.opponent.cards[1] }}"></span></li>
-											</ul>
-										</div>
 
 										<div ng-cloak ng-show="game.opponent.name != null">
 											<span class="chip-count">{{ game.opponent.chips}}</span>
@@ -87,27 +89,27 @@
 							</div>
 						</div>
 
-						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 opponent">
+						<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 player">
 							<div class="row" ng-cloak ng-show="game.player.name != null">
-								<div class="col-md-12 player-video">
-									<video id="local-video" local-video autoplay></video>
+								<div class="col-md-12">
+									<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video autoplay></video>
 
 									<div class="opp-player-data" ng-switch="game.player.name">
 										<div ng-switch-when="null">
 											<span class="player-name">Waiting for player ...</span> 
 										</div>
 										<div ng-switch-default>
+
+											<div ng-cloak ng-show="game.player.folded == false">
+
+												<ul class="cards" ng-cloak ng-show="game.action.state != null">
+													<li class="card"><span class="card-{{game.player.cards[0]}}"></span></li>
+													<li class="card"><span class="card-{{game.player.cards[1]}}"></span></li>
+												</ul>
+											</div>
+
 											<div class="">
 												<span class="player-name">{{ game.player.name }}</span> 
-
-												<div>
-
-													<ul class="cards" ng-cloak ng-show="game.action.state != null">
-														<li class="card"><span class="card-{{game.player.cards[0]}}"></span></li>
-														<li class="card"><span class="card-{{game.player.cards[1]}}"></span></li>
-													</ul>
-												</div>
-
 												<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.player.id">D</span>
 												<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'small'">SB</span>
 												<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'big'">BB</span>
@@ -147,11 +149,11 @@
 
 					<div class="row">
 
-						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-2 visible-lg">
 
 						</div>
 
-						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
 							<div class="table">
 								
 								<div ng-repeat="player in game.action.players | filter: { id: '!'+game.player.id }" ng-cloak ng-show="player.bets != 0">{{player.bets}}</div>
@@ -163,7 +165,7 @@
 							</div>
 						</div>
 
-						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+						<div class="col-xs-12 col-sm-6 col-md-4 col-lg-2 visible-lg">
 
 						</div>
 

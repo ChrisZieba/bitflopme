@@ -1,0 +1,110 @@
+<% include partials/header.ejs %>
+
+
+<div class="jumbotron sub">
+	<div class="container">
+		<h1>Register</h1>
+	</div>
+	
+</div>
+
+<div class="container">
+	
+
+
+	<div class="row">
+		<div class="col-sm-4">  
+			<div class="row">
+				<div class="col-sm-12">  
+					<form role="form" method="post" action="/register" class="well">
+						<h4>Register</h4>
+						<p>Start playing right away! All you need is a username and password. <strong>No email required.</strong></p>
+						<div class="form-group"><input type="hidden" name="_csrf" value="<%= token %>"/></div>
+						
+						<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
+							<label>Username</label>
+							<p class="text-muted"><small>Letters and numbers, between 2 and 15 characters in length.</small></p>
+							<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username">
+							<% if (errors.registerUsername) { %>
+								<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
+							<% } %>
+						</div>
+						
+						<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
+							<label>Password</label>
+							<p class="text-muted"><small>Contain any character you like, min length is 6 characters.</small></p>
+							<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password">
+							<% if (errors.registerPassword) { %>
+								<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
+							<% } %>
+						</div>
+						
+						<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
+							<label>Confirm Password</label>
+							<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password">
+							<% if (errors.registerPasswordConfirm) { %>
+								<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
+							<% } %>
+						</div>
+						
+						<div class="form-group <% if (errors.registerEmail) { %>has-error<% } %>">
+							<label>Optional Email</label>
+							<p class="text-muted"><small>This is an optional field. It is used for password recovery, and optional standings reports.</small></p>
+							<input type="text" name="registerEmail" class="form-control mg-top-bot-5" placeholder="Optional Email">
+							<% if (errors.registerEmail) { %>
+								<div class="alert alert-danger"><p><%= errors.registerEmail.msg %></p></div>
+							<% } %>
+						</div>
+
+						<div class="form-group <% if (errors.registerTerms) { %>has-error<% } %>">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="registerTerms"> A agree to the terms & conditions
+								</label>
+							</div>
+							<% if (errors.registerTerms) { %>
+								<div class="alert alert-danger"><p><%= errors.registerTerms.msg %></p></div>
+							<% } %>
+						</div>
+
+						<div class="form-group">
+							<input type="submit" class="btn btn-block btn-success mg-top-bot-5" value="Register" />
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-8">  
+			<h3>A playing experience like no other!</h3>
+			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+
+			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+
+			<div class="row">
+				<div class="col-sm-6">  
+
+					<h4>No email required</h4>
+
+					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+
+					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+				</div>
+				<div class="col-sm-6">  
+
+					<h4>BitCoin</h4>
+
+					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+
+					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+<% include partials/footer.ejs %>
