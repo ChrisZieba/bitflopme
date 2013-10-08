@@ -120,13 +120,6 @@ app.factory('rtc', function($rootScope) {
 			callButton.disabled = false;
 		},
 
-		gotRemoteStream: function (event) {
-			var remoteVideo = 
-
-			remotevid.src = URL.createObjectURL(event.stream);
-			trace("Received remote stream");
-		},
-
 		gotLocalIceCandidate: function (event) {
 			if (event.candidate) {
 				remotePeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
@@ -171,24 +164,29 @@ app.directive('localVideo', ['rtc', function(rtc){
 
 			var localVideo = element[0];
 
-			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia || navigator.msGetUserMedia;
-			window.URL = window.URL || window.webkitURL;
+			// check if the video is visible
+			if (localVideo) {
 
-			function successCallback(stream) {
-				scope.streams.local = {
-					element: localVideo,
-					stream: stream
-				};
+				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia || navigator.msGetUserMedia;
+				window.URL = window.URL || window.webkitURL;
 
-				attachMediaStream(localVideo, stream);
-				rtc.call(scope);
+				function successCallback(stream) {
+					scope.streams.local = {
+						element: localVideo,
+						stream: stream
+					};
 
+					attachMediaStream(localVideo, stream);
+					rtc.call(scope);
+
+				}
+
+				getUserMedia({video: true, audio: false}, successCallback, function (error) {
+					console.error('An error occurred: [CODE ' + JSON.stringify(error) + ']');
+					return;
+				});
 			}
 
-			getUserMedia({video: true, audio: false}, successCallback, function (error) {
-				console.error('An error occurred: [CODE ' + JSON.stringify(error) + ']');
-				return;
-			});
 		}
 	};
 }]);
@@ -200,9 +198,12 @@ app.directive('remoteVideo', ['rtc', function(rtc){
 		link: function(scope, element, attrs) {
 			var remoteVideo = element[0];
 
-			scope.streams.remote = {
-				element: remoteVideo
-			};
+
+			if (remoteVideo) {
+				scope.streams.remote = {
+					element: remoteVideo
+				};
+			}
 		}
 	};
 }]);
@@ -305,24 +306,51 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	socket.on('game:join', function (data) {
 		$scope.game.events = data.events;
-		// if a player joined the table, sit them down
-		if (data.player.id !== null) {
-			$scope.game.player.id = data.player.id;
-			$scope.game.player.name = data.user.name;
-		}
 
-		console.log(data)
+		if (data.player.id !== null) {
+			if ($scope.game.player.id === -1) {
+				$scope.game.player.id = data.player.id;
+				$scope.game.player.name = data.user.name;
+			} 
+		}
 	});
+
+
 
 	socket.on('player:data', function (data) {
 
 		console.log(data);
 
-
 		$scope.game.action = data.round.actions[data.round.actions.length-1];
-		$scope.game.player = $scope.game.action.players[data.player.id];
+
+		var player = $scope.game.action.players[data.player.id];
+		var opponent = $scope.game.action.players[data.opponent.id];
+
 		$scope.game.player.cards = data.player.cards;
-		$scope.game.opponent = $scope.game.action.players[data.opponent.id];
+		$scope.game.player.chips = player.chips;
+		$scope.game.player.action = player.action;
+		$scope.game.player.folded = player.folded;
+		$scope.game.player.allIn = player.allIn;
+		$scope.game.player.acted = player.acted;
+		$scope.game.player.blind = player.blind;
+		$scope.game.player.bets = player.bets;
+		$scope.game.player.out = player.out;
+		$scope.game.player.options = player.options;
+
+		$scope.game.opponent.id = opponent.id;
+		$scope.game.opponent.name = opponent.name;
+		$scope.game.opponent.cards = opponent.cards;
+		$scope.game.opponent.chips = opponent.chips;
+		$scope.game.opponent.action = opponent.action;
+		$scope.game.opponent.folded = opponent.folded;
+		$scope.game.opponent.allIn = opponent.allIn;
+		$scope.game.opponent.acted = opponent.acted;
+		$scope.game.opponent.blind = opponent.blind;
+		$scope.game.opponent.bets = opponent.bets;
+		$scope.game.opponent.out = opponent.out;
+		$scope.game.opponent.options = opponent.options;
+
+		
 	});
 
 	socket.on('game:data', function (data) {
@@ -362,13 +390,13 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	});
 
-	socket.on('railbird:data', function (data) {
-		$scope.game.player.id = data.player.id;
-		$scope.game.player.cards = data.player.cards;
-		$scope.game.opponent.id = data.opponent.id;
-		$scope.game.opponent.name = data.opponent.name;
-		$scope.game.opponent.cards = data.opponent.cards;
-	});
+	// socket.on('railbird:data', function (data) {
+	// 	$scope.game.player.id = data.player.id;
+	// 	$scope.game.player.cards = data.player.cards;
+	// 	$scope.game.opponent.id = data.opponent.id;
+	// 	$scope.game.opponent.name = data.opponent.name;
+	// 	$scope.game.opponent.cards = data.opponent.cards;
+	// });
 
 
 	socket.on('game:leave', function (data) {

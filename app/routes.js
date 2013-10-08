@@ -54,6 +54,7 @@ module.exports = function (app) {
 
 		//	This is every room that the user has already joined
 		var rooms = req.session.user.rooms;
+		var user = res.locals.user;
 
 		//	Get all the games that are 'NEW' or show the games the user is part of
 		models.Games.find({ 
@@ -65,12 +66,10 @@ module.exports = function (app) {
 		}).sort('-created').exec(function(err, games) {
 			if (err) throw err;
 
-			// 	Show the errors on the form
 			res.render('game/join.ejs', { 
 				title: 'bitflop.me',
-				user: res.locals.user,
-				games: games,
-				errors: {}
+				user: user,
+				games: games
 			});
 
 		});
@@ -237,8 +236,34 @@ module.exports = function (app) {
 	});
 
 
+	app.post('/game/join/:tableName', [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
 
-	app.post('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
+		var game = res.locals.game;
+		var user = res.locals.user;
+
+		if (helpers.getPlayerID(user.id, game.players) === null && game.players.length === 1) {
+			// update the database game to hold the new players information
+			models.Games.update(
+				{
+					id:game.id
+				}, 
+				{
+				$push: { 
+					players: {
+						id:user.id, 
+						name: user.name
+					}
+				}
+			}, function (err) {
+				if (err) throw err;
+
+				// when the player is redirected back the game, the game will start if both players are there
+				res.redirect('/game/play/' + game.name);
+			});	
+		}
+	})
+
+	/*app.post('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
 		// validate the input that came from the form\
 		req.check('password', 'The game security code is required').notEmpty();
 		req.sanitize('_game');
@@ -339,11 +364,11 @@ module.exports = function (app) {
 		}
 				
 
-	});
+	});*/
 
 	app.post('/game/new', [middleware.refererURL, middleware.validateUser], function (req, res) {
 		// validate the input that came from the form\
-		req.check('tableName', 'The game name is required').notEmpty().notNull().len(1,25).isAlphanumeric();
+		req.check('tableName', 'The table name is required').notEmpty().notNull().len(1,25).isAlphanumeric();
 		//req.check('private', 'The game security code is required');
 		req.sanitize('tableName');
 		//req.sanitize('private');
@@ -368,7 +393,7 @@ module.exports = function (app) {
 						errors: {
 							'tableName': {
 								'param': 'tableName',
-								'msg': 'That table name is in play. Please pick another.'
+								'msg': 'That table name is in use. Please pick another.'
 							}
 						}
 					});
@@ -452,15 +477,24 @@ module.exports = function (app) {
 	app.get('/game/play/:tableName',  [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
 
 		var game = res.locals.game;
+		var user = res.locals.user;
+		var join = true;
 
+		// the join button is shown only if the user is not already a player, and there is not a full table already
+		// The reason for checking the players.length ===1 is to make sure the game has not started. The first player is always the 
+		// player who created the game, and if its two the game already started 
+		if (helpers.getPlayerID(user.id, game.players) !== null || game.players.length === 2) {
+			join = false;
+		}
 		// Show the errors on the form
 		res.render('game/play.ejs', { 
 			title: 'bitflop.me',
-			user: res.locals.user,
+			user: user,
 			room: {
-				id: res.locals.game.id,
-				name: res.locals.game.name
-			}
+				id: game.id,
+				name: game.name
+			},
+			join: join
 		});
 		
 			

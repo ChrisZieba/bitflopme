@@ -36,18 +36,28 @@ exports.checkPlayer = function (sid, players) {
 // A game is only ready when each player room has at least one socket connection in it
 // Players is an array from the database
 exports.isGameReady = function (room, rooms, players) {
-	//	Check if every player has a room, and at least one connection in it
-	for (var i = 0; i < players.length; i++) {
-		var pr = '/' + room + ':' + i;
 
-		if (rooms.hasOwnProperty(pr)) {
-			if (rooms[pr].length <= 0) return false;
-		} else {
-			return false;
+	var gameReady = true;
+
+	if (players.length === 2) {
+		//	Check if every player has a room, and at least one connection in it
+		for (var i = 0; i < players.length; i++) {
+			var pr = '/' + room + ':' + i;
+
+			if (rooms.hasOwnProperty(pr)) {
+				if (rooms[pr].length <= 0) {
+					gameReady = false;
+				}
+			} else {
+				gameReady = false;
+			}
 		}
+	} else {
+		gameReady = false;
 	}
 
-	return true;
+
+	return gameReady;
 };
 
 // If the second arg is not supplied build a new object, otherwise add to it

@@ -133,6 +133,7 @@ exports.listen = function (server, sessionStore, app) {
 						Games[data.room].AddEvent('Dealer', '<strong>' + session.user.name + '</strong> is on the rail');
 					}
 
+					// this gets sent to everybody
 					io.sockets.in(data.room).emit('game:join', { 
 						uuid: Date.now(), 
 						events: Games[data.room].events,
@@ -142,10 +143,11 @@ exports.listen = function (server, sessionStore, app) {
 						},
 						player: {
 							id: playerID
-						},
+						}
 					});
 
 					//	Attach some socket specific data
+					// This is later used when a socket disconnects
 					socket.set('scope', {
 						user: {
 							id: session.user.id,
@@ -157,14 +159,17 @@ exports.listen = function (server, sessionStore, app) {
 						room: data.room
 					});
 
+
+console.log(JSON.stringify(game.players));
+console.log(JSON.stringify(io.sockets.manager.rooms));
 					//	Are both players sitting at the table?
 					if (helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players)) {
-
+						console.log('_________++++++++++++++++++++++++++++++++++++++++++_)+_+_+')
 						var rounds = game.rounds;
 						var round;
 
 						// has the game started?
-						if (!Games[data.room].state) {
+						if (!Games[data.room].state) {console.log('345345345_________++++++++++++++++++++++++++++++++++++++++++_)+_+_+')
 							//	The first player added  is index 0 on the player array
 							for (var i = 0; i < game.players.length; i++) {
 								// it is very important that we use the loop counter for the playerID
@@ -200,6 +205,7 @@ exports.listen = function (server, sessionStore, app) {
 								// Send the private data to each individual player
 								if (numberOfPlayers === 2) {
 									for (var i = 0; i < numberOfPlayers; i++) {
+										console.log(JSON.stringify(Games[data.room].players[i].id));
 										io.sockets.in(data.room + ':' + Games[data.room].players[i].id).emit('player:data', { 
 											uuid: Date.now(), 
 											events: Games[data.room].events,
@@ -209,19 +215,19 @@ exports.listen = function (server, sessionStore, app) {
 												cards: Games[data.room].players[i].cards
 											},
 											opponent: {
-												id: Games[data.room].players[(i+1) % 2].id,
-												cards: ['00', '00']
+												id: Games[data.room].players[(i+1) % 2].id
+												//cards: ['00', '00']
 											}
 										});
 									}
 								}
 
 								// 	Tell the non-players
-								io.sockets.in(data.room + '::').emit('railbird:data', { 
-									uuid: Date.now(), 
-									events: Games[data.room].events,
-									round: round.shared
-								});
+								//io.sockets.in(data.room + '::').emit('railbird:data', { 
+									//uuid: Date.now(), 
+									//events: Games[data.room].events,
+									//round: round.shared
+								//});
 							
 							
 

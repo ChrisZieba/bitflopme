@@ -76,22 +76,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .jumbotron-center {
-	text-align: center;
+
 	margin: 50px 0 50px 0;
 }
 
 .jumbotron {
 
-	background-color: #e0e5e8;
-	background: -moz-radial-gradient(center, ellipse cover, #e0e5e8 0%, #c4c4c4 100%);
-	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#e0e5e8), color-stop(100%,#c4c4c4));
-	background: -webkit-radial-gradient(center, ellipse cover, #e0e5e8 0%,#c4c4c4 100%);
-	background: -o-radial-gradient(center, ellipse cover, #e0e5e8 0%,#c4c4c4 100%);
-	background: -ms-radial-gradient(center, ellipse cover, #e0e5e8 0%,#c4c4c4 100%);
-	background: radial-gradient(center, ellipse cover, #e0e5e8 0%,#c4c4c4 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0e5e8', endColorstr='#c4c4c4',GradientType=1 );
-	background-repeat: no-repeat;
-	border-bottom: 1px solid #c4c4c4;
+	background-color: #eff2f3;
+
+	border-bottom: 1px solid #dddedf;
 
 }
 .jumbotron .btn {

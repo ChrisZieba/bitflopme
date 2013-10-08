@@ -33,18 +33,27 @@
 					<% } %>
 						<td><%= games[i].name %></td>
 						<td><%= games[i].creator.name %></td>
-						<td><%= games[i].settings %></td>
 						<td>
-							<form class="form-inline" role="form" method="post" action="/game/join">
-								<input type="hidden" name="_csrf" value="<%= token %>"/>
-								<input type="hidden" name="_game" value="<%= games[i].id %>"/>
-								<div class="form-group">
-									<input type="password" name="password" class="form-control" id="exampleInputEmail2" placeholder="Enter Security Code">
-								</div>
-								<div class="form-group">
-									<input type="submit" class="btn btn-success" value="Join" />
-								</div>
-							</form>
+							
+							<table class="table table-condensed table-bordered table-striped">
+								<tbody>
+									<tr>
+										<td>Buy In</td>
+										<td><%= games[i].settings.maxBuyIn %></td>
+									</tr>
+									<tr>
+										<td>Small Blind</td>
+										<td><%= games[i].settings.smallBlind %></td>
+									</tr>
+									<tr>
+										<td>Big Blind</td>
+										<td><%= games[i].settings.bigBlind %></td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<a href="/game/play/<%= games[i].name %>" class="btn btn-block btn-warning">Join this Game</a>
 
 						</td>
 					</tr>

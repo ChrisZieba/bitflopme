@@ -37,20 +37,15 @@ db.games.insert({
         "name" : "ziebac",
         "id" : 1
     },
-    "passcode" : "walks",
     "name" : "jesus",
     "rounds" : [],
     "events" : [],
     "settings": {
         "smallBlind": 50,
         "bigBlind": 100,
-        "minPlayers": 2,
-        "maxPlayers": 2,
         "minBuyIn": 100,
         "maxBuyIn": 1000,
-        "timer": {
-            "call": 30
-        }
+        "timer": 15
     },
 
 
@@ -60,10 +55,6 @@ db.games.insert({
         {
             "name" : "ziebac",
             "id" : 1
-        },
-        {
-            "id" : 2,
-            "name" : "tony"
         }
     ],
     "state" : "NEW",
