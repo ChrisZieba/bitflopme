@@ -229,8 +229,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	$scope.peer = {
 		connection: pc,
+		candidates: [],
 		local: {},
-		remote: {}
+		remote: {},
+		connected: false
 	};
 
 	$scope.game = {
@@ -332,7 +334,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				$scope.game.player.name = data.user.name;
 
 				// Only when both players are in the room can we start broadcasting the streams
-				if (data.start && $scope.peer.local.stream) {
+				if (data.start) {
 					$scope.peer.connection.createOffer(function (desc) {
 
 						$scope.peer.connection.setLocalDescription(desc);
@@ -449,15 +451,25 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		console.log('peer:receieve_candidate');
 		console.log(data.candidate);
 
-		// wait until the remote description is set
+		// wait until the remote description is set to use these
+		//$scope.peer.candidates.push(data.candidate);
 		$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 
 	});
 
 
-	socket.on('peer:receieve_offer', function (data) {
+	socket.on('peer:receive_offer', function (data) {
+
+		console.log('set remoite desc');
+		//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+
+		//if ($scope.peer.candidates.length > 0) {
+			//for (var i = 0; i < $scope.peer.candidates.length; i++) {console.log(i)
+				//$scope.peer.connection.addIceCandidate(new RTCIceCandidate($scope.peer.candidates[i]));
+			//}
+		//}
 
 		$scope.peer.connection.createAnswer(function () {
 			socket.emit('peer:send_answer', { 
@@ -475,7 +487,19 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	socket.on('peer:receieve_answer', function (data) {
 		console.log('peer:receieve_answer');
+
+		/*if (!$scope.peer.connected) {
+			if ($scope.peer.candidates.length > 0) {
+				$scope.peer.connected = true;
+				for (var i = 0; i < $scope.peer.candidates.length; i++) {
+					$scope.peer.connection.addIceCandidate(new RTCIceCandidate($scope.peer.candidates[i]));
+				}
+			}
+			
+		}*/
+
 		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+		
 		
 
 
