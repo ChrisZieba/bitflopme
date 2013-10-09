@@ -363,6 +363,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_offer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
+				console.log('\n\n\n\n\n\nreceive offer\n')
 				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 					sdp: data.sdp,
 				});

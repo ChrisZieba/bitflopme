@@ -177,6 +177,27 @@ app.directive('localVideo', ['socket', function (socket) {
 					localVideo.src = URL.createObjectURL(stream);
 					localVideo.play();
 					
+				
+					// Only when both players are in the room can we start broadcasting the streams
+					if (scope.game.ready) {
+						console.log('create offer')
+						scope.peer.connection.createOffer(function (desc) {
+
+							scope.peer.connection.setLocalDescription(desc);
+							console.log('send offer');
+							socket.emit('peer:send_offer', { 
+								room: GLOBAL.ROOM,
+								sdp: desc 
+							}, function (res) {
+								console.log(res);
+							});
+						}, null, {
+							'mandatory': {
+								'OfferToReceiveAudio':true, 
+								'OfferToReceiveVideo':true
+							}
+						});
+					}
 				}, function (error) {
 					alert(JSON.stringify(error));
 					return;
@@ -332,26 +353,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			if ($scope.game.player.id === -1) {
 				$scope.game.player.id = data.player.id;
 				$scope.game.player.name = data.user.name;
-
-				// Only when both players are in the room can we start broadcasting the streams
-				if (data.start) {
-					$scope.peer.connection.createOffer(function (desc) {
-
-						$scope.peer.connection.setLocalDescription(desc);
-
-						socket.emit('peer:send_offer', { 
-							room: GLOBAL.ROOM,
-							sdp: desc 
-						}, function (res) {
-							console.log(res);
-						});
-					}, null, {
-						'mandatory': {
-							'OfferToReceiveAudio':true, 
-							'OfferToReceiveVideo':true
-						}
-					});
-				}
+				$scope.game.ready = data.start;
 			} 
 		}
 
