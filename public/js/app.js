@@ -51,7 +51,7 @@ app.factory('socket', function($rootScope) {
 		}
 	}
 });
-
+/*
 app.factory('rtc', function($rootScope) {
 	function trace (text) {
 		console.log((performance.now() / 1000).toFixed(3) + ": " + text);
@@ -135,7 +135,7 @@ app.factory('rtc', function($rootScope) {
 			}
 		}
 	}
-});
+});*/
 
 app.directive('scrollGlue', function(){
 	return {
@@ -157,7 +157,7 @@ app.directive('scrollGlue', function(){
 	};
 });
 
-app.directive('localVideo', ['rtc', 'socket', function (rtc, socket) {
+app.directive('localVideo', ['socket', function (socket) {
 	return {
 		priority: 1,
 		restrict: 'A',
@@ -190,7 +190,7 @@ app.directive('localVideo', ['rtc', 'socket', function (rtc, socket) {
 	};
 }]);
 
-app.directive('remoteVideo', ['rtc', 'socket', function (rtc, socket) {
+app.directive('remoteVideo', ['socket', function (socket) {
 	return {
 		priority: 1,
 		restrict: 'A',
@@ -332,7 +332,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				$scope.game.player.name = data.user.name;
 
 				// Only when both players are in the room can we start broadcasting the streams
-				if (data.start) {
+				if (data.start && $scope.peer.local.stream) {
 					$scope.peer.connection.createOffer(function (desc) {
 
 						$scope.peer.connection.setLocalDescription(desc);
