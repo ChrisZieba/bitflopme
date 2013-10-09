@@ -69,17 +69,25 @@ app.factory('rtc', function($rootScope) {
 				trace('Using audio device: ' + scope.streams.local.stream.getAudioTracks()[0].label);
 			}
 
-			var servers = null;
+			var servers = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 
 			localPeerConnection = new RTCPeerConnection(servers);
+
+
 			trace("Created local peer connection object localPeerConnection");
-			localPeerConnection.onicecandidate = this.gotLocalIceCandidate;
+			localPeerConnection.onicecandidate = function (event) {
+				if (event.candidate) {
+					remotePeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
+					
+				}
+			}
 
 			remotePeerConnection = new RTCPeerConnection(servers);
 			trace("Created remote peer connection object remotePeerConnection");
 			remotePeerConnection.onicecandidate = this.gotRemoteIceCandidate;
 
 			remotePeerConnection.onaddstream = function (event) {
+				console.log(scope.streams)
 				var remoteVideo = scope.streams.remote.element;
 
 				remoteVideo.src = URL.createObjectURL(event.stream);
@@ -120,13 +128,6 @@ app.factory('rtc', function($rootScope) {
 			callButton.disabled = false;
 		},
 
-		gotLocalIceCandidate: function (event) {
-			if (event.candidate) {
-				remotePeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
-				trace("Local ICE candidate: \n" + event.candidate.candidate);
-			}
-		},
-
 		gotRemoteIceCandidate: function (event) {
 			if (event.candidate) {
 				localPeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
@@ -156,7 +157,7 @@ app.directive('scrollGlue', function(){
 	};
 });
 
-app.directive('localVideo', ['rtc', function(rtc){
+app.directive('localVideo', ['rtc', 'socket', function (rtc, socket) {
 	return {
 		priority: 1,
 		restrict: 'A',
@@ -165,54 +166,92 @@ app.directive('localVideo', ['rtc', function(rtc){
 			var localVideo = element[0];
 
 			// check if the video is visible
+			// the video becomes available when  aplayer sits
 			if (localVideo) {
 
-				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia || navigator.msGetUserMedia;
-				window.URL = window.URL || window.webkitURL;
+				var servers = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
+				scope.peer.connection = new RTCPeerConnection(servers);
 
-				function successCallback(stream) {
-					scope.streams.local = {
-						element: localVideo,
-						stream: stream
-					};
+				scope.peer.connection.onicecandidate = function (event) {
+					if (event.candidate) {
+console.log('onicecandidate')
+						socket.emit('peer:send_candidate', { 
+							room: GLOBAL.ROOM,
+							candidate: event.candidate 
+						}, function (res) {
+							console.log(res);
+						});
+						
+					}
+				};
 
-					attachMediaStream(localVideo, stream);
-					rtc.call(scope);
+				scope.peer.connection.onaddstream = function (event) {
+					if (remoteVideo) {
+						remoteVideo.src = URL.createObjectURL(event.stream);
+					}
+				};
+
+
+				getUserMedia({video: true, audio: false}, successCallback, function (error) {
+					alert(JSON.stringify(error));
+					return;
+				});
+
+				function successCallback (stream) {
+
+					scope.peer.local.stream = stream;
+					scope.peer.local.element = localVideo;
+
+					localVideo.src = URL.createObjectURL(stream);
+					localVideo.play();
+					
+					scope.peer.connection.addStream(stream);
+
+					scope.peer.connection.createOffer(function (desc) {
+
+						scope.peer.connection.setLocalDescription(desc);
+
+						socket.emit('peer:send_offer', { 
+							room: GLOBAL.ROOM,
+							sdp: desc 
+						}, function (res) {
+							console.log(res);
+						});
+					}, null, {
+						'mandatory': {
+							'OfferToReceiveAudio':true, 
+							'OfferToReceiveVideo':true
+						}
+					});
+
+
 
 				}
 
-				getUserMedia({video: true, audio: false}, successCallback, function (error) {
-					console.error('An error occurred: [CODE ' + JSON.stringify(error) + ']');
-					return;
-				});
 			}
 
 		}
 	};
 }]);
 
-app.directive('remoteVideo', ['rtc', function(rtc){
+app.directive('remoteVideo', ['rtc', 'socket', function (rtc, socket) {
 	return {
 		priority: 1,
 		restrict: 'A',
-		link: function(scope, element, attrs) {
+		link: function (scope, element, attrs) {
 			var remoteVideo = element[0];
 
-
-			if (remoteVideo) {
-				scope.streams.remote = {
-					element: remoteVideo
-				};
-			}
 		}
 	};
 }]);
 
+
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
-	$scope.streams = {
-		local: null,
-		remote: null
+	$scope.peer = {
+		connection: null,
+		local: {},
+		remote: {}
 	};
 
 	$scope.game = {
@@ -402,6 +441,39 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	socket.on('game:leave', function (data) {
 		$scope.game.history = data.history;
 	});
+
+
+	socket.on('peer:receive_candidate', function (data) {
+		console.log('peer:receieve_candidate');
+		$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
+
+	});
+
+
+	socket.on('peer:receieve_offer', function (data) {
+
+		$scope.peer.connection.createAnswer(function () {
+			socket.emit('peer:send_answer', { 
+				room: GLOBAL.ROOM,
+				sdp: data.sdp 
+			}, function (res) {
+				console.log(res);
+			});	
+		});
+
+
+
+
+	});
+
+	socket.on('peer:receieve_answer', function (data) {
+		console.log('peer:receieve_answer');
+		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+		
+
+
+	});
+
 
 	$scope.$on('$destroy', function (event) {
 		socket.destroy();

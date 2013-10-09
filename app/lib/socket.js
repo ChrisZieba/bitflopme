@@ -136,6 +136,7 @@ exports.listen = function (server, sessionStore, app) {
 					// this gets sent to everybody
 					io.sockets.in(data.room).emit('game:join', { 
 						uuid: Date.now(), 
+						room: data.room,
 						events: Games[data.room].events,
 						user: {
 							id: session.user.id,
@@ -208,6 +209,7 @@ console.log(JSON.stringify(io.sockets.manager.rooms));
 										console.log(JSON.stringify(Games[data.room].players[i].id));
 										io.sockets.in(data.room + ':' + Games[data.room].players[i].id).emit('player:data', { 
 											uuid: Date.now(), 
+											room: data.room,
 											events: Games[data.room].events,
 											round: round.shared,
 											player: {
@@ -312,6 +314,7 @@ console.log(JSON.stringify(io.sockets.manager.rooms));
 
 								io.sockets.in(data.room).emit('game:data', { 
 									uuid: Date.now(), 
+									room: data.room,
 									events: Games[data.room].events,
 									round: round.shared
 								});
@@ -351,6 +354,34 @@ console.log(JSON.stringify(io.sockets.manager.rooms));
 
 
 
+			});
+		});
+
+
+		socket.on('peer:send_offer', function (data, callback) {
+			socket.get('scope', function(err, scope) {
+				console.log('send:offer');
+				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
+					sdp: data.sdp,
+				});
+			});
+		});
+
+		socket.on('peer:send_candidate', function (data, callback) {
+			socket.get('scope', function(err, scope) {
+				console.log('send:candiate');
+				socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
+					candidate: data.candidate
+				});
+			});
+		});
+
+		socket.on('peer:send_answer', function (data, callback) {
+			socket.get('scope', function(err, scope) {
+				console.log('send:anser');
+				socket.broadcast.to(data.room).emit('peer:receive_answer', { 
+        			sdp: data.sdp
+				});
 			});
 		});
 
