@@ -133,10 +133,15 @@ exports.listen = function (server, sessionStore, app) {
 						Games[data.room].AddEvent('Dealer', '<strong>' + session.user.name + '</strong> is on the rail');
 					}
 
-					// this gets sent to everybody
+					// Are both players at the table and ready to play?
+					// wait until the socket connection is added to its room to check
+					var start = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
+
+					// this gets sent to every connection
 					io.sockets.in(data.room).emit('game:join', { 
 						uuid: Date.now(), 
 						room: data.room,
+						start: start,
 						events: Games[data.room].events,
 						user: {
 							id: session.user.id,
@@ -161,16 +166,14 @@ exports.listen = function (server, sessionStore, app) {
 					});
 
 
-console.log(JSON.stringify(game.players));
-console.log(JSON.stringify(io.sockets.manager.rooms));
 					//	Are both players sitting at the table?
-					if (helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players)) {
+					if (start) {
 						console.log('_________++++++++++++++++++++++++++++++++++++++++++_)+_+_+')
 						var rounds = game.rounds;
 						var round;
 
 						// has the game started?
-						if (!Games[data.room].state) {console.log('345345345_________++++++++++++++++++++++++++++++++++++++++++_)+_+_+')
+						if (!Games[data.room].state) {
 							//	The first player added  is index 0 on the player array
 							for (var i = 0; i < game.players.length; i++) {
 								// it is very important that we use the loop counter for the playerID
@@ -360,7 +363,7 @@ console.log(JSON.stringify(io.sockets.manager.rooms));
 
 		socket.on('peer:send_offer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('send:offer');
+				console.log('send:offer\n\n\n\n\n\n');
 				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 					sdp: data.sdp,
 				});

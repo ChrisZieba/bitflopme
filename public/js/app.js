@@ -169,64 +169,20 @@ app.directive('localVideo', ['rtc', 'socket', function (rtc, socket) {
 			// the video becomes available when  aplayer sits
 			if (localVideo) {
 
-				var servers = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
-				scope.peer.connection = new RTCPeerConnection(servers);
-
-				scope.peer.connection.onicecandidate = function (event) {
-					if (event.candidate) {
-console.log('onicecandidate')
-						socket.emit('peer:send_candidate', { 
-							room: GLOBAL.ROOM,
-							candidate: event.candidate 
-						}, function (res) {
-							console.log(res);
-						});
-						
-					}
-				};
-
-				scope.peer.connection.onaddstream = function (event) {
-					if (remoteVideo) {
-						remoteVideo.src = URL.createObjectURL(event.stream);
-					}
-				};
-
-
-				getUserMedia({video: true, audio: false}, successCallback, function (error) {
-					alert(JSON.stringify(error));
-					return;
-				});
-
-				function successCallback (stream) {
-
+				getUserMedia({video: true, audio: false}, function (stream) {
 					scope.peer.local.stream = stream;
 					scope.peer.local.element = localVideo;
+					scope.peer.connection.addStream(stream);
 
 					localVideo.src = URL.createObjectURL(stream);
 					localVideo.play();
 					
-					scope.peer.connection.addStream(stream);
-
-					scope.peer.connection.createOffer(function (desc) {
-
-						scope.peer.connection.setLocalDescription(desc);
-
-						socket.emit('peer:send_offer', { 
-							room: GLOBAL.ROOM,
-							sdp: desc 
-						}, function (res) {
-							console.log(res);
-						});
-					}, null, {
-						'mandatory': {
-							'OfferToReceiveAudio':true, 
-							'OfferToReceiveVideo':true
-						}
-					});
+				}, function (error) {
+					alert(JSON.stringify(error));
+					return;
+				});
 
 
-
-				}
 
 			}
 
@@ -239,7 +195,7 @@ app.directive('remoteVideo', ['rtc', 'socket', function (rtc, socket) {
 		priority: 1,
 		restrict: 'A',
 		link: function (scope, element, attrs) {
-			var remoteVideo = element[0];
+			scope.peer.remote.element = element[0];
 
 		}
 	};
@@ -248,8 +204,31 @@ app.directive('remoteVideo', ['rtc', 'socket', function (rtc, socket) {
 
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
+	var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
+
+	pc.onicecandidate = function (event) {
+		if (event.candidate) {
+
+			socket.emit('peer:send_candidate', { 
+				room: GLOBAL.ROOM,
+				candidate: event.candidate 
+			}, function (res) {
+				console.log(res);
+			});
+			
+		}
+	};
+
+	pc.onaddstream = function (event) {
+		if ($scope.peer.remote.element) {
+			$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
+			$scope.peer.remote.element.play();
+		}
+	};
+
+
 	$scope.peer = {
-		connection: null,
+		connection: pc,
 		local: {},
 		remote: {}
 	};
@@ -344,14 +323,37 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	});
 
 	socket.on('game:join', function (data) {
+
 		$scope.game.events = data.events;
 
 		if (data.player.id !== null) {
 			if ($scope.game.player.id === -1) {
 				$scope.game.player.id = data.player.id;
 				$scope.game.player.name = data.user.name;
+
+				// Only when both players are in the room can we start broadcasting the streams
+				if (data.start) {
+					$scope.peer.connection.createOffer(function (desc) {
+
+						$scope.peer.connection.setLocalDescription(desc);
+
+						socket.emit('peer:send_offer', { 
+							room: GLOBAL.ROOM,
+							sdp: desc 
+						}, function (res) {
+							console.log(res);
+						});
+					}, null, {
+						'mandatory': {
+							'OfferToReceiveAudio':true, 
+							'OfferToReceiveVideo':true
+						}
+					});
+				}
 			} 
 		}
+
+
 	});
 
 
@@ -445,12 +447,17 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	socket.on('peer:receive_candidate', function (data) {
 		console.log('peer:receieve_candidate');
+		console.log(data.candidate);
+
+		// wait until the remote description is set
 		$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 
 	});
 
 
 	socket.on('peer:receieve_offer', function (data) {
+
+		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 		$scope.peer.connection.createAnswer(function () {
 			socket.emit('peer:send_answer', { 
