@@ -451,7 +451,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	socket.on('peer:receive_candidate', function (data) {
 		console.log('peer:receieve_candidate');
-		console.log(data.candidate);
+		//console.log(data.candidate);
 
 		// wait until the remote description is set to use these
 		//$scope.peer.candidates.push(data.candidate);
@@ -473,7 +473,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			//}
 		//}
 
-		$scope.peer.connection.createAnswer(function () {
+		$scope.peer.connection.createAnswer($scope.peer.connection.remoteDescription, function (desc) {
+
+			$scope.peer.connection.setLocalDescription(desc);
+
 			socket.emit('peer:send_answer', { 
 				room: GLOBAL.ROOM,
 				sdp: data.sdp 
@@ -487,8 +490,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	});
 
-	socket.on('peer:receieve_answer', function (data) {
-		console.log('peer:receieve_answer');
+	socket.on('peer:receive_answer', function (data) {
+		console.log('peer:receive_answer');
 
 		/*if (!$scope.peer.connected) {
 			if ($scope.peer.candidates.length > 0) {

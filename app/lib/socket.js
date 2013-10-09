@@ -381,7 +381,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_answer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('send:anser');
+				console.log('send:anwser');
 				socket.broadcast.to(data.room).emit('peer:receive_answer', { 
         			sdp: data.sdp
 				});
