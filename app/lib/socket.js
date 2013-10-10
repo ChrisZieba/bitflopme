@@ -363,7 +363,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_offer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('\n\n\n\n\n\nreceive offer\n')
+				console.log('\nreceive offer\n')
 				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 					sdp: data.sdp,
 				});
@@ -372,7 +372,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_candidate', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('send:candiate');
+				console.log('\nreceive candidate\n')
 				socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
 					candidate: data.candidate
 				});
@@ -381,7 +381,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_answer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('send:anwser');
+				console.log('\nreceive answer\n')
 				socket.broadcast.to(data.room).emit('peer:receive_answer', { 
         			sdp: data.sdp
 				});

@@ -161,7 +161,7 @@ app.directive('localVideo', ['socket', function (socket) {
 	return {
 		priority: 1,
 		restrict: 'A',
-		link: function(scope, element, attrs) {
+		link: function (scope, element, attrs) {
 
 			var localVideo = element[0];
 
@@ -241,7 +241,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	};
 
 	pc.onaddstream = function (event) {
+		
 		if ($scope.peer.remote.element) {
+			console.log(event);
 			$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
 			$scope.peer.remote.element.play();
 		}
@@ -450,7 +452,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 
 	socket.on('peer:receive_candidate', function (data) {
-		console.log('peer:receieve_candidate');
+		console.log('peer:candidate has been received');
 		//console.log(data.candidate);
 
 		// wait until the remote description is set to use these
@@ -462,7 +464,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	socket.on('peer:receive_offer', function (data) {
 
-		console.log('set remoite desc');
+		console.log('peer:offer has been received');
 		//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
@@ -473,13 +475,13 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			//}
 		//}
 
-		$scope.peer.connection.createAnswer($scope.peer.connection.remoteDescription, function (desc) {
+		$scope.peer.connection.createAnswer(function (desc) {
 
 			$scope.peer.connection.setLocalDescription(desc);
 
 			socket.emit('peer:send_answer', { 
 				room: GLOBAL.ROOM,
-				sdp: data.sdp 
+				sdp: desc 
 			}, function (res) {
 				console.log(res);
 			});	
@@ -491,7 +493,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	});
 
 	socket.on('peer:receive_answer', function (data) {
-		console.log('peer:receive_answer');
+		console.log('peer:answer has been received');
 
 		/*if (!$scope.peer.connected) {
 			if ($scope.peer.candidates.length > 0) {
