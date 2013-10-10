@@ -520,16 +520,29 @@ module.exports = function (app) {
 			
 	});
 
-	// The middleware will check that the game exists
-	app.get('/about',  [middleware.refererURL], function (req, res) {
 
+	app.get('/about',  [middleware.refererURL], function (req, res) {
 		// 	Show the errors on the form
 		res.render('about.ejs', { 
 			title: 'bitflop.me',
 			user: res.locals.user
 		});
-		
-			
+	});
+
+	app.get('/faq',  [middleware.refererURL], function (req, res) {
+		// 	Show the errors on the form
+		res.render('faq.ejs', { 
+			title: 'bitflop.me',
+			user: res.locals.user
+		});
+	});
+
+	app.get('/contact',  [middleware.refererURL], function (req, res) {
+		// 	Show the errors on the form
+		res.render('contact.ejs', { 
+			title: 'bitflop.me',
+			user: res.locals.user
+		});
 	});
 
 	//keep this last!
