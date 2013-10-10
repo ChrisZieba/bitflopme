@@ -82,10 +82,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .jumbotron {
 
-	background-color: #eff2f3;
+	background-color: #2C3E50;
 
 	border-bottom: 1px solid #dddedf;
 
+}
+
+.jumbotron h1 {
+	font-size: 40px;
+}
+.jumbotron h1, .jumbotron h2, .jumbotron h3 {
+	color: #d3d7db;
 }
 .jumbotron .btn {
 	margin-top: 10px;
@@ -102,8 +109,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     vertical-align: middle;
 }
 
+
 .jumbotron p {
-	color: #333333;
+	color: #b8c0c8;
+	font-size:90%;
 }
 
 /* Wrapper for page content to push down footer */
@@ -156,7 +165,7 @@ code {
 }
 
 .navbar-default {
-	background-color: #272E33;
+	background-color: #1a2836;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
 	border-color: #999;
 	border-width: 0;
@@ -219,18 +228,16 @@ code {
 }
 
 
-.sub {
-	color: #999;
-}
-
 .sub h1 {
 	
 	padding-top: 36px;
 	font-size: 42px;
 	font-weight: 400;
+	color: #d3d7db;
 }
 
 .sub p {
 	font-size: 16px;
 	overflow: hidden;
+	color:#b8c0c8;
 }
