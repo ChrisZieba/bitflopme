@@ -151,12 +151,12 @@ module.exports = function (app) {
 		req.check('registerUsername', 'The username is required.').notEmpty().len(2,15).isAlphanumeric();
 		req.check('registerPassword', 'The password is required.').notEmpty().len(6,55);
 		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
-		req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
+		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
 		req.sanitize('registerUsername');
 		req.sanitize('registerPassword');
 		req.sanitize('registerPasswordConfirm');
-		req.sanitize('registerTerms');
+		//req.sanitize('registerTerms');
 
 		if (req.param('registerEmail')) {
 			req.check('registerEmail').isEmail();

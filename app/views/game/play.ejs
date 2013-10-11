@@ -46,16 +46,17 @@
 
 				<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 
-					<div class="settings">
-						
-						<p>By clicking join below you agree to out terms and conditions</p>
-						<p><strong>Rules</strong> </p>
+					<div class="rules">
 						<ol><li>Crawl down deep inside</li></ol>
 					</div>
 
 
 					<% if (join) { %>
 
+						<div class="disclaimer">
+							
+							<p>By clicking join below you agree to out terms and conditions</p>
+						</div>
 						<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
 							<input type="hidden" name="_csrf" value="<%= token %>"/>
 							<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Sit Down" />

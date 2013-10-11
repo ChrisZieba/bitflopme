@@ -4,7 +4,6 @@
 <div class="jumbotron sub">
 	<div class="container">
 		<h1>Register</h1>
-		<p>All it takes is a username and password.</p>
 	</div>
 	
 </div>
@@ -19,9 +18,7 @@
 				<div class="col-sm-12">  
 					<form role="form" method="post" action="/register" class="well">
 
-						
-						
-						<div class="form-group"><input type="hidden" name="_csrf" value="<%= token %>"/></div>
+						<input type="hidden" name="_csrf" value="<%= token %>"/>
 						
 						<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
 							<label>Username</label>
@@ -55,17 +52,6 @@
 							<% } %>
 						</div>
 
-						<div class="form-group <% if (errors.registerTerms) { %>has-error<% } %>">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="registerTerms"> A agree to the terms & conditions
-								</label>
-							</div>
-							<% if (errors.registerTerms) { %>
-								<div class="alert alert-danger"><p><%= errors.registerTerms.msg %></p></div>
-							<% } %>
-						</div>
-
 						<div class="form-group">
 							<input type="submit" class="btn btn-block btn-success mg-top-bot-5" value="Register" />
 						</div>
@@ -84,27 +70,20 @@
 		</div>
 
 		<div class="col-sm-8">  
-			<h3>A playing experience like no other!</h3>
-			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
-
-			<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+			<h3>Why Do I Need to Register?</h3>
+			<p>BitFlop.me needs a unique username when you enter the website so we can retrieve any stored games, your player points, and any custom game data you may have entered. Otherwise you would have to enter this information each time you visited BitFlop.me. We need a password to use with your username so only you can view data that you have entered. <strong>A username and a password is the only information that is required to use BitFlop.me</strong>.</p>
 
 			<div class="row">
 				<div class="col-sm-6">  
 
-					<h4>No email required</h4>
+					<h4>No Email Required</h4>
 
-					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
-
-					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+					<p>To register for BitFlop.me, all you need is a unique username and a password. If you do choose to enter your email, we will only use it for password recovery.</p>
 				</div>
 				<div class="col-sm-6">  
 
-					<h4>BitCoin</h4>
-
-					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
-
-					<p>If you're using sessions, you can just add that reg_error object to the req.session object before your redirect. Then it will be available on the req.session object when you're loading the previous page.</p>
+					<h4>Privacy Philosophy</h4>
+					<p>We limit data collected about you and your use of the platform, and we never disclose it for any other reason unless required by law. Please read our <a href="/privacy">Privacy Policy</a> if you would like more information.</p>
 				</div>
 			</div>
 		</div>

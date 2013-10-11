@@ -168,7 +168,6 @@ exports.listen = function (server, sessionStore, app) {
 
 					//	Are both players sitting at the table?
 					if (start) {
-						console.log('_________++++++++++++++++++++++++++++++++++++++++++_)+_+_+')
 						var rounds = game.rounds;
 						var round;
 
@@ -226,18 +225,6 @@ exports.listen = function (server, sessionStore, app) {
 										});
 									}
 								}
-
-								// 	Tell the non-players
-								//io.sockets.in(data.room + '::').emit('railbird:data', { 
-									//uuid: Date.now(), 
-									//events: Games[data.room].events,
-									//round: round.shared
-								//});
-							
-							
-
-
-
 						});
 
 					} 
@@ -264,6 +251,7 @@ exports.listen = function (server, sessionStore, app) {
 
 					//	This is null if the socket is not a player
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
+					var ready = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
 					var intervalID, intervalMS = 1000;
 
 					if (!Games.hasOwnProperty(data.room)) {
@@ -278,7 +266,7 @@ exports.listen = function (server, sessionStore, app) {
 					}
 
 					//	Are both players sitting at the table?
-					if (helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players)) {
+					if (ready) {
 						switch (data.action.name) {
 							case 'BET':
 								Games[data.room].players[playerID].Bet(data.action.amount);
@@ -338,7 +326,7 @@ exports.listen = function (server, sessionStore, app) {
 								// That means showing the rest of the board, one card at a time
 								if (Games[data.room].checkForEndOfRound() && Games[data.room].getState() !== 'END') {
 
-									if (Games[data.room].getState() === 'SHOWDOWN') {
+									if (Games[data.room].getState() === 'RIVER') {
 										intervalMS = 5000;
 									}
 									Games[data.room].Progress();
@@ -363,7 +351,6 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_offer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('\nreceive offer\n')
 				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 					sdp: data.sdp,
 				});
@@ -372,7 +359,6 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_candidate', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('\nreceive candidate\n')
 				socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
 					candidate: data.candidate
 				});
@@ -381,7 +367,6 @@ exports.listen = function (server, sessionStore, app) {
 
 		socket.on('peer:send_answer', function (data, callback) {
 			socket.get('scope', function(err, scope) {
-				console.log('\nreceive answer\n')
 				socket.broadcast.to(data.room).emit('peer:receive_answer', { 
         			sdp: data.sdp
 				});

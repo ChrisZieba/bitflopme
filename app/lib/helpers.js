@@ -42,6 +42,9 @@ exports.isGameReady = function (room, rooms, players) {
 	if (players.length === 2) {
 		//	Check if every player has a room, and at least one connection in it
 		for (var i = 0; i < players.length; i++) {
+			// when a new player joins a room, it is given the index of
+			// the players array in the game database record
+			// that is why it is ok to use i below 
 			var pr = '/' + room + ':' + i;
 
 			if (rooms.hasOwnProperty(pr)) {
@@ -55,6 +58,28 @@ exports.isGameReady = function (room, rooms, players) {
 	} else {
 		gameReady = false;
 	}
+
+
+	return gameReady;
+};
+
+exports.getSeatedPlayers = function (room, rooms, players) {
+
+	var seatedPlayers = [];
+
+	for (var i = 0; i < players.length; i++) {
+		var pr = '/' + room + ':' + i;
+
+		if (rooms.hasOwnProperty(pr)) {
+			if (rooms[pr].length > 0) {
+				seatedPlayers.push({
+					id: players[i].id,
+					name: players[i].name
+				});
+			}
+		}
+	}
+
 
 
 	return gameReady;
