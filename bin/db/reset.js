@@ -54,6 +54,7 @@ db.games.insert({
     "players" : [
         {
             "name" : "ziebac",
+            // this is the userID from the database, not the playerID given when a game is started
             "id" : 1
         }
     ],

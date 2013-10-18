@@ -4,9 +4,9 @@
 html,
 body {
 	height: 100%;
-	background-image: url('/img/grain.png');
+	/*background-image: url('/img/grain.png')*/;
 	background-repeat: repeat;
-	background-color: #272E33;
+	background-color: #181818;
 }
 
 ::-webkit-scrollbar {
@@ -77,6 +77,13 @@ code {
   margin: 0 auto -60px;
   /* Pad bottom by footer height */
   padding: 15px 15px;
+
+}
+
+.alert-notify {
+	color:#FCFCA2;
+	background-color: #222222;
+	border-color:#111111;
 
 }
 
@@ -156,7 +163,7 @@ code {
 	border-style:solid;
 	border-color: transparent;
 
-	background-color: #272E33;
+
 
 }
 
@@ -165,7 +172,7 @@ code {
 .player {
 
 
-
+	height: 100%;
 
 	border-width: 4px;
 	border-style:solid;
@@ -180,7 +187,7 @@ code {
 
 
 	height: 100%;
-	max-height: 400px;
+
 	border-width: 4px;
 	border-style:solid;
 	border-color: transparent;

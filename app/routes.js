@@ -368,7 +368,7 @@ module.exports = function (app) {
 
 	app.post('/game/new', [middleware.refererURL, middleware.validateUser], function (req, res) {
 		// validate the input that came from the form\
-		req.check('tableName', 'The table name is required').notEmpty().notNull().len(1,25).isAlphanumeric();
+		req.check('tableName', 'The table name is required and must contain only letter and numbers, and cannot contain more than 25 characters.').notEmpty().notNull().len(1,25).isAlphanumeric();
 		//req.check('private', 'The game security code is required');
 		req.sanitize('tableName');
 		//req.sanitize('private');
@@ -541,6 +541,14 @@ module.exports = function (app) {
 		// 	Show the errors on the form
 		res.render('contact.ejs', { 
 			title: 'bitflop.me',
+			user: res.locals.user
+		});
+	});
+
+	app.get('/roadmap',  [middleware.refererURL], function (req, res) {
+		// 	Show the errors on the form
+		res.render('roadmap.ejs', { 
+			title: 'Bitflop.me',
 			user: res.locals.user
 		});
 	});

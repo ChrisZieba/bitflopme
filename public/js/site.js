@@ -3,40 +3,42 @@ var site = angular.module('site', []);
 
 
 site.directive('dropdownToggle', ['$document', function ($document) {
-  var openElement = null,
-      closeMenu   = angular.noop;
-  return {
-    restrict: 'CA',
-    link: function(scope, element, attrs) {
-      //scope.$watch('$location.path', function() { closeMenu(); });
-      element.parent().bind('click', function() { closeMenu(); });
-      element.bind('click', function (event) {
+	var openElement = null,
+		closeMenu   = angular.noop;
 
-        var elementWasOpen = (element === openElement);
+	return {
+		restrict: 'CA',
+		link: function(scope, element, attrs) {
+			//scope.$watch('$location.path', function() { closeMenu(); });
+			element.parent().bind('click', function() { closeMenu(); });
+			element.bind('click', function (event) {
 
-        event.preventDefault();
-        event.stopPropagation();
+				var elementWasOpen = (element === openElement);
 
-        if (!!openElement) {
-          closeMenu();
-        }
+				event.preventDefault();
+				event.stopPropagation();
 
-        if (!elementWasOpen) {
-          element.parent().addClass('open');
-          openElement = element;
-          closeMenu = function (event) {
-            if (event) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
-            $document.unbind('click', closeMenu);
-            element.parent().removeClass('open');
-            closeMenu = angular.noop;
-            openElement = null;
-          };
-          $document.bind('click', closeMenu);
-        }
-      });
-    }
-  };
+				if (!!openElement) {
+					closeMenu();
+				}
+
+				if (!elementWasOpen) {
+					element.parent().addClass('open');
+					openElement = element;
+					closeMenu = function (event) {
+						if (event) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+						$document.unbind('click', closeMenu);
+						element.parent().removeClass('open');
+						closeMenu = angular.noop;
+						openElement = null;
+					};
+					$document.bind('click', closeMenu);
+				}
+			});
+		}
+	};
 }]);
+

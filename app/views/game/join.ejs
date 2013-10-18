@@ -3,7 +3,6 @@
 <div class="jumbotron sub">
 	<div class="container">
 		<h1>Join a Game</h1>
-		<p><em>You can also start your own game</em></p>
 	</div>
 	
 </div>
@@ -34,23 +33,32 @@
 						<td><%= games[i].name %></td>
 						<td><%= games[i].creator.name %></td>
 						<td>
-							
+
 							<table class="table table-condensed table-bordered table-striped">
 								<tbody>
 									<tr>
 										<td>Buy In</td>
-										<td><%= games[i].settings.maxBuyIn %></td>
+										<td><%= games[i].settings.maxBuyIn %> chips</td>
 									</tr>
 									<tr>
 										<td>Small Blind</td>
-										<td><%= games[i].settings.smallBlind %></td>
+										<td><%= games[i].settings.smallBlind %> chips</td>
 									</tr>
 									<tr>
 										<td>Big Blind</td>
-										<td><%= games[i].settings.bigBlind %></td>
+										<td><%= games[i].settings.bigBlind %> chips</td>
+									</tr>
+									<tr>
+										<td>Timer</td>
+										<td>30 seconds</td>
+									</tr>
+									<tr>
+										<td>Round</td>
+										<td>15 minutes</td>
 									</tr>
 								</tbody>
 							</table>
+
 						</td>
 						<td>
 							<a href="/game/play/<%= games[i].name %>" class="btn btn-block btn-warning">Join this Game</a>

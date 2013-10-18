@@ -78,6 +78,7 @@ function Log (id, game) {
 
 Game.prototype.Start = function () {
 
+	this.state = 'START'
 	this.AddEvent('Dealer', 'Start Game');
 	this.NewRound();
 };

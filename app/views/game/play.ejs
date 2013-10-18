@@ -34,32 +34,83 @@
 
 
 	<body>
-		<div class="navbar navbar-inverse">
 
-	    </div>
 
 		<!-- Wrap all page content here -->
 		<div id="game" ng-controller="GameCtrl">
+			<div class="row">
 
+
+				<div ng-switch="game.action.state" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<div ng-switch-when="null">
+						<div class="alert alert-notify">
+							
+							<div>
+								<span><strong>Waiting for another player ...</strong></span>
+								<span class="">https://bitflop.me/game/play/<%= room.name %></span>
+								<span>Copy</span>
+							</div>
+						</div>
+					</div>
+
+					<div ng-switch-default>
+						<ul>
+							<li class="dropdown">
+								<div class="btn-group">
+									<a type="button" href="/account" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a>
+									<button type="button" class="btn btn-default btn-sm dropdown-toggle">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li><a href="/account">My Games</a></li>
+										<li class="divider"></li>
+										<li><a href="/game/new">Start a new game</a></li>
+										<li><a href="/game/join">Join a game</a></li>
+										<li class="divider"></li>
+										<li><a href="/logout">Logout</a></li>
+									</ul>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
 
 			<div class="row">
 
 				<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 
-					<div class="rules">
+					<div class="side-players">
+						<p><strong>Players in Room</strong></p>
+						<ul>
+							<li ng-repeat="player in room.players">
+								<span>{{ player.name }}</span>
+							</li>
+							<li ng-cloak ng-hide="room.players.length">None</li>
+						</ul>
+					</div>
+
+					<div class="side-railbirds">
+						<p><strong>Obervers in Room</strong></p>
+						<ul>
+							<li ng-repeat="observer in room.observers">
+								<span>{{ observer.name }}</span>
+							</li>
+							<li ng-cloak ng-hide="room.observers.length">None</li>
+						</ul>
+					</div>
+
+					<div class="side-rules">
 						<ol><li>Crawl down deep inside</li></ol>
 					</div>
 
 
 					<% if (join) { %>
 
-						<div class="disclaimer">
-							
-							<p>By clicking join below you agree to out terms and conditions</p>
-						</div>
 						<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
 							<input type="hidden" name="_csrf" value="<%= token %>"/>
-							<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Sit Down" />
+							<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Play" />
 						</form>
 					<% } %>
 
@@ -77,7 +128,8 @@
 
 								<div ng-switch="game.opponent.name" class="col-md-12 opp-player-co">
 									<div ng-switch-when="null">
-										<span class="player-name">Waiting for opponent ...</span> 
+										<!--<span class="player-name">Waiting for opponent ...</span>-->
+										<span></span> 
 									</div>
 
 									<div ng-switch-default>
@@ -104,8 +156,8 @@
 
 										</div>
 
-										<div class="opp-player-bet bet" ng-cloak ng-show="game.opponent.action != null && game.action.state != null">
-											<span class="player-action" ng-cloak ng-show="game.opponent.action != null">{{ game.opponent.action}}</span>
+										<div class="opp-player-bet bet" ng-cloak ng-show="game.action.state != null">
+											<!--<span class="player-action" ng-cloak ng-show="game.opponent.action != null">{{ game.opponent.action}}</span>-->
 											<span class="player-action" ng-cloak ng-show="game.opponent.bets != 0">{{game.opponent.bets}}</span>
 										</div>
 										
@@ -146,8 +198,8 @@
 										</div>
 									</div>
 
-									<div class="opp-player-bet bet" ng-cloak ng-show="game.player.action != null && game.action.state != null">
-										<span class="player-action" ng-cloak ng-show="game.player.action != null">{{ game.player.action }}</span>
+									<div class="opp-player-bet bet" ng-cloak ng-show="game.action.state != null">
+										<!--<span class="player-action" ng-cloak ng-show="game.player.action != null">{{ game.player.action }}</span>-->
 										<span class="player-action" ng-cloak ng-show="game.player.bets != 0">{{ game.player.bets }}</span>
 									</div>
 

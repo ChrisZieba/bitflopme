@@ -63,27 +63,50 @@ exports.isGameReady = function (room, rooms, players) {
 	return gameReady;
 };
 
-exports.getSeatedPlayers = function (room, rooms, players) {
+exports.removeUserFromRoom = function (userID, users) {
+console.log(userID);
+console.log(users)
+	var users = [];
 
-	var seatedPlayers = [];
-
-	for (var i = 0; i < players.length; i++) {
-		var pr = '/' + room + ':' + i;
-
-		if (rooms.hasOwnProperty(pr)) {
-			if (rooms[pr].length > 0) {
-				seatedPlayers.push({
-					id: players[i].id,
-					name: players[i].name
-				});
-			}
+	for (var i = 0; i < users.length; i++) {
+		if (users[i].id !== userID) {
+			users.push(users[i]);
 		}
 	}
 
+	return users;
 
-
-	return gameReady;
 };
+
+
+// Return an array of players currently at the table
+// Players is an array from the database
+/* creator is the player who started the game
+exports.getPlayersInRoom = function (room, rooms, players, creator) {
+
+	var playersInRoom = [];
+
+	//	Check if every player has a room, and at least one connection in it
+	for (var i = 0; i < players.length; i++) {
+		// when a new player joins a room, it is given the index of
+		// the players array in the game database record
+		// that is why it is ok to use i below 
+		var pr = '/' + room + ':' + i;
+
+		if (rooms.hasOwnProperty(pr)) {
+			playersInRoom.push({
+				id: i,
+				name: players[i].name,
+				creator: (creator.id === players[i].id) 
+			});
+		}
+	}
+
+console.log(rooms);
+
+	return playersInRoom;
+};
+*/
 
 // If the second arg is not supplied build a new object, otherwise add to it
 exports.buildRoundObject = function (game, obj) {

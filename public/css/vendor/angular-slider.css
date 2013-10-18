@@ -2,7 +2,7 @@ slider {
   display: inline-block;
   position: relative;
   height: 10px;
-  width: 100%;
+  width: 99%;
   margin: 25px 5px 25px 5px;
   vertical-align: middle;
 }
@@ -40,9 +40,9 @@ slider span.pointer {
   cursor: pointer;
   width: 20px;
   height: 20px;
-  top: -8px;
-  background-color: #e6e6e6;
-  border: 1px solid #D3D3D3;
+  top: -5px;
+  background-color: #DADADA;
+  border: 1px solid #999;
   z-index: 2;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -69,7 +69,11 @@ slider span.bubble {
   top: -22px;
   padding: 1px 3px 1px 3px;
   font-size: 0.7em;
-  font-family: sans-serif;
+  -webkit-border-radius: 2px;
+  -moz-border-radius:2px;
+  border-radius:2px;
+  background-color: #000;
+  color:#fff;
 }
 slider span.bubble.selection {
   top: 15px;

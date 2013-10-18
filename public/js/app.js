@@ -249,6 +249,50 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		}
 	};
 
+	var playerOptions = {
+		'BET': {
+			allowed: false,
+			min:0,
+			max:0,
+			amount:0
+		},
+		'RAISE': {
+			allowed: false,
+			min:0,
+			max:0,
+			amount:0
+		},
+		'CALL': {
+			allowed: false,
+			amount:0
+		},
+		'FOLD': {
+			allowed: false
+		}
+	};
+
+
+	function setGameData (player, opponent) {
+		$scope.game.player.chips = player.chips;
+		$scope.game.player.action = player.action;
+		$scope.game.player.folded = player.folded;
+		$scope.game.player.allIn = player.allIn;
+		$scope.game.player.acted = player.acted;
+		$scope.game.player.blind = player.blind;
+		$scope.game.player.bets = player.bets;
+		$scope.game.player.out = player.out;
+		$scope.game.player.options = player.options;
+
+		$scope.game.opponent.chips = opponent.chips;
+		$scope.game.opponent.action = opponent.action;
+		$scope.game.opponent.folded = opponent.folded;
+		$scope.game.opponent.allIn = opponent.allIn;
+		$scope.game.opponent.acted = opponent.acted;
+		$scope.game.opponent.blind = opponent.blind;
+		$scope.game.opponent.bets = opponent.bets;
+		$scope.game.opponent.out = opponent.out;
+		$scope.game.opponent.options = opponent.options;
+	}
 
 	$scope.peer = {
 		connection: pc,
@@ -258,8 +302,14 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		connected: false
 	};
 
+	$scope.room = {
+		id: -1,
+		players: [],
+		observers: []
+	};
+
 	$scope.game = {
-		state: null,
+		//state: null,
 		//	Only player specific data will fill these variables
 		player: {
 			// this is -1 becuase if it was null it would eqaul the turn on the start of the game, 
@@ -268,27 +318,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			name: null,
 			chips: null,
 			cards: [],
-			options: {
-				'BET': {
-					allowed: false,
-					min:0,
-					max:0,
-					amount:0
-				},
-				'RAISE': {
-					allowed: false,
-					min:0,
-					max:0,
-					amount:0
-				},
-				'CALL': {
-					allowed: false,
-					amount:0
-				},
-				'FOLD': {
-					allowed: false
-				}
-			},
+			options: playerOptions,
 			time: null
 		},
 		opponent: {
@@ -317,6 +347,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 		var action = {};
 		action.name = name;
+
+		$scope.game.action.turn = null;
+		$scope.game.options = playerOptions;
 
 		switch (action.name) {
 			case 'BET':
@@ -347,9 +380,11 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		
 	});
 
-	socket.on('game:join', function (data) {
 
+	socket.on('game:join', function (data) {
+console.log(data);
 		$scope.game.events = data.events;
+		$scope.room.players = data.room.players;
 
 		if (data.player.id !== null) {
 			if ($scope.game.player.id === -1) {
@@ -374,29 +409,13 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		var opponent = $scope.game.action.players[data.opponent.id];
 
 		$scope.game.player.cards = data.player.cards;
-		$scope.game.player.chips = player.chips;
-		$scope.game.player.action = player.action;
-		$scope.game.player.folded = player.folded;
-		$scope.game.player.allIn = player.allIn;
-		$scope.game.player.acted = player.acted;
-		$scope.game.player.blind = player.blind;
-		$scope.game.player.bets = player.bets;
-		$scope.game.player.out = player.out;
-		$scope.game.player.options = player.options;
 
+		// this gets set once
 		$scope.game.opponent.id = opponent.id;
 		$scope.game.opponent.name = opponent.name;
 		$scope.game.opponent.cards = opponent.cards;
-		$scope.game.opponent.chips = opponent.chips;
-		$scope.game.opponent.action = opponent.action;
-		$scope.game.opponent.folded = opponent.folded;
-		$scope.game.opponent.allIn = opponent.allIn;
-		$scope.game.opponent.acted = opponent.acted;
-		$scope.game.opponent.blind = opponent.blind;
-		$scope.game.opponent.bets = opponent.bets;
-		$scope.game.opponent.out = opponent.out;
-		$scope.game.opponent.options = opponent.options;
 
+		setGameData(player, opponent);
 		
 	});
 
@@ -405,31 +424,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.game.events = data.events;
 		$scope.game.action = data.round.actions[data.round.actions.length-1];
 
-
-
 		var player = $scope.game.action.players[$scope.game.player.id];
 		var opponent = $scope.game.action.players[$scope.game.opponent.id];
 
-		$scope.game.player.chips = player.chips;
-		$scope.game.player.action = player.action;
-		$scope.game.player.folded = player.folded;
-		$scope.game.player.allIn = player.allIn;
-		$scope.game.player.acted = player.acted;
-		$scope.game.player.blind = player.blind;
-		$scope.game.player.bets = player.bets;
-		$scope.game.player.out = player.out;
-		$scope.game.player.options = player.options;
-
-
-		$scope.game.opponent.chips = opponent.chips;
-		$scope.game.opponent.action = opponent.action;
-		$scope.game.opponent.folded = opponent.folded;
-		$scope.game.opponent.allIn = opponent.allIn;
-		$scope.game.opponent.acted = opponent.acted;
-		$scope.game.opponent.blind = opponent.blind;
-		$scope.game.opponent.bets = opponent.bets;
-		$scope.game.opponent.out = opponent.out;
-		$scope.game.opponent.options = opponent.options;
+		setGameData(player, opponent);
 		
 		console.log(data);
 		
