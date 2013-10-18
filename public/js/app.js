@@ -177,8 +177,9 @@ app.directive('localVideo', ['socket', function (socket) {
 					localVideo.src = URL.createObjectURL(stream);
 					localVideo.play();
 					
-				
+					console.log('is the game ready:'+scope.game.ready)
 					// Only when both players are in the room can we start broadcasting the streams
+					// this will be initiated by the second player who joins
 					if (scope.game.ready) {
 						console.log('create offer')
 						scope.peer.connection.createOffer(function (desc) {
@@ -199,7 +200,8 @@ app.directive('localVideo', ['socket', function (socket) {
 						});
 					}
 				}, function (error) {
-					alert(JSON.stringify(error));
+					alert('There was an error.');
+					console.log(JSON.stringify(error));
 					return;
 				});
 
@@ -310,6 +312,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	$scope.game = {
 		//state: null,
+		ready: false,
 		//	Only player specific data will fill these variables
 		player: {
 			// this is -1 becuase if it was null it would eqaul the turn on the start of the game, 
@@ -385,6 +388,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 console.log(data);
 		$scope.game.events = data.events;
 		$scope.room.players = data.room.players;
+		$scope.room.opponents = data.room.opponents;
 
 		if (data.player.id !== null) {
 			if ($scope.game.player.id === -1) {
