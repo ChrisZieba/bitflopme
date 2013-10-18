@@ -177,28 +177,7 @@ app.directive('localVideo', ['socket', function (socket) {
 					localVideo.src = URL.createObjectURL(stream);
 					localVideo.play();
 					
-					console.log('is the game ready:'+scope.game.ready)
-					// Only when both players are in the room can we start broadcasting the streams
-					// this will be initiated by the second player who joins
-					if (scope.game.ready) {
-						console.log('create offer')
-						scope.peer.connection.createOffer(function (desc) {
 
-							scope.peer.connection.setLocalDescription(desc);
-							console.log('send offer');
-							socket.emit('peer:send_offer', { 
-								room: GLOBAL.ROOM,
-								sdp: desc 
-							}, function (res) {
-								console.log(res);
-							});
-						}, null, {
-							'mandatory': {
-								'OfferToReceiveAudio':true, 
-								'OfferToReceiveVideo':true
-							}
-						});
-					}
 				}, function (error) {
 					alert('There was an error.');
 					console.log(JSON.stringify(error));
@@ -396,6 +375,29 @@ console.log(data);
 				$scope.game.player.name = data.user.name;
 				$scope.game.ready = data.start;
 			} 
+		}
+
+		//console.log('is the game ready:'+scope.game.ready)
+		// Only when both players are in the room can we start broadcasting the streams
+		// this will be initiated by the second player who joins
+		if (scope.game.ready) {
+			console.log('create offer')
+			scope.peer.connection.createOffer(function (desc) {
+
+				scope.peer.connection.setLocalDescription(desc);
+				console.log('send offer');
+				socket.emit('peer:send_offer', { 
+					room: GLOBAL.ROOM,
+					sdp: desc 
+				}, function (res) {
+					console.log(res);
+				});
+			}, null, {
+				'mandatory': {
+					'OfferToReceiveAudio':true, 
+					'OfferToReceiveVideo':true
+				}
+			});
 		}
 
 
