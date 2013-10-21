@@ -13,41 +13,6 @@ body {
   display: none !important;
 }
 
-@font-face {
-    font-family: 'Proxima_Nova_Regular';
-    src: url('../font/proxima_novaregular/proximanova-regular-webfont.eot');
-    src: url('../font/proxima_novaregular/proximanova-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/proxima_novaregular/proximanova-regular-webfont.woff') format('woff'),
-         url('../font/proxima_novaregular/proximanova-regular-webfont.ttf') format('truetype'),
-         url('../font/proxima_novaregular/proximanova-regular-webfont.svg#proxima_novaregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'Proxima_Nova_Semi_Bold';
-    src: url('../font/proxima_novasemibold/proximanova-semi-webfont.eot');
-    src: url('../font/proxima_novasemibold/proximanova-semi-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/proxima_novasemibold/proximanova-semi-webfont.woff') format('woff'),
-         url('../font/proxima_novasemibold/proximanova-semi-webfont.ttf') format('truetype'),
-         url('../font/proxima_novasemibold/proximanova-semi-webfont.svg#proxima_novasemibold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'Proxima_Nova_Bold';
-    src: url('../font/proxima_novabold/proximanova-bold-webfont.eot');
-    src: url('../font/proxima_novabold/proximanova-bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/proxima_novabold/proximanova-bold-webfont.woff') format('woff'),
-         url('../font/proxima_novabold/proximanova-bold-webfont.ttf') format('truetype'),
-         url('../font/proxima_novabold/proximanova-bold-webfont.svg#proxima_novabold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
 
 @font-face {
     font-family: 'bikobold';
@@ -235,7 +200,7 @@ code {
 }
 
 #wrap .navbar-default .navbar-nav > li > a.action {
-	padding-top: 10px;
+	padding-top: 8px;
 }
 
 #wrap .navbar > .container .navbar-brand {
@@ -248,7 +213,7 @@ code {
 }
 
 .btn-group {
-	padding-top:10px;
+	padding-top:8px;
 }
 
 .col-bg-1 {

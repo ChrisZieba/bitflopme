@@ -43,8 +43,8 @@
 							<% if (user.authenticated) { %>
 								<li class="dropdown">
 									<div class="btn-group">
-										<a type="button" href="/account" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a>
-										<button type="button" class="btn btn-default btn-sm dropdown-toggle">
+										<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a>
+										<button type="button" class="btn btn-default btn-md dropdown-toggle">
 											<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
@@ -59,7 +59,7 @@
 								</li>
 							<% } else { %>
 								<li><a href="/login">Login</a></li>
-								<li><a href="/register" class="action"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-log-in"></span> Register</button></a></li>
+								<li><a href="/register" class="action"><button type="button" class="btn btn-default btn-md"><span class="glyphicon glyphicon-log-in"></span> Register</button></a></li>
 							<% } %>
 						</ul>
 					</div><!--/.nav-collapse -->

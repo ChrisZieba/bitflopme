@@ -177,7 +177,9 @@ app.directive('localVideo', ['socket', function (socket) {
 					localVideo.src = URL.createObjectURL(stream);
 					localVideo.play();
 					
-
+					if (scope.game.ready) {
+						scope.initPeerConnection();
+					}
 				}, function (error) {
 					alert('There was an error.');
 					console.log(JSON.stringify(error));
@@ -230,6 +232,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		}
 	};
 
+
+
 	var playerOptions = {
 		'BET': {
 			allowed: false,
@@ -252,6 +256,31 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		}
 	};
 
+	// this gets called when both players are ready and have their webcams on
+	$scope.initPeerConnection = function () {
+		//console.log('is the game ready:'+scope.game.ready)
+		// Only when both players are in the room can we start broadcasting the streams
+		// this will be initiated by the second player who joins
+
+		console.log('create offer')
+		$scope.peer.connection.createOffer(function (desc) {
+
+			$scope.peer.connection.setLocalDescription(desc);
+			console.log('send offer');
+			socket.emit('peer:send_offer', { 
+				room: GLOBAL.ROOM,
+				sdp: desc 
+			}, function (res) {
+				console.log(res);
+			});
+		}, null, {
+			'mandatory': {
+				'OfferToReceiveAudio':true, 
+				'OfferToReceiveVideo':true
+			}
+		});
+
+	};
 
 	function setGameData (player, opponent) {
 		$scope.game.player.chips = player.chips;
@@ -381,23 +410,7 @@ console.log(data);
 		// Only when both players are in the room can we start broadcasting the streams
 		// this will be initiated by the second player who joins
 		if ($scope.game.ready) {
-			console.log('create offer')
-			$scope.peer.connection.createOffer(function (desc) {
-
-				$scope.peer.connection.setLocalDescription(desc);
-				console.log('send offer');
-				socket.emit('peer:send_offer', { 
-					room: GLOBAL.ROOM,
-					sdp: desc 
-				}, function (res) {
-					console.log(res);
-				});
-			}, null, {
-				'mandatory': {
-					'OfferToReceiveAudio':true, 
-					'OfferToReceiveVideo':true
-				}
-			});
+			$scope.initPeerConnection();
 		}
 
 
@@ -526,3 +539,44 @@ console.log(data);
 
 
 });
+
+
+app.directive('dropdownToggle', ['$document', function ($document) {
+	var openElement = null,
+		closeMenu   = angular.noop;
+
+	return {
+		restrict: 'CA',
+		link: function(scope, element, attrs) {
+			//scope.$watch('$location.path', function() { closeMenu(); });
+			element.parent().bind('click', function() { closeMenu(); });
+			element.bind('click', function (event) {
+
+				var elementWasOpen = (element === openElement);
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (!!openElement) {
+					closeMenu();
+				}
+
+				if (!elementWasOpen) {
+					element.parent().addClass('open');
+					openElement = element;
+					closeMenu = function (event) {
+						if (event) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+						$document.unbind('click', closeMenu);
+						element.parent().removeClass('open');
+						closeMenu = angular.noop;
+						openElement = null;
+					};
+					$document.bind('click', closeMenu);
+				}
+			});
+		}
+	};
+}]);

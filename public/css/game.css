@@ -7,6 +7,7 @@ body {
 	/*background-image: url('/img/grain.png')*/;
 	background-repeat: repeat;
 	background-color: #181818;
+	color: #FCFCA2;
 }
 
 ::-webkit-scrollbar {
@@ -27,6 +28,38 @@ body {
   display: none !important;
 }
 
+.navbar {
+	border-width: 0 0 1px;
+	border-radius: 0;
+	padding:10px 15px 10px 15px;
+}
+
+.side-players ul, .side-railbirds ul {
+	list-style: none;
+	margin:0 0 0 5px;
+	padding:0;
+}
+
+
+.side-players ul li, .side-railbirds ul li{
+	color:#fdfdd9;
+	font-size: 13px;
+}
+
+.icon-row {
+	font-size: 140%;
+}
+
+.icon-row a {
+	color: white;
+	padding-right: 2px;
+	padding-left: 2px;
+}
+
+.icon-row a:hover {
+	color: #FCFCA2;
+}
+
 .buffer { margin:10px 0; }
 
 .center {
@@ -40,33 +73,10 @@ code {
   font-size: 80%;
 }
 
-.navbar {
-
-	margin:0;
-	border-radius:0;
+.top-buffer {
+	margin-top:25px;
 }
 
-.navbar-default .navbar-brand {
-	color: #999999;
-}
-
-.navbar-default .navbar-brand:hover {
-  color: #FFFFFF;
-}
-
-.navbar-default .navbar-nav > li > a {
-	color: #999999;
-}
-
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-  color: #FFFFFF;
-
-}
-
-.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-	color: #FFFFFF;
-
-}
 
 /* Wrapper for page content to push down footer */
 #game {
@@ -79,18 +89,10 @@ code {
   padding: 15px 15px;
 
 }
-
-.alert-notify {
-	color:#FCFCA2;
-	background-color: #222222;
-	border-color:#111111;
-
-}
-
 .table {
 	text-align: center;
 	min-height:200px;
- 	border-color: #272E33;
+ 	border-color: #111111;
  	border-style: solid;
  	border-width: 15px;
  	border-radius: 90px;
@@ -106,7 +108,7 @@ code {
 	margin-top:10px;
 }
 
-.btn {
+.opp-player-options .btn {
   margin-top: 1px;
   margin-right: 2px;
   margin-bottom: 1px;
@@ -147,7 +149,11 @@ code {
 
 .history ul.events li {
 	color: #FCFCA2;
-	font-size: 12px;
+	font-size: 13px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
 }
 
 
@@ -162,7 +168,7 @@ code {
 	border-width: 2px;
 	border-style:solid;
 	border-color: transparent;
-
+	background-color: #111111;
 
 
 }

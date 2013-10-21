@@ -47,23 +47,29 @@ function Player (id, name, chips, game) {
 function Log (id, game) {
 	console.log('\n');
 
-	console.log('--------------------------------------------------');
+	console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
 	console.log('--------------------------------------------------');
 	console.log(id);
 	console.log('--------------------------------------------------');
 	console.log('--------------------------------------------------');
 
+	console.log('maxbet: ' + getMaxBet(game.players) + '\n');
+
+	console.log('-- PLAYER DATA -----------------------------------');
 	for (var i = 0; i < game.players.length; i += 1) {
-		console.log('name: ' + game.players[i].name);
-		console.log('chips: ' + game.players[i].chips);
-		console.log('allin: ' + game.players[i].allIn);
-		console.log('folded: ' + game.players[i].folded);
-		console.log('acted: ' + game.players[i].acted);
-		console.log('bets: ' + game.players[i].bets);
-		console.log('\n');
+		console.log('\tname: ' + game.players[i].name);
+		console.log('\tchips: ' + game.players[i].chips);
+		console.log('\tallin: ' + game.players[i].allIn);
+		console.log('\tfolded: ' + game.players[i].folded);
+		console.log('\tacted: ' + game.players[i].acted);
+		console.log('\tbets: ' + game.players[i].bets);
+		console.log('\tcallAmount: ' + (getMaxBet(game.players) - game.players[i].bets));
+		console.log('\traisemount: ' + Math.min((getMaxBet(game.players) - game.players[i].bets)*2, game.players[i].chips));
+		console.log('-');
 
 	}
 
+	
 
 	console.log('getNumberOfPlayersInRoundAllIn: ' + getNumberOfPlayersInRoundAllIn(game));
 	console.log('getNumberOfPlayersInRoundFolded: ' + getNumberOfPlayersInRoundFolded(game));
@@ -71,7 +77,7 @@ function Log (id, game) {
 
 
 
-	console.log('--------------------------------------------------');
+	console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
 
 	console.log('\n');
 }
@@ -398,6 +404,7 @@ Player.prototype.Options = function() {
 			var callAmount = maxBet - this.bets;
 			// a player must raise at least twice the size of the current bet, or all thier chips if they cant cover that
 			var raiseAmount = Math.min(callAmount*2, this.chips);
+Log('canraise',this.game);
 
 			options['RAISE'] = {
 				allowed: true,
