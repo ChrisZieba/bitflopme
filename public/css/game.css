@@ -28,32 +28,50 @@ body {
   display: none !important;
 }
 
+.notify-player {
+	color: #3a87ad;
+	background-color: #d9edf7;
+	padding: 6px 10px;
+	margin-bottom: 1px;
+	border: 1px solid #bce8f1;
+	border-radius: 4px;
+}
+
 .navbar {
 	border-width: 0 0 1px;
 	border-radius: 0;
 	padding:10px 15px 10px 15px;
 }
 
+div.side-title {
+	font-size: 13px;
+	padding-bottom:6px;
+
+}
+
 .side-players ul, .side-railbirds ul {
 	list-style: none;
-	margin:0 0 0 5px;
+	margin:0 0 8px 20px;
 	padding:0;
 }
 
-
-.side-players ul li, .side-railbirds ul li{
+.side-players ul li, .side-railbirds ul li {
 	color:#fdfdd9;
-	font-size: 13px;
+	font-size: 12px;
+	padding: 2px 4px;
+
 }
 
 .icon-row {
-	font-size: 140%;
+	font-size: 120%;
+	padding-top:8px;
 }
 
 .icon-row a {
 	color: white;
 	padding-right: 2px;
 	padding-left: 2px;
+	margin-top: 4px;
 }
 
 .icon-row a:hover {
@@ -130,8 +148,8 @@ code {
 	padding-right: 1px;
 
 
-
 }
+
 
 .settings {
 	color: #FCFCA2;
@@ -148,8 +166,8 @@ code {
 }
 
 .history ul.events li {
-	color: #FCFCA2;
-	font-size: 13px;
+	color: #fcfcab;
+	font-size: 12px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;

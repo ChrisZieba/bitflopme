@@ -90,14 +90,3 @@ require('./app/routes')(app);
 // run the server with sockets
 server.listen(3001);
 socket.listen(server, session, app);
-
-
-/*
-
-/home/zieba/Projects/node/bitflopme/node_modules/connect-mongo/lib/connect-mongo.js:139
-                throw new Error('Error setting TTL index on collection : ' + s
-                      ^
-Error: Error setting TTL index on collection : sessions <Error: no open connections>
-
-
-*/

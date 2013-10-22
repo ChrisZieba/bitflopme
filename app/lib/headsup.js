@@ -402,9 +402,18 @@ Player.prototype.Options = function() {
 		if (this.canRaise()) {
 			var maxBet = getMaxBet(this.game.players);
 			var callAmount = maxBet - this.bets;
-			// a player must raise at least twice the size of the current bet, or all thier chips if they cant cover that
+			// a player must raise at least twice the size of the current bet plus the amount to call, 
+			// or all thier chips if they cant cover that
 			var raiseAmount = Math.min(callAmount*2, this.chips);
 Log('canraise',this.game);
+
+			// if this is the preflop round and no one has acted then thefirst raise is a bit different
+			if (this.game.state === 'DEAL') {
+				if (getNumberOfPlayersInRoundActed(this.game) === 0) {
+					// this will be twice the big blind on the forst hand
+					raiseAmount = Math.min(maxBet*2, this.chips);
+				}
+			}
 
 			options['RAISE'] = {
 				allowed: true,
@@ -826,7 +835,7 @@ function getNumberOfPlayersInRoundAllIn (game) {
 	return noOfPlayersInRoundAllIn;
 }
 
-// How many players in the round have not acted yet
+// How many players in the round have acted yet
 function getNumberOfPlayersInRoundActed (game) {
 	var noOfPlayersInRoundActed = 0;
 

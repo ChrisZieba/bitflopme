@@ -42,9 +42,9 @@
 
 				<div class="col-sm-12 col-md-2 col-lg-2 hidden-xs hidden-sm icon-row">
 
-					<a href=""><span class="glyphicon glyphicon-home"></span></a>
-					<a href=""><span class="glyphicon glyphicon-question-sign"></span></a>
+					<a href="/"><span class="glyphicon glyphicon-home"></span></a>
 					<a href=""><span class="glyphicon glyphicon-heart"></span></a>
+					<a href=""><span class="glyphicon glyphicon-question-sign"></span></a>
 
 				</div>
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-8 text-center">
@@ -58,13 +58,15 @@
 
 								<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
 									<input type="hidden" name="_csrf" value="<%= token %>"/>
-									<input type="submit" class="btn btn-md btn-success mg-top-bot-5" value="Join this game" />
+									<input type="submit" class="btn btn-md btn-block btn-success mg-top-bot-5" value="Join this game" />
 								</form>
 							<% } else { %>
-								<span class="glyphicon glyphicon-link"></span>
-								<span><strong>Invite another player: </strong></span>
-									
-								<span>https://bitflop.me/game/play/<%= room.name %></span>
+								<div class="notify-player">
+									<span class="glyphicon glyphicon-link"></span>
+									<span><strong>Invite another player: </strong></span>
+										
+									<span>https://bitflop.me/game/play/<%= room.name %></span>
+								</div>
 							<% } %>
 
 						</div>
@@ -97,20 +99,22 @@
 						</ul>
 					</div>
 
-					<div class="btn-group">
-						<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-facetime-video"></span></a>
-						<button type="button" class="btn btn-default btn-md dropdown-toggle">
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="/account">My Games</a></li>
-							<li class="divider"></li>
-							<li><a href="/game/new">Start a new game</a></li>
-							<li><a href="/game/join">Join a game</a></li>
-							<li class="divider"></li>
-							<li><a href="/logout">Logout</a></li>
-						</ul>
-					</div>
+					<% if (!join) { %>
+						<div class="btn-group">
+							<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-facetime-video"></span></a>
+							<button type="button" class="btn btn-default btn-md dropdown-toggle">
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="/account">My Games</a></li>
+								<li class="divider"></li>
+								<li><a href="/game/new">Start a new game</a></li>
+								<li><a href="/game/join">Join a game</a></li>
+								<li class="divider"></li>
+								<li><a href="/logout">Logout</a></li>
+							</ul>
+						</div>
+					<% } %>
 				</div>
 
 
@@ -124,9 +128,10 @@
 				<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 
 					<div class="side-players">
-						<p><strong><span class="glyphicon glyphicon-list"></span> Players in Room</strong></p>
+						<div class="side-title"><strong>Players in Room</strong></div>
 						<ul>
 							<li ng-repeat="player in room.players">
+								<span class="glyphicon glyphicon-user"></span>
 								<span>{{ player.name }}</span>
 							</li>
 							<li ng-cloak ng-hide="room.players.length">None</li>
@@ -134,9 +139,10 @@
 					</div>
 
 					<div class="side-railbirds">
-						<p><strong><span class="glyphicon glyphicon-list"></span> Obervers in Room</strong></p>
+						<div class="side-title"><strong>Observers in Room</strong></div>
 						<ul>
 							<li ng-repeat="observer in room.observers">
+								<span class="glyphicon glyphicon-user"></span>
 								<span>{{ observer.name }}</span>
 							</li>
 							<li ng-cloak ng-hide="room.observers.length">None</li>
@@ -252,7 +258,7 @@
 										<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{game.player.options['CALL'].amount | number:0 }}</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-btn">
-										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{game.player.options['RAISE'].amount | number:0}}</span></button>
+										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise to {{game.player.options['RAISE'].amount | number:0}}</span></button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-slider">
 										<slider floor="{{game.player.options['RAISE'].min}}" ceiling="{{game.player.options['RAISE'].max}}" step="1" precision="1" ng-model="game.player.options['RAISE'].amount"></slider>
@@ -289,7 +295,7 @@
 
 				<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 					<div class="history">
-						<p><span class="glyphicon glyphicon-tasks"></span> <strong>Events</strong></p>
+						<div class="side-title"><strong><span class="glyphicon glyphicon-tasks"></span> Events</strong></div>
 						<ul class="events" scroll-glue ng-model="game.events">
 							<li ng-repeat="event in game.events" title="{{ fn.msToDateTime(event.time) }}">
 								<span><strong>{{ event.owner }}:</strong> </span>

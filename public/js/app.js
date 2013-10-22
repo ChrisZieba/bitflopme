@@ -396,7 +396,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 console.log(data);
 		$scope.game.events = data.events;
 		$scope.room.players = data.room.players;
-		$scope.room.opponents = data.room.opponents;
+		$scope.room.observers = data.room.observers;
 
 		if (data.player.id !== null) {
 			if ($scope.game.player.id === -1) {
@@ -465,6 +465,8 @@ console.log(data);
 
 	socket.on('game:leave', function (data) {
 		$scope.game.history = data.history;
+		$scope.room.players = data.room.players;
+		$scope.room.observers = data.room.observers;
 	});
 
 
