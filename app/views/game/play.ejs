@@ -58,7 +58,8 @@
 
 								<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
 									<input type="hidden" name="_csrf" value="<%= token %>"/>
-									<input type="submit" class="btn btn-md btn-block btn-success mg-top-bot-5" value="Join this game" />
+
+									<button type="submit" class="btn btn-md btn-block btn-success">Join & Play Against <strong><%= room.creator.name%></strong></button>
 								</form>
 							<% } else { %>
 								<div class="notify-player">
@@ -126,6 +127,18 @@
 			<div class="row">
 
 				<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+
+					<% if (join) { %>
+						<div class="side-players">
+							<div class="side-title"><strong>Creator</strong></div>
+							<ul>
+								<li>
+									<span class="glyphicon glyphicon-user"></span>
+									<span><strong><%= room.creator.name%></strong></span>
+								</li>
+							</ul>
+						</div>
+					<% } %>
 
 					<div class="side-players">
 						<div class="side-title"><strong>Players in Room</strong></div>
@@ -258,7 +271,7 @@
 										<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{game.player.options['CALL'].amount | number:0 }}</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-btn">
-										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise to {{game.player.options['RAISE'].amount | number:0}}</span></button>
+										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{game.player.options['RAISE'].amount | number:0}}</span></button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-slider">
 										<slider floor="{{game.player.options['RAISE'].min}}" ceiling="{{game.player.options['RAISE'].max}}" step="1" precision="1" ng-model="game.player.options['RAISE'].amount"></slider>

@@ -128,7 +128,6 @@ exports.listen = function (server, sessionStore, app) {
 					// Every connected client gets access to the mainroom
 					socket.join(data.room); 
 
-
 					//	A player joins a special room just for that player	
 					if (playerID !== null) {
 						socket.join(data.room + ':' + playerID);

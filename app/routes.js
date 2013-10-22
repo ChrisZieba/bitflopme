@@ -492,7 +492,11 @@ module.exports = function (app) {
 			user: user,
 			room: {
 				id: game.id,
-				name: game.name
+				name: game.name,
+				creator: {
+					id: game.creator.id,
+					name: game.creator.name
+				}
 			},
 			join: join
 		});
