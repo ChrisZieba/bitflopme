@@ -62,12 +62,22 @@
 									<button type="submit" class="btn btn-md btn-block btn-success">Join & Play Against <strong><%= room.creator.name%></strong></button>
 								</form>
 							<% } else { %>
-								<div class="notify-player">
-									<span class="glyphicon glyphicon-link"></span>
-									<span><strong>Invite another player: </strong></span>
-										
-									<span>https://bitflop.me/game/play/<%= room.name %></span>
-								</div>
+
+								<% if (room.creator.id === user.id) { %>
+
+									<div class="notify-player">
+										<span class="glyphicon glyphicon-link"></span>
+										<span><strong>Invite another player: </strong></span>
+											
+										<span>https://bitflop.me/game/play/<%= room.name %></span>
+									</div>
+								<% } else { %>
+									<div class="notify-player">
+										<span class="glyphicon glyphicon-time"></span>
+										<span>Waiting for <strong><%= room.creator.name%> to join.</strong></span>
+									</div>
+								<% } %>
+
 							<% } %>
 
 						</div>
@@ -107,12 +117,8 @@
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="/account">My Games</a></li>
-								<li class="divider"></li>
-								<li><a href="/game/new">Start a new game</a></li>
-								<li><a href="/game/join">Join a game</a></li>
-								<li class="divider"></li>
-								<li><a href="/logout">Logout</a></li>
+								<li><a ng-click="fn.killVideoStream()" href="">Turn off Video</a></li>
+								<li><a ng-click="fn.StartVideoStream()" href="">Turn off Video</a></li>
 							</ul>
 						</div>
 					<% } %>

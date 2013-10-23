@@ -169,7 +169,7 @@ app.directive('localVideo', ['socket', function (socket) {
 			// the video becomes available when  aplayer sits
 			if (localVideo) {
 
-				getUserMedia({video: true, audio: false}, function (stream) {
+				getUserMedia({video: true, audio: true}, function (stream) {
 					scope.peer.local.stream = stream;
 					scope.peer.local.element = localVideo;
 					scope.peer.connection.addStream(stream);
@@ -351,6 +351,14 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		msToDateTime: function (ms) {
 			var date = new Date(ms);
 			return date.toLocaleString();
+		},
+		killVideoStream: function () {
+			if ($scope.peer.local.stream) {
+				$scope.peer.local.stream.stop();
+			}
+		},
+		startVideoStream: function () {
+			$scope.peer.local.stream.play();
 		}
 	};
 
