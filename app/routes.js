@@ -478,28 +478,42 @@ module.exports = function (app) {
 
 		var game = res.locals.game;
 		var user = res.locals.user;
-		var join = true;
+		var room = {
+			id: game.id,
+			name: game.name,
+			creator: {
+				id: game.creator.id,
+				name: game.creator.name
+			}
+		};
 
-		// the join button is shown only if the user is not already a player, and there is not a full table already
-		// The reason for checking the players.length ===1 is to make sure the game has not started. The first player is always the 
-		// player who created the game, and if its two the game already started 
-		if (helpers.getPlayerID(user.id, game.players) !== null || game.players.length === 2) {
-			join = false;
+		// if a plyer is accessing the table
+		if (helpers.getPlayerID(user.id, game.players) !== null) {
+			res.render('game/play.ejs', { 
+				title: 'bitflop.me',
+				user: user,
+				room: room,
+				join: false
+			});
+		} else {
+			// non player accessing the table
+			if (game.players.length === 2) {
+				res.render('game/private.ejs', { 
+					title: 'bitflop.me',
+					user: user,
+					room: room
+				});
+			} else {
+				// Show the errors on the form
+				res.render('game/play.ejs', { 
+					title: 'bitflop.me',
+					user: user,
+					room: room,
+					join: true
+				});
+			}
 		}
-		// Show the errors on the form
-		res.render('game/play.ejs', { 
-			title: 'bitflop.me',
-			user: user,
-			room: {
-				id: game.id,
-				name: game.name,
-				creator: {
-					id: game.creator.id,
-					name: game.creator.name
-				}
-			},
-			join: join
-		});
+
 		
 			
 	});

@@ -165,6 +165,9 @@ app.directive('localVideo', ['socket', function (socket) {
 
 			var localVideo = element[0];
 
+			// weitd bug in firefox sets the height of the video container UNLESS it has controls on page load
+			element.removeAttr('controls');
+
 			// check if the video is visible
 			// the video becomes available when  aplayer sits
 			if (localVideo) {
@@ -200,6 +203,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 			scope.peer.remote.element = element[0];
+			element.removeAttr('controls');
 
 		}
 	};
@@ -281,28 +285,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	};
 
-	function setGameData (player, opponent) {
-		$scope.game.player.chips = player.chips;
-		$scope.game.player.action = player.action;
-		$scope.game.player.folded = player.folded;
-		$scope.game.player.allIn = player.allIn;
-		$scope.game.player.acted = player.acted;
-		$scope.game.player.blind = player.blind;
-		$scope.game.player.bets = player.bets;
-		$scope.game.player.out = player.out;
-		$scope.game.player.options = player.options;
-
-		$scope.game.opponent.chips = opponent.chips;
-		$scope.game.opponent.action = opponent.action;
-		$scope.game.opponent.folded = opponent.folded;
-		$scope.game.opponent.allIn = opponent.allIn;
-		$scope.game.opponent.acted = opponent.acted;
-		$scope.game.opponent.blind = opponent.blind;
-		$scope.game.opponent.bets = opponent.bets;
-		$scope.game.opponent.out = opponent.out;
-		$scope.game.opponent.options = opponent.options;
-	}
-
 	$scope.peer = {
 		connection: pc,
 		candidates: [],
@@ -328,18 +310,19 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			name: null,
 			chips: null,
 			cards: [],
+			folded: null,
 			options: playerOptions
 		},
 		opponent: {
 			id: -1,
 			name: null,
 			chips: null,
-			// this defaults to the backside of the cards, but in a showdown
-			// we need to see what the opponents cards are
+			folded: null,
 			cards: []
 		},
 		events: [],
-		action: null
+		action: null,
+
 	};
 
 	$scope.fn = {
@@ -371,6 +354,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				break;
 			case 'RAISE':
 				action.amount = parseInt($scope.game.player.options['RAISE'].amount,10);
+				break;
+			case 'FOLD':
+				$scope.game.player.folded = true;
 				break;
 			default:
 				break;
@@ -420,55 +406,16 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	});
 
 
-
-	socket.on('player:data', function (data) {
-		console.log('player:data');
-		console.log(data);
-
-		$scope.game.events = data.events;
-		$scope.game.action = data.round.actions[data.round.actions.length-1];
-
-		var player = $scope.game.action.players[data.player.id];
-		var opponent = $scope.game.action.players[data.opponent.id];
-
-		// the id and name are set when the player joins
-		$scope.game.player.cards = data.player.cards;
-
-
-		$scope.game.opponent.id = opponent.id;
-		$scope.game.opponent.name = opponent.name;
-		$scope.game.opponent.cards = opponent.cards;
-
-		setGameData(player, opponent);
-		
-	});
-
 	socket.on('game:data', function (data) {
 		console.log('game:data');
 		console.log(data);
 
 		$scope.game.events = data.events;
-		$scope.game.action = data.round.actions[data.round.actions.length-1];
-
-		var player = $scope.game.action.players[$scope.game.player.id];
-		var opponent = $scope.game.action.players[$scope.game.opponent.id];
-
-		if (data.open) {
-			$scope.game.opponent.cards =  data.open[$scope.game.opponent.id].cards;
-		}
-
-		setGameData(player, opponent);
-		
+		$scope.game.action = data.action;
+		$scope.game.player = data.player;
+		$scope.game.opponent = data.opponent;
 
 	});
-
-	// socket.on('railbird:data', function (data) {
-	// 	$scope.game.player.id = data.player.id;
-	// 	$scope.game.player.cards = data.player.cards;
-	// 	$scope.game.opponent.id = data.opponent.id;
-	// 	$scope.game.opponent.name = data.opponent.name;
-	// 	$scope.game.opponent.cards = data.opponent.cards;
-	// });
 
 
 	socket.on('game:leave', function (data) {
@@ -495,15 +442,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-
-		//if ($scope.peer.candidates.length > 0) {
-			//for (var i = 0; i < $scope.peer.candidates.length; i++) {console.log(i)
-				//$scope.peer.connection.addIceCandidate(new RTCIceCandidate($scope.peer.candidates[i]));
-			//}
-		//}
-
 		$scope.peer.connection.createAnswer(function (desc) {
-
 			$scope.peer.connection.setLocalDescription(desc);
 
 			socket.emit('peer:send_answer', { 
@@ -513,40 +452,17 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				console.log(res);
 			});	
 		});
-
-
-
-
 	});
 
 	socket.on('peer:receive_answer', function (data) {
-		console.log('peer:answer has been received');
-
-		/*if (!$scope.peer.connected) {
-			if ($scope.peer.candidates.length > 0) {
-				$scope.peer.connected = true;
-				for (var i = 0; i < $scope.peer.candidates.length; i++) {
-					$scope.peer.connection.addIceCandidate(new RTCIceCandidate($scope.peer.candidates[i]));
-				}
-			}
-			
-		}*/
-
+		//console.log('peer:answer has been received');
 		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-		
-		
-
-
 	});
 
 
 	$scope.$on('$destroy', function (event) {
 		socket.destroy();
 	});
-
-
-
-
 
 });
 

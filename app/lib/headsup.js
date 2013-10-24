@@ -218,9 +218,11 @@ Game.prototype.AddEvent = function (owner, event) {
 	});
 };
 
-Game.prototype.Round = function () {
+Game.prototype.getRoundData = function () {
 
-	return getNumberOfPlayersInRoundFolded(this)
+	return {
+		playersFolded: getNumberOfPlayersInRoundFolded(this)
+	}
 }
 // Attempt to move the game along to the next round
 // This gets called after each player makes a move, or a round ends
@@ -342,7 +344,7 @@ function nextBettingRound (game) {
 }
 
 //  Returns an array or the possible plays a player has [call,bet,raise,check,fold]
-Player.prototype.Options = function() {
+Player.prototype.Options = function (roundOver) {
 	
 	// Default options
 	var options = {
@@ -364,7 +366,7 @@ Player.prototype.Options = function() {
 	};
 
 	//  If its not the players turn return an empty array since they have no options yet
-	if (this.game.turn === this.id) {
+	if (this.game.turn === this.id && !roundOver) {
 		if (this.canFold()) {
 			options['FOLD'] = {
 				allowed: true,

@@ -64,17 +64,17 @@ exports.isGameReady = function (room, rooms, players) {
 };
 
 exports.removeUserFromRoom = function (userID, users) {
-console.log(userID);
-console.log(users)
-	var users = [];
+
+	var u = [];
 
 	for (var i = 0; i < users.length; i++) {
 		if (users[i].id !== userID) {
-			users.push(users[i]);
+			u.push(users[i]);
 		}
 	}
 
-	return users;
+
+	return u;
 
 };
 
@@ -141,7 +141,7 @@ exports.buildRoundObject = function (game, obj) {
 			id: game.players[i].id,
 			name: game.players[i].name,
 			chips: game.players[i].chips,
-			cards: ['00', '00'],
+			//cards: ['00', '00'],
 			action: game.players[i].action,
 			folded: game.players[i].folded,
 			allIn: game.players[i].allIn,

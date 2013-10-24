@@ -91,6 +91,59 @@ exports.listen = function (server, sessionStore, app) {
 	//	Only logged in players can connect to a game via socket.io
 	io.sockets.on('connection', function (socket) {
 
+		var sendGameData = function (Game, room, open, roundOver) {
+			// If a player has joined/rejoined a table send all the players their cards again
+			// Send the private data to each individual player
+			for (var i = 0; i <  Game.game.players.length; i++) {
+				io.sockets.in(room + ':' + Game.game.players[i].id).emit('game:data', { 
+					uuid: Date.now(), 
+					room: {
+						id: room,
+						players: Game.room.players,
+						observers: Game.room.observers
+					},
+					events: Game.game.events,
+					action: {
+						dealer: (roundOver) ? null: Game.game.dealer,
+						turn: (roundOver) ? null: Game.game.turn,
+						smallBlind: (roundOver) ? null: Game.game.smallBlind,
+						bigBlind: (roundOver) ? null: Game.game.bigBlind,
+						pot: Game.game.pot,
+						state: Game.game.state,
+						board: Game.game.board
+					},
+					player: {
+						id: Game.game.players[i].id,
+						name: Game.game.players[i].name,
+						cards: Game.game.players[i].cards,
+						chips: Game.game.players[i].chips,
+						action: Game.game.players[i].action,
+						folded: Game.game.players[i].folded,
+						allIn: Game.game.players[i].allIn,
+						acted: Game.game.players[i].acted,
+						blind: Game.game.players[i].blind,
+						bets: Game.game.players[i].bets,
+						out: Game.game.players[i].out,
+						options: Game.game.players[i].Options(roundOver)
+					},
+					opponent: {
+						id: Game.game.players[(i+1) % 2].id,
+						name: Game.game.players[(i+1) % 2].name,
+						cards: (open) ? Game.game.players[(i+1) % 2].cards : ['00', '00'],
+						chips: Game.game.players[(i+1) % 2].chips,
+						action: Game.game.players[(i+1) % 2].action,
+						folded: Game.game.players[(i+1) % 2].folded,
+						allIn: Game.game.players[(i+1) % 2].allIn,
+						acted: Game.game.players[(i+1) % 2].acted,
+						blind: Game.game.players[(i+1) % 2].blind,
+						bets: Game.game.players[(i+1) % 2].bets,
+						out: Game.game.players[(i+1) % 2].out,
+						options: Game.game.players[(i+1) % 2].Options(roundOver)
+					}
+				});
+			}
+		};
+
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
 		socket.on('join', function(data, callback) {
@@ -126,10 +179,13 @@ exports.listen = function (server, sessionStore, app) {
 					//	A player joins a special room just for that player	
 					if (playerID !== null) {
 						socket.join(data.room + ':' + playerID);
+
 						Games[data.room].room.players.push({
 							id: session.user.id,
 							name: session.user.name
 						});
+						console.log(Games[data.room].room.players);
+						console.log('\n\n\n\n\n\n\n\n\n\n')
 						Games[data.room].game.AddEvent(session.user.name, 'seated and ready to play');
 					} else {
 						// this room is for non-players only
@@ -216,31 +272,9 @@ exports.listen = function (server, sessionStore, app) {
 						game.rounds = rounds;
 						game.save(function (err) {
 							if (err) throw err;
+							// sends the cards and any other data
+							sendGameData(Games[data.room], data.room, false);
 
-							// If a player has joined/rejoined a table send all the players their cards again
-							// Or if a railbird joins send them the game data
-
-							var numberOfPlayers = Games[data.room].game.players.length;
-							// Send the private data to each individual player
-							if (numberOfPlayers === 2) {
-								for (var i = 0; i < numberOfPlayers; i++) {
-									console.log(JSON.stringify(Games[data.room].game.players[i].id));
-									io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
-										uuid: Date.now(), 
-										room: data.room,
-										events: Games[data.room].game.events,
-										round: round.shared,
-										player: {
-											id: Games[data.room].game.players[i].id,
-											cards: Games[data.room].game.players[i].cards
-										},
-										opponent: {
-											id: Games[data.room].game.players[(i+1) % 2].id
-											//cards: ['00', '00']
-										}
-									});
-								}
-							}
 						});
 
 	
@@ -310,15 +344,14 @@ exports.listen = function (server, sessionStore, app) {
 						}
 
 
-
-						var timeout = 1000;
-
-						var Action = function () {
+						var Action = function (progress, open, roundOver) {
 							// After a play is made progress the game
 							// This will either update to the next betting round, 
 							// finish the redline round (player folds) 
-							// The next round must be called manually
-							Games[data.room].game.Progress();
+							// The next round must be called manually, and we do not want to run progress after a new round
+							if (progress) {
+								Games[data.room].game.Progress();
+							}
 
 							var rounds = game.rounds;
 							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
@@ -334,29 +367,52 @@ exports.listen = function (server, sessionStore, app) {
 								if (err) throw err;
 
 								// send out the data to the players
-								io.sockets.in(data.room).emit('game:data', { 
-									uuid: Date.now(), 
-									room: data.room,
-									events: Games[data.room].game.events,
-									round: round.shared
-								});
+								sendGameData(Games[data.room], data.room, open, roundOver);
 								
+								if (Games[data.room].game.checkForEndOfRound()) {
+
+									if (Games[data.room].game.getState() === 'SHOWDOWN') {
+										Games[data.room].game.NewRound();
+
+										setTimeout(function () {Action(false, false, false);}, 5000);
+									} else if (Games[data.room].game.getState() === 'RIVER') {
+
+										// check for redline round (player folds)
+										if (Games[data.room].game.getRoundData().playersFolded === 1) {
+											Games[data.room].game.NewRound();
+											setTimeout(function () {Action(false, false, false);}, 2000);
+										} else {
+											setTimeout(function () {Action(true, true, true);}, 5000);
+										}
+
+										
+
+									} else if (Games[data.room].game.getState() == 'TURN' ||
+										Games[data.room].game.getState() == 'FLOP' ||
+										Games[data.room].game.getState() == 'DEAL') {
+
+										// check for redline round (player folds)
+										if (Games[data.room].game.getRoundData().playersFolded === 1) {
+											Games[data.room].game.NewRound();
+											setTimeout(function () {Action(false, false, false);}, 2000);
+										} else {
+											setTimeout(function () {Action(true, true, true);}, 1000);
+										}
+										
+									}
+								}
 							});
 
-							if (Games[data.room].game.checkForEndOfRound()) {
 
-								if (Games[data.room].game.getState() === 'SHOWDOWN') {
-									Games[data.room].game.NewRound();
-
-									setTimeout(Action, 5000);
-								} else if (Games[data.room].game.getState() !== 'END') {
-									setTimeout(Action, 1000);
-								}
-							}
 
 						};
 
-						setTimeout(Action, timeout);
+						if (Games[data.room].game.checkForEndOfRound()) {
+							setTimeout(function () {Action(true, false, true);}, 0);
+						} else {
+							setTimeout(function () {Action(true, false, false);}, 1000);
+						}
+						
 
 
 
