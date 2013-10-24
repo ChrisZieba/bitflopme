@@ -12,7 +12,7 @@ app.factory('socket', function($rootScope) {
 
 	return {
 		on: function(eventName, callback) {
-//console.log(eventName)
+
 			socket.on(eventName, function() {
 				var args = arguments;
 				$rootScope.$apply(function() {
@@ -394,7 +394,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 
 	socket.on('game:join', function (data) {
-console.log(data);
+		console.log('game:join');
+		console.log(data);
+
 		$scope.game.events = data.events;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;
@@ -420,9 +422,10 @@ console.log(data);
 
 
 	socket.on('player:data', function (data) {
-
+		console.log('player:data');
 		console.log(data);
 
+		$scope.game.events = data.events;
 		$scope.game.action = data.round.actions[data.round.actions.length-1];
 
 		var player = $scope.game.action.players[data.player.id];
@@ -431,7 +434,7 @@ console.log(data);
 		// the id and name are set when the player joins
 		$scope.game.player.cards = data.player.cards;
 
-		// this gets set once a round
+
 		$scope.game.opponent.id = opponent.id;
 		$scope.game.opponent.name = opponent.name;
 		$scope.game.opponent.cards = opponent.cards;
@@ -441,6 +444,8 @@ console.log(data);
 	});
 
 	socket.on('game:data', function (data) {
+		console.log('game:data');
+		console.log(data);
 
 		$scope.game.events = data.events;
 		$scope.game.action = data.round.actions[data.round.actions.length-1];
@@ -454,9 +459,6 @@ console.log(data);
 
 		setGameData(player, opponent);
 		
-		console.log(data);
-		
-
 
 	});
 
