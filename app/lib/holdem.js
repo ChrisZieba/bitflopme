@@ -965,6 +965,7 @@ Error({
 				for (var i = 0; i < this.table.game.bets.length; i += 1) {
 					this.table.game.bets[i] = 0;
 				}
+				
 				for (var i = 0; i < this.table.players.length; i += 1) {
 					this.table.players[i].acted = false;
 				}

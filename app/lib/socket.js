@@ -225,27 +225,27 @@ exports.listen = function (server, sessionStore, app) {
 							// If a player has joined/rejoined a table send all the players their cards again
 							// Or if a railbird joins send them the game data
 
-								var numberOfPlayers = Games[data.room].game.players.length;
-								// Send the private data to each individual player
-								if (numberOfPlayers === 2) {
-									for (var i = 0; i < numberOfPlayers; i++) {
-										console.log(JSON.stringify(Games[data.room].game.players[i].id));
-										io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
-											uuid: Date.now(), 
-											room: data.room,
-											events: Games[data.room].game.events,
-											round: round.shared,
-											player: {
-												id: Games[data.room].game.players[i].id,
-												cards: Games[data.room].game.players[i].cards
-											},
-											opponent: {
-												id: Games[data.room].game.players[(i+1) % 2].id
-												//cards: ['00', '00']
-											}
-										});
-									}
+							var numberOfPlayers = Games[data.room].game.players.length;
+							// Send the private data to each individual player
+							if (numberOfPlayers === 2) {
+								for (var i = 0; i < numberOfPlayers; i++) {
+									console.log(JSON.stringify(Games[data.room].game.players[i].id));
+									io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
+										uuid: Date.now(), 
+										room: data.room,
+										events: Games[data.room].game.events,
+										round: round.shared,
+										player: {
+											id: Games[data.room].game.players[i].id,
+											cards: Games[data.room].game.players[i].cards
+										},
+										opponent: {
+											id: Games[data.room].game.players[(i+1) % 2].id
+											//cards: ['00', '00']
+										}
+									});
 								}
+							}
 						});
 
 	
@@ -275,8 +275,8 @@ exports.listen = function (server, sessionStore, app) {
 					//	This is null if the socket is not a player
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
 					var ready = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
-					var intervalID, intervalMS = 1000;
 
+					// Check if the game object is in memory
 					if (!Games.hasOwnProperty(data.room)) {
 						Games[data.room] = {};
 						Games[data.room].room = {
@@ -314,7 +314,59 @@ exports.listen = function (server, sessionStore, app) {
 								break;
 						}
 
-						// we need to check where the game is
+
+
+						var timeout = 1000;
+
+						var Action = function () {
+							// After a play is made progress the game
+							// This will either update to the next betting round, 
+							// finish the redline round (player folds) 
+							// The next round must be called manually
+							Games[data.room].game.Progress();
+
+							var rounds = game.rounds;
+							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
+							var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
+
+							// Add a new round to the history 
+							rounds.push(round);
+
+							// 	Update the database
+							game.events = Games[data.room].game.events;
+							game.rounds = rounds;
+							game.save(function (err) {
+								if (err) throw err;
+
+								// send out the data to the players
+								io.sockets.in(data.room).emit('game:data', { 
+									uuid: Date.now(), 
+									room: data.room,
+									events: Games[data.room].game.events,
+									round: round.shared
+								});
+								
+							});
+
+							if (Games[data.room].game.checkForEndOfRound()) {
+
+								if (Games[data.room].game.getState() === 'SHOWDOWN') {
+									Games[data.room].game.NewRound();
+
+									setTimeout(Action, 5000);
+								} else if (Games[data.room].game.getState() !== 'END') {
+									setTimeout(Action, 1000);
+								}
+							}
+
+						};
+
+						setTimeout(Action, timeout);
+
+
+
+
+						/* we need to check where the game is
 						// if the round ended on an allin on the flop and someone called we need to play out the flop, turn, river and showdown
 						// if the round ended on a fold then just move to the next round
 						var Action = function (callback) {
@@ -330,15 +382,18 @@ exports.listen = function (server, sessionStore, app) {
 							game.save(function (err) {
 								if (err) throw err;
 
+
+
 								// wait a few seconds before sending data back to the clients
 								setTimeout(function () {
+
 									io.sockets.in(data.room).emit('game:data', { 
 										uuid: Date.now(), 
 										room: data.room,
 										events: Games[data.room].game.events,
 										round: round.shared
 									});
-								}, 1000);
+								}, 500);
 	
 
 								if (typeof callback === 'function') {
@@ -354,7 +409,31 @@ exports.listen = function (server, sessionStore, app) {
 						intervalID = setInterval(function(){
 							//Games[data.room].game.game.Progress();
 							Action(function(){
-								
+							
+								// The only time we need to preogress again (keep the interval running) is when betting can not continue
+								// That means showing the rest of the board, one card at a time
+								if (Games[data.room].game.checkForEndOfRound()) {
+
+									if (Games[data.room].game.getState() === 'END') {
+										// send the congratulations data
+									} else if (Games[data.room].game.getState() === 'SHOWDOWN') {
+										Games[data.room].game.NewRound();
+										Games[data.room].game.Progress();
+									} else {
+										Games[data.room].game.Progress();
+									}
+
+
+									
+
+								} else {
+									// When the round is not over (both players still in the hand) we can clear the interval
+									// and wait for a player action
+									clearInterval(intervalID);
+									//setTimeout(Play, 3000);
+								} 
+
+
 								// The only time we need to preogress again (keep the interval running) is when betting can not continue
 								// That means showing the rest of the board, one card at a time
 								if (Games[data.room].game.checkForEndOfRound() && Games[data.room].game.getState() !== 'END') {
@@ -368,6 +447,7 @@ exports.listen = function (server, sessionStore, app) {
 							});
 
 						}, intervalMS);
+						*/
 
 					}
 				});

@@ -299,7 +299,7 @@ function nextBettingRound (game) {
 
         // If we still have enough players start a new round
         // checkforBankrupt removes any players that have no chips left
-        game.NewRound();
+        //game.NewRound();
 
     } else if (game.state === 'TURN') {
         game.state = 'RIVER';
@@ -523,7 +523,7 @@ Player.prototype.Check = function() {
     this.acted = true;
 
     //Attemp to progress the game
-    this.game.Progress();
+    //this.game.Progress();
 
 };
 
@@ -534,7 +534,7 @@ Player.prototype.Bet = function (bet) {
     this.acted = true;
     this.action = 'bet';
     //Attemp to progress the game
-    this.game.Progress();
+    //this.game.Progress();
     
 };
 
@@ -553,7 +553,7 @@ Player.prototype.Raise = function (bet) {
 
     this.action = 'raise';
     this.acted = true;
-    this.game.Progress();
+    //this.game.Progress();
 
 //Log('raise', this.game);
 
@@ -585,7 +585,7 @@ Log('call', this.game);
     this.acted = true;
 Log('call', this.game);
     //Attemp to move the game along
-    this.game.Progress();
+    //this.game.Progress();
 
 
 };
@@ -601,7 +601,7 @@ Player.prototype.AllIn = function() {
     }
 
     // Attemp to progress the game
-    this.table.game.Progress();
+    //this.table.game.Progress();
 
 };
 
@@ -615,7 +615,7 @@ Player.prototype.Fold = function() {
     this.folded = true;
     this.action = 'fold';
     //Attemp to progress the game
-    this.game.Progress();
+    //this.game.Progress();
 };
 
 // How many players are sitting at a table
@@ -703,7 +703,7 @@ function finishRedlineRound (game) {
         }
     }
 
-    game.NewRound();
+    //game.NewRound();
 }
 
 function initBettingRound (game) {

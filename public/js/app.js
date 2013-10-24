@@ -169,7 +169,7 @@ app.directive('localVideo', ['socket', function (socket) {
 			// the video becomes available when  aplayer sits
 			if (localVideo) {
 
-				getUserMedia({video: true, audio: true}, function (stream) {
+				getUserMedia({video: true, audio: false}, function (stream) {
 					scope.peer.local.stream = stream;
 					scope.peer.local.element = localVideo;
 					scope.peer.connection.addStream(stream);
@@ -204,7 +204,6 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		}
 	};
 }]);
-
 
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
@@ -344,9 +343,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		action: null
 	};
 
-
-
-
 	$scope.fn = {
 		msToDateTime: function (ms) {
 			var date = new Date(ms);
@@ -393,8 +389,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	socket.on('connect', function (data) {
 		socket.emit('join', {
 			room: GLOBAL.ROOM
-		}, function (res) {
-			console.log(res);
 		});
 		
 	});

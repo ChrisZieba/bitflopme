@@ -110,6 +110,8 @@ console.log(rooms);
 
 // If the second arg is not supplied build a new object, otherwise add to it
 exports.buildRoundObject = function (game, obj) {
+
+	// obj is an optional param so either use the one passed in or create a new one
 	var round = obj || {
 		shared: { 
 			//	Each round has a series of actions, ie. call, raise, fold
@@ -121,6 +123,7 @@ exports.buildRoundObject = function (game, obj) {
 		},
 	};
 
+	// push a new action onto the array
 	round.shared.actions.push({
 		dealer: game.dealer,
 		turn: game.turn,
@@ -136,7 +139,7 @@ exports.buildRoundObject = function (game, obj) {
 	for (var i = 0; i < game.players.length; i++) {
 		round.shared.actions[round.shared.actions.length-1].players.push({
 			id: game.players[i].id,
-		    name: game.players[i].name,
+			name: game.players[i].name,
 			chips: game.players[i].chips,
 			cards: ['00', '00'],
 			action: game.players[i].action,
