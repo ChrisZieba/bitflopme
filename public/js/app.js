@@ -328,8 +328,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			name: null,
 			chips: null,
 			cards: [],
-			options: playerOptions,
-			time: null
+			options: playerOptions
 		},
 		opponent: {
 			id: -1,
@@ -429,9 +428,10 @@ console.log(data);
 		var player = $scope.game.action.players[data.player.id];
 		var opponent = $scope.game.action.players[data.opponent.id];
 
+		// the id and name are set when the player joins
 		$scope.game.player.cards = data.player.cards;
 
-		// this gets set once
+		// this gets set once a round
 		$scope.game.opponent.id = opponent.id;
 		$scope.game.opponent.name = opponent.name;
 		$scope.game.opponent.cards = opponent.cards;
@@ -447,6 +447,10 @@ console.log(data);
 
 		var player = $scope.game.action.players[$scope.game.player.id];
 		var opponent = $scope.game.action.players[$scope.game.opponent.id];
+
+		if (data.open) {
+			$scope.game.opponent.cards =  data.open[$scope.game.opponent.id].cards;
+		}
 
 		setGameData(player, opponent);
 		

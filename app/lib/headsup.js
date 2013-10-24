@@ -214,6 +214,17 @@ Game.prototype.AddEvent = function (owner, event) {
     });
 };
 
+Game.prototype.Stats = function () {
+
+    var stats = {};
+
+    stats.game = {};
+
+    stats.game.round
+    return {
+        numberOfPlayersInRoundFolded: getNumberOfPlayersInRoundFolded(this)
+    }
+}
 // Attempt to move the game along to the next round
 // This gets called after each player makes a move, or a round ends
 Game.prototype.Progress = function () {
@@ -691,7 +702,7 @@ function initRound (game) {
 
 // A redline round is one that ends without a showdown
 function finishRedlineRound (game) {
-
+console.log('finsih redline round')
     // Give the remaining player the chips in the pot
     for (var i = 0; i < game.players.length; i += 1) {
         if (game.players[i].out === false) {

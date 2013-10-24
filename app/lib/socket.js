@@ -229,7 +229,6 @@ exports.listen = function (server, sessionStore, app) {
 							// Send the private data to each individual player
 							if (numberOfPlayers === 2) {
 								for (var i = 0; i < numberOfPlayers; i++) {
-									console.log(JSON.stringify(Games[data.room].game.players[i].id));
 									io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
 										uuid: Date.now(), 
 										room: data.room,
@@ -241,7 +240,6 @@ exports.listen = function (server, sessionStore, app) {
 										},
 										opponent: {
 											id: Games[data.room].game.players[(i+1) % 2].id
-											//cards: ['00', '00']
 										}
 									});
 								}
@@ -314,10 +312,6 @@ exports.listen = function (server, sessionStore, app) {
 								break;
 						}
 
-
-
-						var timeout = 1000;
-
 						var Action = function () {
 							// After a play is made progress the game
 							// This will either update to the next betting round, 
@@ -325,6 +319,11 @@ exports.listen = function (server, sessionStore, app) {
 							// The next round must be called manually
 							Games[data.room].game.Progress();
 
+							// wait until the game is progressed
+							var gameState = Games[data.room].game.getState();
+							var endOfRound = Games[data.room].game.checkForEndOfRound();
+
+							// get the round fro mthe database
 							var rounds = game.rounds;
 							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
 							var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
@@ -338,30 +337,56 @@ exports.listen = function (server, sessionStore, app) {
 							game.save(function (err) {
 								if (err) throw err;
 
-								// send out the data to the players
+								// send out the data to everyone
 								io.sockets.in(data.room).emit('game:data', { 
 									uuid: Date.now(), 
 									room: data.room,
 									events: Games[data.room].game.events,
-									round: round.shared
+									round: round.shared,
+									// when a round is over due to an allin or call on the river we want to show the opponenents cards
+									open: (endOfRound && gameState === 'SHOWDOWN') ? round.unshared.players : null
 								});
 								
 							});
-
-							if (Games[data.room].game.checkForEndOfRound()) {
-
-								if (Games[data.room].game.getState() === 'SHOWDOWN') {
+console.log(endOfRound);
+console.log(gameState)
+							if (endOfRound) {
+								if (gameState === 'SHOWDOWN') {
 									Games[data.room].game.NewRound();
-
 									setTimeout(Action, 5000);
-								} else if (Games[data.room].game.getState() !== 'END') {
-									setTimeout(Action, 1000);
+								} else if (gameState === 'RIVER' || gameState === 'TURN' || gameState === 'FLOP' || gameState === 'DEAL') {
+									// if we are dealing with  redline round (player folds) then start a new round and send the data
+									if (Games[data.room].game.NewRound()) {
+										var numberOfPlayers = Games[data.room].game.players.length;
+										// Send the private data to each individual player
+										if (numberOfPlayers === 2) {
+											for (var i = 0; i < numberOfPlayers; i++) {
+												// Start a new round
+												Games[data.room].game.NewRound();
+
+												io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
+													uuid: Date.now(), 
+													room: data.room,
+													events: Games[data.room].game.events,
+													round: round.shared,
+													player: {
+														id: Games[data.room].game.players[i].id,
+														cards: Games[data.room].game.players[i].cards
+													},
+													opponent: {
+														id: Games[data.room].game.players[(i+1) % 2].id
+													}
+												});
+											}
+										}
+									} else {
+										setTimeout(Action, 1000);
+									}
 								}
 							}
-
 						};
 
-						setTimeout(Action, timeout);
+						setTimeout(Action, 1000);
 
 
 
