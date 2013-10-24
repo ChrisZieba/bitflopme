@@ -346,23 +346,13 @@ exports.listen = function (server, sessionStore, app) {
 									// when a round is over due to an allin or call on the river we want to show the opponenents cards
 									open: (endOfRound && gameState === 'SHOWDOWN') ? round.unshared.players : null
 								});
-								
-							});
-console.log(endOfRound);
-console.log(gameState)
-							if (endOfRound) {
-								if (gameState === 'SHOWDOWN') {
-									Games[data.room].game.NewRound();
-									setTimeout(Action, 5000);
-								} else if (gameState === 'RIVER' || gameState === 'TURN' || gameState === 'FLOP' || gameState === 'DEAL') {
-									// if we are dealing with  redline round (player folds) then start a new round and send the data
-									if (Games[data.room].game.NewRound()) {
+
 										var numberOfPlayers = Games[data.room].game.players.length;
 										// Send the private data to each individual player
 										if (numberOfPlayers === 2) {
 											for (var i = 0; i < numberOfPlayers; i++) {
 												// Start a new round
-												Games[data.room].game.NewRound();
+												//Games[data.room].game.NewRound();
 
 												io.sockets.in(data.room + ':' + Games[data.room].game.players[i].id).emit('player:data', { 
 													uuid: Date.now(), 
@@ -379,6 +369,19 @@ console.log(gameState)
 												});
 											}
 										}
+								
+							});
+console.log(endOfRound);
+console.log(gameState)
+							if (endOfRound) {
+								if (gameState === 'SHOWDOWN') {
+									Games[data.room].game.NewRound();
+									setTimeout(Action, 5000);
+								} else if (gameState === 'RIVER' || gameState === 'TURN' || gameState === 'FLOP' || gameState === 'DEAL') {
+									// if we are dealing with  redline round (player folds) then start a new round and send the data
+									if (Games[data.room].game.Round() === 1) {
+										Games[data.room].game.NewRound();
+										setTimeout(Action, 5000);
 									} else {
 										setTimeout(Action, 1000);
 									}

@@ -214,16 +214,9 @@ Game.prototype.AddEvent = function (owner, event) {
     });
 };
 
-Game.prototype.Stats = function () {
+Game.prototype.Round = function () {
 
-    var stats = {};
-
-    stats.game = {};
-
-    stats.game.round
-    return {
-        numberOfPlayersInRoundFolded: getNumberOfPlayersInRoundFolded(this)
-    }
+    return getNumberOfPlayersInRoundFolded(this)
 }
 // Attempt to move the game along to the next round
 // This gets called after each player makes a move, or a round ends
