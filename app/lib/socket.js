@@ -180,6 +180,7 @@ exports.listen = function (server, sessionStore, app) {
 					if (playerID !== null) {
 						socket.join(data.room + ':' + playerID);
 
+						// only push the player if they are not already in the room
 						Games[data.room].room.players.push({
 							id: session.user.id,
 							name: session.user.name
@@ -349,10 +350,14 @@ exports.listen = function (server, sessionStore, app) {
 							// This will either update to the next betting round, 
 							// finish the redline round (player folds) 
 							// The next round must be called manually, and we do not want to run progress after a new round
-							if (progress) {
-								Games[data.room].game.Progress();
-							}
 
+
+							if (progress) {
+								console.log('567');
+								Games[data.room].game.Progress();
+								console.log('568');
+							}
+							console.log('569');
 							var rounds = game.rounds;
 							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
 							var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
@@ -366,37 +371,48 @@ exports.listen = function (server, sessionStore, app) {
 							game.save(function (err) {
 								if (err) throw err;
 
-								// send out the data to the players
+								var gameState = Games[data.room].game.getState();
+								var roundData = Games[data.room].game.getRoundData();
+
+								if (gameState === 'SHOWDOWN' || gameState === 'END' ) {
+									console.log('0\n\n');
+									progress = false;
+									roundOver = true;
+									open = true;
+								}
+
+								// send out the data to the player
 								sendGameData(Games[data.room], data.room, open, roundOver);
-								
+//console.log(Games[data.room].game.checkForEndOfRound());
+
 								if (Games[data.room].game.checkForEndOfRound()) {
 
-									if (Games[data.room].game.getState() === 'SHOWDOWN') {
+									if (gameState === 'SHOWDOWN') {
+										console.log('1\n\n');
 										Games[data.room].game.NewRound();
 
 										setTimeout(function () {Action(false, false, false);}, 5000);
-									} else if (Games[data.room].game.getState() === 'RIVER') {
-
+									} else if (gameState === 'RIVER') {
+										console.log('2\n\n');
 										// check for redline round (player folds)
-										if (Games[data.room].game.getRoundData().playersFolded === 1) {
+										if (roundData.playersFolded === 1) {
 											Games[data.room].game.NewRound();
 											setTimeout(function () {Action(false, false, false);}, 2000);
 										} else {
+											console.log('666');
 											setTimeout(function () {Action(true, true, true);}, 5000);
 										}
 
 										
 
-									} else if (Games[data.room].game.getState() == 'TURN' ||
-										Games[data.room].game.getState() == 'FLOP' ||
-										Games[data.room].game.getState() == 'DEAL') {
-
+									} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
+										console.log('3\n\n');
 										// check for redline round (player folds)
-										if (Games[data.room].game.getRoundData().playersFolded === 1) {
+										if (roundData.playersFolded === 1) {
 											Games[data.room].game.NewRound();
-											setTimeout(function () {Action(false, false, false);}, 2000);
+											setTimeout(function () { Action(false, false, false); }, 2000);
 										} else {
-											setTimeout(function () {Action(true, true, true);}, 1000);
+											setTimeout(function () { Action(true, false, true); }, 1000);
 										}
 										
 									}
@@ -408,8 +424,9 @@ exports.listen = function (server, sessionStore, app) {
 						};
 
 						if (Games[data.room].game.checkForEndOfRound()) {
-							setTimeout(function () {Action(true, false, true);}, 0);
+							setTimeout(function () {Action(true, false, true);}, 1000);
 						} else {
+							// on the river after a call we end up here
 							setTimeout(function () {Action(true, false, false);}, 1000);
 						}
 						

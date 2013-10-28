@@ -86,15 +86,19 @@ Game.prototype.Start = function () {
 Game.prototype.checkForEndOfRound = function () {
 	var endOfRound = false;
 
-	// bother players are allin or at at least one person folded
-	if (getNumberOfPlayersInRoundAllIn(this) === 2 || 
-		getNumberOfPlayersInRoundFolded(this) > 0 || 
-		// when 1 player has acted that means we are waiting for the other players descision
-		(getNumberOfPlayersInRoundAllIn(this) === 1 && checkIfBetsEqual(this))) {
-		// at least one player is NOT allin, and at least one player who has NOT yet acted
+	if (this.state === 'SHOWDOWN') {
 		endOfRound = true;
 	}
-//Log('checkforend of round', this);
+
+	if (getNumberOfPlayersInRoundAllIn(this) === 2 || getNumberOfPlayersInRoundFolded(this) > 0) {
+		endOfRound = true;
+	}
+
+	if (getNumberOfPlayersInRoundAllIn(this) === 1 && checkIfBetsEqual(this)) {
+		endOfRound = true;
+	}
+
+
 	return endOfRound;
 };
 
@@ -229,7 +233,7 @@ Game.prototype.getRoundData = function () {
 Game.prototype.Progress = function () {
 //Log('Beginning of progress',this);
 
-
+console.log('667');
 	var numberOfPlayersInRoundFolded = getNumberOfPlayersInRoundFolded(this);
 	var numberOfPlayersInRoundActed = getNumberOfPlayersInRoundActed(this);
 	var numberOfPlayersInRoundAllIn = getNumberOfPlayersInRoundAllIn(this);
@@ -1405,18 +1409,18 @@ function checkForWinner (game) {
 		game.players[winners[i]].chips += prize / winners.length;
 
 		if (game.players[winners[i]].roundBets === 0) {
-			game.players[winners[i]].folded = true;
+			//game.players[winners[i]].folded = true;
 		}
 
 		game.AddEvent('Dealer', game.players[winners[i]].name + ' wins ' + prize / winners.length);
 	}
 
 	
-
 	for (var i = 0; i < game.players.length; i += 1) {
 		if (game.players[i].out === false) {
 			if (game.players[i].roundBets !== 0) {
 				roundEnd = false;
+				console.log(game.players[i].roundBets)
 			}
 		}
 	}
@@ -1429,7 +1433,7 @@ function checkForWinner (game) {
 function checkForBankrupt (game) {
 	for (var i = 0; i < game.players.length; i += 1) {
 		if (game.players[i].chips === 0) {
-			game.AddEvent('Dealer', game.players[i].name + ' has been elinated');
+			game.AddEvent('Dealer', game.players[i].name + ' has been eliminated');
 			// Remove a player when they have no more chips
 			game.players[i].out = true;
 		}
