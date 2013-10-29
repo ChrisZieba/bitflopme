@@ -12,7 +12,6 @@ function Game (smallBlind, bigBlind, minBuyIn, maxBuyIn) {
 	// whos turn is it
 	this.turn = -1;
 	this.pot = null;
-	this.sidePot = null;
 	this.winners = [];
 	this.state = null;
 	this.deck = [];
@@ -55,7 +54,7 @@ function Log (id, game) {
 
 	console.log('-- PLAYER DATA -----------------------------------');
 	for (var i = 0; i < game.players.length; i += 1) {
-		console.log('\tname: ' + game.players[i].name + ', chips: ' + game.players[i].chips + ', allin: ' + game.players[i].allIn + ', folded: ' + game.players[i].folded + ', acted: ' + game.players[i].acted + ', bets: ' + game.players[i].bets + ', callAmount: ' + (getMaxBet(game.players) - game.players[i].bets) + ', raisemount: ' + Math.min((getMaxBet(game.players) - game.players[i].bets)*2, game.players[i].chips) + '\n');
+		console.log('\tname: ' + game.players[i].name + ', chips: ' + game.players[i].chips + ', allin: ' + game.players[i].allIn + ', folded: ' + game.players[i].folded + ', acted: ' + game.players[i].acted + ', bets: ' + game.players[i].bets + ', roundbets: ' + game.players[i].roundBets  + ', callAmount: ' + (getMaxBet(game.players) - game.players[i].bets) + ', raisemount: ' + Math.min((getMaxBet(game.players) - game.players[i].bets)*2, game.players[i].chips) + '\n');
 
 	}
 
@@ -94,12 +93,69 @@ Game.prototype.checkForEndOfRound = function () {
 		endOfRound = true;
 	}
 
+	// if one player is allin and both players have matched bets
 	if (getNumberOfPlayersInRoundAllIn(this) === 1 && checkIfBetsEqual(this)) {
 		endOfRound = true;
 	}
 
 
 	return endOfRound;
+};
+
+
+// If a round just started 
+Game.prototype.checkForStartOfRound = function () {
+	var startOfRound = false;
+
+	if (getNumberOfPlayersInRoundActed(this) === 0 && this.state === 'DEAL') {
+		startOfRound = true;
+	}
+
+	return startOfRound;
+};
+
+Game.prototype.checkForEndOfGame = function () {
+	var endOfGame = false;
+
+	if (this.state === 'END') {
+		endOfGame = true;
+	}
+	return endOfGame;
+};
+
+// When a player folds the round is over and we do not need to go any further
+Game.prototype.checkForRedlineRound = function () {
+
+	var numberOfPlayersInRoundFolded = getNumberOfPlayersInRoundFolded(this);
+	var isRedlineRound = false;
+
+	if (numberOfPlayersInRoundFolded === 1) {
+		isRedlineRound = true;
+	} 
+
+	return isRedlineRound;
+
+};
+
+// When a player makes a call for all their chips and we want to open up the cards
+Game.prototype.checkForShowdown = function () {
+
+	var isShowdown = false;
+	var numberOfPlayersInRoundActed = getNumberOfPlayersInRoundActed(this);
+	var numberOfPlayersInRoundAllIn = getNumberOfPlayersInRoundAllIn(this);
+	var numberOfPlayersInRoundFolded = getNumberOfPlayersInRoundFolded(this);
+	var isBettingRoundOver = checkForEndOfBettingRound(this);
+	var gameState = this.state;
+
+	if (isBettingRoundOver) {
+		if (numberOfPlayersInRoundFolded === 0) {
+			isShowdown = true;
+		}
+	}
+
+
+	return isShowdown;
+
 };
 
 Game.prototype.getState = function () {
@@ -149,10 +205,13 @@ Game.prototype.NewRound = function() {
 			this.turn -= playerCount;
 		}
 
+
+Log('before we adjust the blinds', this);
 		// force small blind
 		// check if the small blind is forced allin
 		this.players[smallBlind].blind = 'small';
 
+		// does the player have enough to cover the smallblind
 		if (this.players[smallBlind].chips <= this.smallBlind) {
 
 			this.players[smallBlind].bets = this.players[smallBlind].chips;
@@ -160,7 +219,8 @@ Game.prototype.NewRound = function() {
 			this.players[smallBlind].acted = true;
 			this.players[smallBlind].allIn = true;
 
-			// Set the big blind as acted since they already have enough chips in (BB) to cover the small blind
+			// Set the big blind as acted since they already have enough chips in (BB) to cover the small blind, and
+			// will force the round to be over
 			this.players[bigBlind].acted = true;
 
 			this.AddEvent(this.players[smallBlind].name, 'small blind of ' + this.players[smallBlind].bets);
@@ -178,16 +238,27 @@ Game.prototype.NewRound = function() {
 		// force big blind
 		this.players[bigBlind].blind = 'big';
 
+		// check if the bib blind has enough chips to cover the blind
 		if (this.players[bigBlind].chips <= this.bigBlind) {
 			this.players[bigBlind].bets = this.players[bigBlind].chips;
 			this.players[bigBlind].chips = 0;
 			this.players[bigBlind].acted = true;
 			this.players[bigBlind].allIn = true;
-			this.AddEvent(this.players[bigBlind].name, 'big blind of ' + this.players[bigBlind].bets);
 
-			// check to see if the big blind had enough chips to cover the smallblin
+			this.AddEvent(this.players[bigBlind].name, 'big blind of ' + this.players[bigBlind].bets);
+			this.AddEvent(this.players[bigBlind].name, 'allin');
+
+			// check to see if the big blind had enough chips to cover the smallblind,
+			// otherwise the smallBlind needs to make a call still
 			if (this.players[bigBlind].bets <= this.smallBlind) {
-				// set the other player to acted since they have enough chips in to cover the BB
+
+				// match up the blinds
+				this.players[smallBlind].bets = this.players[bigBlind].bets 
+
+				// give the smallBlind the extra he put in the middle (ie sidePot)
+				this.players[smallBlind].chips += this.smallBlind - this.players[bigBlind].bets;
+
+				// set the other player to acted since they have more money in the pot than the big blind 
 				this.players[smallBlind].acted = true;
 			}
 		} else {
@@ -195,7 +266,7 @@ Game.prototype.NewRound = function() {
 			this.players[bigBlind].bets = this.bigBlind;
 			this.AddEvent(this.players[bigBlind].name, 'big blind of ' + this.bigBlind);
 		}
-		
+	Log('after we adjust the blinds', this);	
 
 	} else {
 
@@ -233,49 +304,50 @@ Game.prototype.getRoundData = function () {
 Game.prototype.Progress = function () {
 //Log('Beginning of progress',this);
 
-console.log('667');
+	console.log('667');
 	var numberOfPlayersInRoundFolded = getNumberOfPlayersInRoundFolded(this);
 	var numberOfPlayersInRoundActed = getNumberOfPlayersInRoundActed(this);
 	var numberOfPlayersInRoundAllIn = getNumberOfPlayersInRoundAllIn(this);
-
+	var isRoundOver = checkForEndOfBettingRound(this);
 	
-	if (checkForEndOfBettingRound(this)) {
-
+	if (isRoundOver) {
+		console.log('ggh');
 		moveBetsToPot(this);
 
-		// if theres only person left with cards
+		// if theres only person left with cards the chips are given to the player who is still in the hand
 		if (numberOfPlayersInRoundFolded === 1) {
 			finishRedlineRound(this);
 		} else {
 			nextBettingRound(this);
 		}
 	} else {
-
 		// The betting round is not yet over, since all players have not acted yet
 		//
 		// Since all players need to act for a betting round to be over we need to check the case where a 
 		// player decides to fold a small blind in heads up, or if they decide to fold under the gun
 		//
 		if (numberOfPlayersInRoundFolded === 1) {
+			console.log('ppo');
 			moveBetsToPot(this);
 			finishRedlineRound(this);
 		} else {
-			// it is the next players turn to act so update accordingle
+			console.log('jhy');
+			// it is the next players turn to act so update accordingly
 			updateTurn(this);
 		}
 	}
 
-//Log('End of progress',this);
+Log('End of progress',this);
 
 };
 
 function checkForEndOfBettingRound (game) {
 	var endOfBettingRound = true;
 	var maxBet = getMaxBet(game.players);
-
+	var isRoundOver = game.checkForEndOfRound();
 
 	// a betting round is automaticaly over if the round is over
-	if (!game.checkForEndOfRound()) {
+	if (!isRoundOver) {
 		// For each player, check if they are still in the hand
 		for (var i = 0; i < game.players.length; i += 1) {
 			if (game.players[i].folded === false) {
@@ -412,23 +484,17 @@ Player.prototype.Options = function (roundOver) {
 			// a player must raise at least twice the size of the current bet plus the amount to call, 
 			// or all thier chips if they cant cover that
 			var raiseAmount = Math.min(callAmount*2, this.chips);
-//Log('canraise',this.game);
+Log('canraise',this.game);
 
-			// if this is the preflop round and no one has acted then thefirst raise is a bit different
-			//if (this.game.state === 'DEAL') {
-				//if (getNumberOfPlayersInRoundActed(this.game) === 0) {
-					// this will be twice the big blind on the first hand
-					//raiseAmount = Math.min(maxBet*2, this.chips);
-				//}
-			//}
 
 			options['RAISE'] = {
 				allowed: true,
 				name: "RAISE",
 				// in the big blind the callamount is 0 so we need to set the min to the heighest of these amount
-				min: (callAmount === 0) ? Math.max(maxBet, raiseAmount) : raiseAmount,
+				// also make sure the min is not higher than the 
+				min: (callAmount === 0) ? Math.min(Math.max(maxBet, raiseAmount),this.chips) : raiseAmount,
 				max: this.chips,
-				amount: (callAmount === 0) ? Math.max(maxBet, raiseAmount) : raiseAmount
+				amount: (callAmount === 0) ? Math.min(Math.max(maxBet, raiseAmount),this.chips) : raiseAmount
 			}
 		} 
 
@@ -484,10 +550,6 @@ Player.prototype.canBet = function() {
 	return canBet;
 };
 
-// Given the id of the current player, find the opponent
-Player.prototype.getOpponent = function(id) {
-
-}
 
 Player.prototype.canRaise = function() {
 
@@ -552,8 +614,21 @@ Player.prototype.Bet = function (bet) {
 	
 };
 
-Player.prototype.Raise = function (bet) {
 
+Game.prototype.adjustBet = function (id, diff) {
+	// add the chips to the players stack
+
+	diff = parseInt(diff, 10);
+
+	this.players[id].chips += diff;
+	this.players[id].bets -= diff;
+	//this.players[id].roundBets -= diff;
+
+};
+
+
+Player.prototype.Raise = function (bet) {
+Log('raise', this.game);
 	// check to see if the raise is all the players chips
 	if (this.chips === bet) {
 		this.bets += this.chips;
@@ -569,7 +644,7 @@ Player.prototype.Raise = function (bet) {
 	this.acted = true;
 	//this.game.Progress();
 
-//Log('raise', this.game);
+
 
 };
 
@@ -577,19 +652,23 @@ Player.prototype.Raise = function (bet) {
 Player.prototype.Call = function() {
 	var maxBet = getMaxBet(this.game.players);
 Log('call', this.game);
+
 	// move the bets the player has already put put back into their stack
 	if (this.bets >= 0) {
 		this.chips += this.bets;
 	}
 
+	// if the player can cover the bet
 	if (this.chips > maxBet) {
 		// take the chips from the players stack
 		this.chips -= maxBet;
 		this.bets = maxBet;
 	} else {
 		// the player is forced allin with the call
-		// push the rest onto a sidepot
-		this.game.sidePot = maxBet - this.chip
+
+		// give the rest back the other player, and adjust the pot and his bet
+		this.game.adjustBet(getOtherPlayerID(this.game, this.id), (maxBet - this.chips));
+
 		this.bets = this.chips;
 		this.chips = 0;
 		this.allIn = true;
@@ -648,6 +727,8 @@ function getPlayerCount (game) {
 
 // dealer is the player index who currently has the button
 function updateTurn (game, dealer) {
+
+	console.log('\n\n\n--UPDATETURN--\n\n\n')
 	var playerCount = getPlayerCount(game);
 
 	// if the round is over, no player has a turn left
@@ -700,7 +781,6 @@ function initRound (game) {
 
 		updateTurn(game, game.dealer);
 		fillDeck(game.deck);
-
 }
 
 // A redline round is one that ends without a showdown
@@ -723,7 +803,7 @@ console.log('finsih redline round')
 function initBettingRound (game) {
 	console.log('init betting round')
 	for (var i = 0; i < game.players.length; i += 1) {
-		if (!game.players[i].out) {
+		if (game.players[i].out === false) {
 			game.players[i].bets = 0;
 			game.players[i].acted = false;
 		}
@@ -1355,9 +1435,10 @@ function checkForWinner (game) {
 	var part = 0;
 	var prize = 0;
 	var roundEnd = true;
-
+Log('checkforwinnter-before', game);
 	for (var i = 0; i < game.players.length; i += 1) {
 
+		// only check players who are still in the game (chips!==0)
 		if (game.players[i].out === false) {
 			// if the rank is equal to the previous hand, its a tie
 			if (game.players[i].hand.rank === maxRank && game.players[i].folded === false) {
@@ -1366,14 +1447,15 @@ function checkForWinner (game) {
 			// if someone has a better hand, they are new sole winner, so remove the other ones
 			if (game.players[i].hand.rank > maxRank && game.players[i].folded === false) {
 				maxRank = game.players[i].hand.rank;
-				// empty winners array
+				
+				// empty the winners array
 				winners.splice(0, winners.length);
 				winners.push(i);
 			}
 		}
 	}
 
-	// pass the array of winners to see how many of them are allin
+	/* pass the array of winners to see how many of them are allin
 	var allInPlayers = checkForAllInPlayers(game, winners);
 
 	if (allInPlayers.length > 0) {
@@ -1390,44 +1472,37 @@ function checkForWinner (game) {
 
 	}
 
-
-	for (var i = 0; i < game.players.length; i += 1) {
+*/
+	// the prize is just what the player has put in the round thus far
+	for (var i = 0; i < game.players.length; i+= 1) {
 		if (game.players[i].out === false) {
-			if (game.players[i].roundBets > part) {
-				prize += part;
-				game.players[i].roundBets -= part;
-			} else {
-				prize += game.players[i].roundBets;
-				game.players[i].roundBets = 0;
-			}
+			prize += game.players[i].roundBets;
+			game.players[i].roundBets = 0;
 		}
 	}
-
 
 	for (var i = 0; i < winners.length; i += 1) {
 		// split the pot if necessary
-		game.players[winners[i]].chips += prize / winners.length;
-
-		if (game.players[winners[i]].roundBets === 0) {
-			//game.players[winners[i]].folded = true;
-		}
-
-		game.AddEvent('Dealer', game.players[winners[i]].name + ' wins ' + prize / winners.length);
+		console.log(((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
+		console.log('--------WHAT THE FUCK----------');
+		game.players[winners[i]].chips += ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length));
+		game.AddEvent('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
 	}
-
+Log('checkforwinnter-after', game);
 	
-	for (var i = 0; i < game.players.length; i += 1) {
-		if (game.players[i].out === false) {
-			if (game.players[i].roundBets !== 0) {
-				roundEnd = false;
-				console.log(game.players[i].roundBets)
-			}
-		}
-	}
+	//for (var i = 0; i < game.players.length; i += 1) {
+		//if (game.players[i].out === false) {
+			//if (game.players[i].roundBets !== 0) {
+				//roundEnd = false;
+				//console.log('roundbets');
+				//console.log(game.players[i].roundBets)
+			//}
+		//}
+	//}
 
-	if (roundEnd === false) {
-		checkForWinner(game);
-	}
+	//if (roundEnd === false) {
+		//checkForWinner(game);
+	//}
 }
 
 function checkForBankrupt (game) {
@@ -1445,11 +1520,25 @@ function moveBetsToPot (game) {
 	for (var i = 0; i < game.players.length; i += 1) {
 		if (game.players[i].out === false) {
 			game.pot += parseInt(game.players[i].bets, 10);
+			// add to the amount the player has put in during the round
 			game.players[i].roundBets += parseInt(game.players[i].bets, 10);
 		}
 
 	}
 }
 
+// Sometimes we need the player ID of the other opponenet
+// Takes in the ID of the player who wants to know who they are playing against
+function getOtherPlayerID (game, current) {
+
+	var id = null;
+
+	if (getPlayerCount(game) === game.maxPlayers) {
+		// if the id given is 0, return 1. If the id given is 1 return 0.
+		id = (current === 0) ? 1 : 0;
+	}
+console.log(id);
+	return id;
+}
 
 exports.Game = Game;

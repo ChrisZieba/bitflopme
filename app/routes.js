@@ -430,8 +430,8 @@ module.exports = function (app) {
 					        bigBlind: 100,
 					        minPlayers: 2,
 					        maxPlayers: 2,
-					        minBuyIn: 100,
-					        maxBuyIn: 1000,
+					        minBuyIn: 10000,
+					        maxBuyIn: 10000,
 					        timer: {
 					            call: 30
 					        }

@@ -330,6 +330,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			var date = new Date(ms);
 			return date.toLocaleString();
 		},
+		parseAmount: function (amount) {
+			return (amount === null || typeof amount === 'undefined') ? 0 : parseInt(amount, 10);
+		},
 		killVideoStream: function () {
 			if ($scope.peer.local.stream) {
 				$scope.peer.local.stream.stop();

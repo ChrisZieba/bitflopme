@@ -43,8 +43,8 @@ db.games.insert({
     "settings": {
         "smallBlind": 50,
         "bigBlind": 100,
-        "minBuyIn": 100,
-        "maxBuyIn": 1000,
+        "minBuyIn": 10000,
+        "maxBuyIn": 10000,
         "timer": 15
     },
 

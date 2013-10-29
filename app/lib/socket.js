@@ -91,7 +91,7 @@ exports.listen = function (server, sessionStore, app) {
 	//	Only logged in players can connect to a game via socket.io
 	io.sockets.on('connection', function (socket) {
 
-		var sendGameData = function (Game, room, open, roundOver) {
+		var sendGameData = function (Game, room, showdown, roundOver, gameOver) {
 			// If a player has joined/rejoined a table send all the players their cards again
 			// Send the private data to each individual player
 			for (var i = 0; i <  Game.game.players.length; i++) {
@@ -104,11 +104,11 @@ exports.listen = function (server, sessionStore, app) {
 					},
 					events: Game.game.events,
 					action: {
-						dealer: (roundOver) ? null: Game.game.dealer,
-						turn: (roundOver) ? null: Game.game.turn,
-						smallBlind: (roundOver) ? null: Game.game.smallBlind,
-						bigBlind: (roundOver) ? null: Game.game.bigBlind,
-						pot: Game.game.pot,
+						dealer: (gameOver) ? null: Game.game.dealer,
+						turn: (roundOver || gameOver) ? null: Game.game.turn,
+						smallBlind: (gameOver) ? null: Game.game.smallBlind,
+						bigBlind: (gameOver) ? null: Game.game.bigBlind,
+						pot: ((roundOver && !showdown) || gameOver) ? 0: Game.game.pot,
 						state: Game.game.state,
 						board: Game.game.board
 					},
@@ -121,22 +121,22 @@ exports.listen = function (server, sessionStore, app) {
 						folded: Game.game.players[i].folded,
 						allIn: Game.game.players[i].allIn,
 						acted: Game.game.players[i].acted,
-						blind: Game.game.players[i].blind,
-						bets: Game.game.players[i].bets,
+						blind: ((roundOver && !showdown) || gameOver) ? null : Game.game.players[i].blind,
+						bets: (roundOver || gameOver) ? 0 : Game.game.players[i].bets,
 						out: Game.game.players[i].out,
 						options: Game.game.players[i].Options(roundOver)
 					},
 					opponent: {
 						id: Game.game.players[(i+1) % 2].id,
 						name: Game.game.players[(i+1) % 2].name,
-						cards: (open) ? Game.game.players[(i+1) % 2].cards : ['00', '00'],
+						cards: (showdown) ? Game.game.players[(i+1) % 2].cards : ['00', '00'],
 						chips: Game.game.players[(i+1) % 2].chips,
 						action: Game.game.players[(i+1) % 2].action,
 						folded: Game.game.players[(i+1) % 2].folded,
 						allIn: Game.game.players[(i+1) % 2].allIn,
 						acted: Game.game.players[(i+1) % 2].acted,
-						blind: Game.game.players[(i+1) % 2].blind,
-						bets: Game.game.players[(i+1) % 2].bets,
+						blind: ((roundOver && !showdown) || gameOver) ? null : Game.game.players[(i+1) % 2].blind,
+						bets: (roundOver || gameOver) ? 0 : Game.game.players[(i+1) % 2].bets,
 						out: Game.game.players[(i+1) % 2].out,
 						options: Game.game.players[(i+1) % 2].Options(roundOver)
 					}
@@ -345,18 +345,26 @@ exports.listen = function (server, sessionStore, app) {
 						}
 
 
-						var Action = function (progress, open, roundOver) {
-							// After a play is made progress the game
-							// This will either update to the next betting round, 
-							// finish the redline round (player folds) 
-							// The next round must be called manually, and we do not want to run progress after a new round
+						var Action = function () {
 
+							// this gets called once before we progress the game, and gain after
+							var isRoundOver = Games[data.room].game.checkForEndOfRound();
+							var isRedlineRound = Games[data.room].game.checkForRedlineRound();
+							var isGameOver = Games[data.room].game.checkForEndOfGame();
+							var isRoundStarting =  Games[data.room].game.checkForStartOfRound();
+							var isShowdown = Games[data.room].game.checkForShowdown();
 
-							if (progress) {
+							// This will either update to the next betting round, finish the redline round (player folds) 
+							// Only call progress if the round is NOT just starting (ie. After a new round)
+							if (!isRoundStarting && !isGameOver) {
 								console.log('567');
 								Games[data.room].game.Progress();
-								console.log('568');
+
+								isRoundOver = Games[data.room].game.checkForEndOfRound();
+								isGameOver = Games[data.room].game.checkForEndOfGame();
+								isShowdown = Games[data.room].game.checkForShowdown();
 							}
+
 							console.log('569');
 							var rounds = game.rounds;
 							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
@@ -374,148 +382,32 @@ exports.listen = function (server, sessionStore, app) {
 								var gameState = Games[data.room].game.getState();
 								var roundData = Games[data.room].game.getRoundData();
 
-								if (gameState === 'SHOWDOWN' || gameState === 'END' ) {
-									console.log('0\n\n');
-									progress = false;
-									roundOver = true;
-									open = true;
-								}
 
 								// send out the data to the player
-								sendGameData(Games[data.room], data.room, open, roundOver);
-//console.log(Games[data.room].game.checkForEndOfRound());
+								sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
 
-								if (Games[data.room].game.checkForEndOfRound()) {
-
+								// If a player folded we need to start a new round and send the new cards with Action()
+								if (isRedlineRound) {
+									Games[data.room].game.NewRound();
+									setTimeout(function () {Action();}, 2000);
+								} else if (isRoundOver) {
 									if (gameState === 'SHOWDOWN') {
 										console.log('1\n\n');
 										Games[data.room].game.NewRound();
-
-										setTimeout(function () {Action(false, false, false);}, 5000);
+										setTimeout(function () {Action();}, 5000);
 									} else if (gameState === 'RIVER') {
 										console.log('2\n\n');
-										// check for redline round (player folds)
-										if (roundData.playersFolded === 1) {
-											Games[data.room].game.NewRound();
-											setTimeout(function () {Action(false, false, false);}, 2000);
-										} else {
-											console.log('666');
-											setTimeout(function () {Action(true, true, true);}, 5000);
-										}
-
-										
+										setTimeout(function () {Action();}, 5000);
 
 									} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
 										console.log('3\n\n');
-										// check for redline round (player folds)
-										if (roundData.playersFolded === 1) {
-											Games[data.room].game.NewRound();
-											setTimeout(function () { Action(false, false, false); }, 2000);
-										} else {
-											setTimeout(function () { Action(true, false, true); }, 1000);
-										}
-										
+										setTimeout(function () { Action(); }, 1000);
 									}
 								}
 							});
-
-
-
 						};
 
-						if (Games[data.room].game.checkForEndOfRound()) {
-							setTimeout(function () {Action(true, false, true);}, 1000);
-						} else {
-							// on the river after a call we end up here
-							setTimeout(function () {Action(true, false, false);}, 1000);
-						}
-						
-
-
-
-
-						/* we need to check where the game is
-						// if the round ended on an allin on the flop and someone called we need to play out the flop, turn, river and showdown
-						// if the round ended on a fold then just move to the next round
-						var Action = function (callback) {
-
-							var rounds = game.rounds;
-							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
-							var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
-							rounds.push(round);
-
-							// 	Update the database
-							game.events = Games[data.room].game.events;
-							game.rounds = rounds;
-							game.save(function (err) {
-								if (err) throw err;
-
-
-
-								// wait a few seconds before sending data back to the clients
-								setTimeout(function () {
-
-									io.sockets.in(data.room).emit('game:data', { 
-										uuid: Date.now(), 
-										room: data.room,
-										events: Games[data.room].game.events,
-										round: round.shared
-									});
-								}, 500);
-	
-
-								if (typeof callback === 'function') {
-									callback();
-								}
-								
-							});
-
-						};
-
-
-						// run the interval until the hand is over
-						intervalID = setInterval(function(){
-							//Games[data.room].game.game.Progress();
-							Action(function(){
-							
-								// The only time we need to preogress again (keep the interval running) is when betting can not continue
-								// That means showing the rest of the board, one card at a time
-								if (Games[data.room].game.checkForEndOfRound()) {
-
-									if (Games[data.room].game.getState() === 'END') {
-										// send the congratulations data
-									} else if (Games[data.room].game.getState() === 'SHOWDOWN') {
-										Games[data.room].game.NewRound();
-										Games[data.room].game.Progress();
-									} else {
-										Games[data.room].game.Progress();
-									}
-
-
-									
-
-								} else {
-									// When the round is not over (both players still in the hand) we can clear the interval
-									// and wait for a player action
-									clearInterval(intervalID);
-									//setTimeout(Play, 3000);
-								} 
-
-
-								// The only time we need to preogress again (keep the interval running) is when betting can not continue
-								// That means showing the rest of the board, one card at a time
-								if (Games[data.room].game.checkForEndOfRound() && Games[data.room].game.getState() !== 'END') {
-									Games[data.room].game.Progress();
-								} else {
-									// && Games[data.room].game.state !== 'END'
-									// stop the interval from running any more
-									clearInterval(intervalID);
-									//setTimeout(Play, 3000);
-								} 
-							});
-
-						}, intervalMS);
-						*/
+						setTimeout(function () {Action();}, 1000);
 
 					}
 				});
@@ -547,7 +439,7 @@ exports.listen = function (server, sessionStore, app) {
 							game.settings.minBuyIn, 
 							game.settings.maxBuyIn
 						);
-					}
+					};
 
 					Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
 
@@ -572,7 +464,6 @@ exports.listen = function (server, sessionStore, app) {
 								players: Games[scope.room].room.players,
 								observers: Games[scope.room].room.observers
 							}
-							
 						});
 					});
 				});

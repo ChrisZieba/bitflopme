@@ -195,6 +195,7 @@
 												<span class="blind-bet" ng-cloak ng-show="game.opponent.blind == 'small'">SB</span>
 												<span class="blind-bet" ng-cloak ng-show="game.opponent.blind == 'big'">BB</span>
 												<span class="chip-count">{{ game.opponent.chips}}</span>
+												<span class="chip-count" ng-cloak ng-show="game.opponent.bets != 0 && game.opponent.bets != null">{{game.opponent.bets}}</span>
 											</div>
 
 										<% } %>
@@ -210,11 +211,6 @@
 												</ul>
 											</div>
 
-										</div>
-
-										<div class="opp-player-bet bet" ng-cloak ng-show="game.action.state != null">
-											<!--<span class="player-action" ng-cloak ng-show="game.opponent.action != null">{{ game.opponent.action}}</span>-->
-											<span class="player-action" ng-cloak ng-show="game.opponent.bets != 0">{{game.opponent.bets}}</span>
 										</div>
 										
 									</div>
@@ -234,6 +230,7 @@
 											<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'small'">SB</span>
 											<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'big'">BB</span>
 											<span class="chip-count" ng-cloak ng-show="game.action.state != null">{{ game.player.chips}}</span>
+											<span class="chip-count" ng-cloak ng-show="game.player.bets != 0 && game.player.bets != null">{{ game.player.bets }}</span>
 										</div>
 									<% } %>
 
@@ -255,11 +252,6 @@
 										</div>
 									</div>
 
-									<div class="opp-player-bet bet" ng-cloak ng-show="game.action.state != null">
-										<!--<span class="player-action" ng-cloak ng-show="game.player.action != null">{{ game.player.action }}</span>-->
-										<span class="player-action" ng-cloak ng-show="game.player.bets != 0">{{ game.player.bets }}</span>
-									</div>
-
 								</div>
 
 
@@ -268,22 +260,22 @@
 										<button type="button" class="btn btn-check" ng-click="action(game.player.options['CHECK'].name)">Check</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-btn">
-										<button type="button" class="btn btn-bet" ng-click="action(game.player.options['BET'].name)">Bet {{ game.player.options['BET'].amount | number:0}}</button>
+										<button type="button" class="btn btn-bet" ng-click="action(game.player.options['BET'].name)">Bet {{fn.parseAmount(game.player.options['BET'].amount)}}</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['FOLD'].allowed" class="action-btn">
 										<button type="button" class="btn btn-fold" ng-click="action(game.player.options['FOLD'].name)">Fold</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['CALL'].allowed" class="action-btn">
-										<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{game.player.options['CALL'].amount | number:0 }}</button>
+										<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{fn.parseAmount(game.player.options['CALL'].amount)}}</button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-btn">
-										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{game.player.options['RAISE'].amount | number:0}}</span></button>
+										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{fn.parseAmount(game.player.options['RAISE'].amount)}}</span></button>
 									</div>
 									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-slider">
-										<slider floor="{{game.player.options['RAISE'].min}}" ceiling="{{game.player.options['RAISE'].max}}" step="1" precision="1" ng-model="game.player.options['RAISE'].amount"></slider>
+										<slider floor="{{fn.parseAmount(game.player.options['RAISE'].min)}}" ceiling="{{fn.parseAmount(game.player.options['RAISE'].max)}}" step="1" precision="0" ng-model="game.player.options['RAISE'].amount"></slider>
 									</div>
 									<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-slider">
-										<slider floor="{{game.player.options['BET'].min}}" ceiling="{{game.player.options['BET'].max}}" step="1" precision="1" ng-model="game.player.options['BET'].amount"></slider>
+										<slider floor="{{fn.parseAmount(game.player.options['BET'].min)}}" ceiling="{{fn.parseAmount(game.player.options['BET'].max)}}" step="1" precision="0" ng-model="game.player.options['BET'].amount"></slider>
 									</div>
 								</div>
 							</div>
@@ -296,11 +288,12 @@
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 ">
 							<div class="table">
 								
-								
 								<div class="board">
 									<div ng-repeat="card in game.action.board" class="card"><span class="card-{{card}}"></span></div>
 								</div>
-								<div class="pot" ng-cloak ng-show="game.action.pot != 0">{{ game.action.pot }}</div>
+								<div class="pot" ng-cloak ng-show="game.action.pot != 0 && game.action.state != null">
+									<span class="chip-count">{{ game.action.pot }}</span>
+								</div>
 								
 							</div>
 						</div>

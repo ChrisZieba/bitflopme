@@ -134,8 +134,16 @@ code {
   margin-top: 1px;
   margin-right: 2px;
   margin-bottom: 1px;
-}
 
+
+background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+background: -moz-linear-gradient(top, #fff, #ededed);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+
+
+  border:3px solid #000;
+  font-weight: 700;
+}
 
 
 .player-container {
@@ -235,15 +243,6 @@ code {
 	left: 15px;
 	padding:15px;
 
-
-}
-
-.opp-player-bet {
-
-	position: absolute;
-	bottom: 0;
-	right: 20px;
-	padding:15px;
 
 }
 
@@ -373,6 +372,7 @@ span.player-name {
 span.blind-bet {
 	padding: 2px 4px;
 	color: #ffffff;
+	font-weight: 700;
 	white-space: nowrap;
 	background-color: #999999;
 	border-radius: 4px;
