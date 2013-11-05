@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 
 exports.Counters = db.model('Counters', new Schema({
     games : { type: Number, required: true },
+    records : { type: Number, required: true },
     users : { type: Number, required: true },
 }));
 
@@ -14,16 +15,25 @@ exports.Counters = db.model('Counters', new Schema({
 exports.Games = db.model('Games', new Schema({
     id : { type: Number, required: true },
     name: { type: String, required: true },
-    passcode : { type: String, required: false },
+    created: { type: Date, required: false, default: Date.now },
     creator : { type: Schema.Types.Mixed, required: true },
     // POSSIBLE STATES ['NEW','PLAYING','FINISHED']
     state: { type: String, required: true, default: 'NEW' },
     players : [],
-    created: { type: Date, required: false, default: Date.now },
     settings : { type: Schema.Types.Mixed, required: false, default: null },
-    //  Contains history of the play, without chip counts, etc
-    history : [],
     //  After each round of the game, we push the chip counts, etc. This will be a 2D array since a round consists of many actions, ie. call, fold, etc
+    events:[],
+    rounds : []
+}));
+
+exports.Records = db.model('Records', new Schema({
+    id : { type: Number, required: true },
+    name: { type: String, required: true },
+    created: { type: Date, required: false, default: Date.now },
+    creator : { type: Schema.Types.Mixed, required: true },
+    players : [],
+    settings : { type: Schema.Types.Mixed, required: false, default: null },
+    events:[],
     rounds : []
 }));
 

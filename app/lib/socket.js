@@ -110,7 +110,8 @@ exports.listen = function (server, sessionStore, app) {
 						bigBlind: (gameOver) ? null: Game.game.bigBlind,
 						pot: ((roundOver && !showdown) || gameOver) ? 0: Game.game.pot,
 						state: Game.game.state,
-						board: Game.game.board
+						board: Game.game.board,
+						winner: (gameOver) ? Game.game.getWinner() : null
 					},
 					player: {
 						id: Game.game.players[i].id,
@@ -143,6 +144,81 @@ exports.listen = function (server, sessionStore, app) {
 				});
 			}
 		};
+
+		// the game is over. 
+		// copy the relevent game data to a completed database, so we can resue the gamname
+		// @data is the game document from the database
+		var endGame = function (Game, room, data) {
+
+			models.Counters.findOne({}, function (err, counter) {
+
+				var record = new models.Records();
+				var count = counter.records + 1;	
+
+				record.id = count;
+				record.name = data.name;
+				record.created = data.created;
+				record.creator = data.creator;
+				record.players = data.players;
+				record.settings = data.settings;
+				record.events = data.events;
+				record.rounds = data.rounds;
+				
+				record.save(function (err) {
+					if (err) throw err;
+
+					//update the counter in the database
+					models.Counters.update({records: count}, function (err) {
+						if (err) throw err;
+
+						// this gets sent to every connection
+						io.sockets.in(room).emit('game:end', { 
+							uuid: Date.now(), 
+							room: {
+								id: room,
+								players: Game.room.players,
+								observers: Game.room.observers
+							},
+							events: Game.game.events,
+							action: {
+								dealer: null,
+								turn: null,
+								smallBlind: null,
+								bigBlind: null,
+								pot: 0,
+								state: "END",
+								board: [],
+								winner: Game.game.getWinner()
+							},
+							player: {
+								id: Game.game.players[0].id,
+								name: Game.game.players[0].name,
+								cards: [],
+								chips: 0,
+								options: Game.game.players[0].Options(true)
+							},
+							opponent: {
+								id: Game.game.players[1].id,
+								name: Game.game.players[1].name,
+								cards: [],
+								chips: 0,
+								options: Game.game.players[1].Options(true)
+							}
+						});
+
+						// this will remove the game record from the database
+						models.Games.findOne({ id: room}, function (err, game) {
+							if (err) throw new Error(501, err);
+
+							game.remove();
+						});
+
+					});	
+				});
+			});
+
+		};
+
 
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
@@ -271,6 +347,7 @@ exports.listen = function (server, sessionStore, app) {
 						// that way we can rebuild the game from where it was left off, as nothing happened at all
 						game.events = Games[data.room].game.events;
 						game.rounds = rounds;
+						game.state = "PLAYING";
 						game.save(function (err) {
 							if (err) throw err;
 							// sends the cards and any other data
@@ -376,6 +453,7 @@ exports.listen = function (server, sessionStore, app) {
 							// 	Update the database
 							game.events = Games[data.room].game.events;
 							game.rounds = rounds;
+							game.state = (isGameOver) ? 'END' : 'PLAYING'; 
 							game.save(function (err) {
 								if (err) throw err;
 
@@ -391,6 +469,7 @@ exports.listen = function (server, sessionStore, app) {
 									Games[data.room].game.NewRound();
 									setTimeout(function () {Action();}, 2000);
 								} else if (isRoundOver) {
+
 									if (gameState === 'SHOWDOWN') {
 										console.log('1\n\n');
 										Games[data.room].game.NewRound();
@@ -403,12 +482,24 @@ exports.listen = function (server, sessionStore, app) {
 										console.log('3\n\n');
 										setTimeout(function () { Action(); }, 1000);
 									}
+								} else if (isGameOver) {
+									setTimeout(function () {
+										var record = {
+											name: game.name,
+											created: game.created,
+											creator: game.creator,
+											settings: game.settings,
+											events: game.events,
+											rounds: game.rounds
+										};
+
+										endGame(Games[data.room], data.room, record);
+										// we can now remove the record from the database
+									}, 15000);
 								}
 							});
 						};
-
 						setTimeout(function () {Action();}, 1000);
-
 					}
 				});
 
@@ -424,48 +515,55 @@ exports.listen = function (server, sessionStore, app) {
 
 				models.Games.findOne({ id: scope.room }, function (err, game) {
 					if (err) throw new Error(501, err);
-					if (!game) throw new Error(502, 'Could not make connection to game');
+					
+					if (game) {
 
-					if (!Games.hasOwnProperty(scope.room)) {
-						Games[scope.room] = {};
-						Games[scope.room].room = {
-							id: scope.room,
-							players: [],
-							observers: []
-						};
-						Games[scope.room].game = new poker.Game(
-							game.settings.smallBlind, 
-							game.settings.bigBlind, 
-							game.settings.minBuyIn, 
-							game.settings.maxBuyIn
-						);
-					};
-
-					Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
-
-					// remove the user from the room
-					if (scope.player.id !== null) {
-						Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
-					} else {
-						Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
-					}
-
-					game.events = Games[scope.room].game.events;
-					game.save(function (err) {
-
-						io.sockets.in(scope.room).emit('game:leave', { 
-							uuid: Date.now(), 
-							user: {
-								name: scope.user.name
-							},
-							events: Games[scope.room].game.events,
-							room: {
+						if (!Games.hasOwnProperty(scope.room)) {
+							Games[scope.room] = {};
+							Games[scope.room].room = {
 								id: scope.room,
-								players: Games[scope.room].room.players,
-								observers: Games[scope.room].room.observers
-							}
+								players: [],
+								observers: []
+							};
+							Games[scope.room].game = new poker.Game(
+								game.settings.smallBlind, 
+								game.settings.bigBlind, 
+								game.settings.minBuyIn, 
+								game.settings.maxBuyIn
+							);
+						};
+
+						Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
+
+						// remove the user from the room
+						if (scope.player.id !== null) {
+							Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
+						} else {
+							Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
+						}
+
+						// check to see if we need to close the table down
+						if (game.state === 'END' && Games[scope.room].room.players.length === 0) {
+
+						}
+
+						game.events = Games[scope.room].game.events;
+						game.save(function (err) {
+
+							io.sockets.in(scope.room).emit('game:leave', { 
+								uuid: Date.now(), 
+								user: {
+									name: scope.user.name
+								},
+								events: Games[scope.room].game.events,
+								room: {
+									id: scope.room,
+									players: Games[scope.room].room.players,
+									observers: Games[scope.room].room.observers
+								}
+							});
 						});
-					});
+					}
 				});
 			});
 		});

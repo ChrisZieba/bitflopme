@@ -51,7 +51,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .jumbotron {
 
 	background-color: #2C3E50;
-
+	padding-top: 35px;
+	padding-bottom: 35px;
 	border-bottom: 1px solid #dddedf;
 
 }
@@ -168,7 +169,7 @@ code {
 }
 
 #wrap .navbar-default {
-	background-color: #1a2836;
+	background-color: #2C3E50;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
 	border-color: #999;
 	border-width: 0;
@@ -184,7 +185,7 @@ code {
 }
 
 #wrap .navbar-default .navbar-nav > li > a {
-	color: #999999;
+	color: #717387;
 	padding:15px 0 0 0;
 	margin:0 15px 0 0;
 }

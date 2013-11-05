@@ -420,6 +420,15 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	});
 
+	socket.on('game:end', function (data) {
+		console.log('game:end');
+		console.log(data);
+
+		$scope.game.action = data.action;
+		$scope.game.player = data.player;
+		$scope.game.opponent = data.opponent;
+
+	});
 
 	socket.on('game:leave', function (data) {
 		$scope.game.history = data.history;

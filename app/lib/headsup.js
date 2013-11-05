@@ -158,6 +158,21 @@ Game.prototype.checkForShowdown = function () {
 
 };
 
+Game.prototype.getWinner = function () {
+
+	var winner = null;
+
+	if (this.state === 'END') {
+		for (var i = 0; i < this.players.length; i += 1) {
+			if (this.players[i].chips === (this.maxBuyIn*2)) {
+				winner = this.players[i].name;
+			}
+		}
+	} 
+
+	return winner;
+};
+
 Game.prototype.getState = function () {
 	return this.state;
 };
@@ -1487,6 +1502,7 @@ Log('checkforwinnter-before', game);
 		console.log('--------WHAT THE FUCK----------');
 		game.players[winners[i]].chips += ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length));
 		game.AddEvent('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
+		console.log('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
 	}
 Log('checkforwinnter-after', game);
 	

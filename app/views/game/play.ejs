@@ -35,10 +35,50 @@
 
 	<body ng-controller="GameCtrl">
 
+
+		<div ng-cloak ng-show="game.action.state == null">
+
+
+			<% if (join) { %>
+
+				<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
+					<input type="hidden" name="_csrf" value="<%= token %>"/>
+
+					<button type="submit" class="btn btn-md btn-block btn-success"><strong>Join & Play Against <%= room.creator.name%></strong></button>
+				</form>
+			<% } else { %>
+
+				<% if (room.creator.id === user.id) { %>
+
+					<div class="notify-player wrap">
+						<span class="glyphicon glyphicon-link"></span>
+						<span><strong>Invite another player: </strong></span>
+							
+						<span><strong>https://bitflop.me/game/play/<%= room.name %></strong></span>
+					</div>
+				<% } else { %>
+					<div class="notify-player">
+						<span class="glyphicon glyphicon-time"></span>
+						<span><strong>Waiting for <%= room.creator.name%> to join.</strong></span>
+					</div>
+				<% } %>
+
+			<% } %>
+
+		</div>
+
+
+		<div ng-cloak ng-show="game.action.state == 'END'">
+			<div class="notify-player">
+				<strong><span>{{ game.action.winner }}</span> Wins Match!</strong>
+			</div>
+
+		</div>
+
+
+
 		<div class="navbar navbar-inverse">
 			<div class="row">
-
-
 
 				<div class="col-sm-12 col-md-2 col-lg-2 hidden-xs hidden-sm icon-row">
 
@@ -47,55 +87,25 @@
 					<a href=""><span class="glyphicon glyphicon-question-sign"></span></a>
 
 				</div>
-				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-8 text-center">
+				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-8 hidden-xs hidden-sm text-center"></div>
+				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
 
 
-					<div ng-switch="game.action.state">
-						<div ng-switch-when="null">
 
-
-							<% if (join) { %>
-
-								<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
-									<input type="hidden" name="_csrf" value="<%= token %>"/>
-
-									<button type="submit" class="btn btn-md btn-block btn-success">Join & Play Against <strong><%= room.creator.name%></strong></button>
-								</form>
-							<% } else { %>
-
-								<% if (room.creator.id === user.id) { %>
-
-									<div class="notify-player">
-										<span class="glyphicon glyphicon-link"></span>
-										<span><strong>Invite another player: </strong></span>
-											
-										<span>https://bitflop.me/game/play/<%= room.name %></span>
-									</div>
-								<% } else { %>
-									<div class="notify-player">
-										<span class="glyphicon glyphicon-time"></span>
-										<span>Waiting for <strong><%= room.creator.name%> to join.</strong></span>
-									</div>
-								<% } %>
-
-							<% } %>
-
+					<% if (!join) { %>
+						<div class="btn-group pull-right">
+							<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-facetime-video"></span></a>
+							<button type="button" class="btn btn-default btn-md dropdown-toggle">
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a ng-click="fn.killVideoStream()" href="">Turn off Video</a></li>
+								<li><a ng-click="fn.StartVideoStream()" href="">Turn off Video</a></li>
+							</ul>
 						</div>
+					<% } %>
 
-						<div ng-switch-default>
-							Stats
-						</div>
-					</div>
-
-
-
-				</div>
-				<div class="col-xs-6 col-sm-4 col-md-4 col-lg-2">
-
-
-
-
-					<div class="btn-group">
+					<div class="btn-group pull-right">
 						<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-user"></span></a>
 						<button type="button" class="btn btn-default btn-md dropdown-toggle">
 							<span class="caret"></span>
@@ -110,18 +120,6 @@
 						</ul>
 					</div>
 
-					<% if (!join) { %>
-						<div class="btn-group">
-							<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-facetime-video"></span></a>
-							<button type="button" class="btn btn-default btn-md dropdown-toggle">
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" role="menu">
-								<li><a ng-click="fn.killVideoStream()" href="">Turn off Video</a></li>
-								<li><a ng-click="fn.StartVideoStream()" href="">Turn off Video</a></li>
-							</ul>
-						</div>
-					<% } %>
 				</div>
 
 
@@ -194,7 +192,7 @@
 												<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.opponent.id">D</span>
 												<span class="blind-bet" ng-cloak ng-show="game.opponent.blind == 'small'">SB</span>
 												<span class="blind-bet" ng-cloak ng-show="game.opponent.blind == 'big'">BB</span>
-												<span class="chip-count">{{ game.opponent.chips}}</span>
+												<span class="chip-count" ng-cloak ng-show="game.action.state != null && game.action.state != 'END'">{{ game.opponent.chips}}</span>
 												<span class="chip-count" ng-cloak ng-show="game.opponent.bets != 0 && game.opponent.bets != null">{{game.opponent.bets}}</span>
 											</div>
 
@@ -229,7 +227,7 @@
 											<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.player.id">D</span>
 											<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'small'">SB</span>
 											<span class="blind-bet" ng-cloak ng-show="game.player.blind == 'big'">BB</span>
-											<span class="chip-count" ng-cloak ng-show="game.action.state != null">{{ game.player.chips}}</span>
+											<span class="chip-count" ng-cloak ng-show="game.action.state != null && game.action.state != 'END'">{{ game.player.chips}}</span>
 											<span class="chip-count" ng-cloak ng-show="game.player.bets != 0 && game.player.bets != null">{{ game.player.bets }}</span>
 										</div>
 									<% } %>

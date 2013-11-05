@@ -436,7 +436,7 @@ module.exports = function (app) {
 					            call: 30
 					        }
 						};
-						game.history = [];
+						game.events = [];
 						game.rounds = [];
 						
 						game.save(function (err) {

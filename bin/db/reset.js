@@ -7,6 +7,7 @@ db.dropDatabase();
 
 db.counters.insert({
     "games":1,
+    "records": 0,
     "users":3
 });
 

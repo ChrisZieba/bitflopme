@@ -8,7 +8,7 @@ var models = require('./models');
 
 exports.validateGame = function (req, res, next) {
 
-
+	// the table name comes from the url
 	req.check('tableName', 'Invalid url param').notEmpty().notNull().len(1,25).isAlphanumeric();
 	req.sanitize('tableName');
 
@@ -22,8 +22,8 @@ exports.validateGame = function (req, res, next) {
 		models.Games.findOne({ 'name': req.param('tableName') }, function (err, game) {
 			if (err) throw err;
 
-			if (!game) {
-				res.redirect('/');
+			if (!game || game.state === 'END') {
+				res.redirect('/game/new');
 			} else {
 				// attach the interview data to the locals object, so we dont have to query the dbase again
 				res.locals.game = game;

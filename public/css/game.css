@@ -32,13 +32,24 @@ body {
   display: none !important;
 }
 
+.wrap {
+ 
+	word-wrap: break-word;
+}
+
+.btn-group {
+	margin-right:3px;
+}
+
 .notify-player {
 	color: #3a87ad;
 	background-color: #d9edf7;
-	padding: 6px 10px;
+	padding: 6px 0px;
 	margin-bottom: 1px;
-	border: 1px solid #bce8f1;
-	border-radius: 4px;
+	border-width: 0 0 1px 0;
+	border-style: solid;
+	border-color: #bce8f1;
+	text-align: center;
 }
 
 .navbar {
@@ -344,7 +355,7 @@ span.chip-count {
 	color: #ffffff;
 	white-space: nowrap;
 	background-color: #428BCA;
-	border-radius: 4px;
+	border-radius: 2px;
 	font-weight: 700;
 }
 
@@ -355,7 +366,7 @@ span.player-action {
 	text-transform: uppercase;
 	white-space: nowrap;
 	background-color: #999999;
-	border-radius: 4px;
+	border-radius: 2px;
 	font-weight: 700;
 }
 
@@ -366,7 +377,7 @@ span.player-name {
 	font-weight: 700;
 	padding: 2px 4px;
 	background-color:#000;
-	border-radius: 4px;
+	border-radius: 2px;
 }
 
 span.blind-bet {
@@ -375,7 +386,7 @@ span.blind-bet {
 	font-weight: 700;
 	white-space: nowrap;
 	background-color: #999999;
-	border-radius: 4px;
+	border-radius: 2px;
 }
 
 
@@ -384,7 +395,7 @@ span.dealer-button {
 	color: #000000;
 	white-space: nowrap;
 	background-color: #F2EE7B;
-	border-radius: 4px;
+	border-radius: 2px;
 	font-weight: 700;
 }
 
