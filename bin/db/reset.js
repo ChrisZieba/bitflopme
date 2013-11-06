@@ -7,7 +7,6 @@ db.dropDatabase();
 
 db.counters.insert({
     "games":1,
-    "records": 0,
     "users":3
 });
 
@@ -34,23 +33,19 @@ db.users.insert({
 
 db.games.insert({
     "id" : 1,
+    "created" : Date.now(),
     "creator" : {
         "name" : "ziebac",
         "id" : 1
     },
-    "name" : "jesus",
     "rounds" : [],
     "events" : [],
     "settings": {
         "smallBlind": 50,
         "bigBlind": 100,
-        "minBuyIn": 10000,
-        "maxBuyIn": 10000,
-        "timer": 15
+        "chipStack": 10000,
+        "timer": null
     },
-
-
-    "created" : Date.now(),
     //  Once a game has started the players do not change
     "players" : [
         {
@@ -59,5 +54,6 @@ db.games.insert({
             "id" : 1
         }
     ],
+    // [new,playing,end]
     "state" : "NEW",
 });

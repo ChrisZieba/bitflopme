@@ -37,8 +37,8 @@
 							<table class="table table-condensed table-bordered table-striped">
 								<tbody>
 									<tr>
-										<td>Buy In</td>
-										<td><%= games[i].settings.maxBuyIn %> chips</td>
+										<td>Starting Chips</td>
+										<td><%= games[i].settings.chipStack %> chips</td>
 									</tr>
 									<tr>
 										<td>Small Blind</td>
@@ -50,7 +50,7 @@
 									</tr>
 									<tr>
 										<td>Timer</td>
-										<td>30 seconds</td>
+										<td>None</td>
 									</tr>
 									<tr>
 										<td>Round</td>
@@ -61,7 +61,7 @@
 
 						</td>
 						<td>
-							<a href="/game/play/<%= games[i].name %>" class="btn btn-block btn-warning">View this table</a>
+							<a href="/game/play/<%= games[i].id %>" class="btn btn-block btn-warning">View this table</a>
 
 						</td>
 					</tr>

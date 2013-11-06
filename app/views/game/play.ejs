@@ -41,7 +41,7 @@
 
 			<% if (join) { %>
 
-				<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.name %>">
+				<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.id %>">
 					<input type="hidden" name="_csrf" value="<%= token %>"/>
 
 					<button type="submit" class="btn btn-md btn-block btn-success"><strong>Join & Play Against <%= room.creator.name%></strong></button>
@@ -54,7 +54,7 @@
 						<span class="glyphicon glyphicon-link"></span>
 						<span><strong>Invite another player: </strong></span>
 							
-						<span><strong>https://bitflop.me/game/play/<%= room.name %></strong></span>
+						<span><strong>https://bitflop.me/game/play/<%= room.id %></strong></span>
 					</div>
 				<% } else { %>
 					<div class="notify-player">
@@ -70,7 +70,7 @@
 
 		<div ng-cloak ng-show="game.action.state == 'END'">
 			<div class="notify-player">
-				<strong><span>{{ game.action.winner }}</span> Wins Match!</strong>
+				<strong><span>{{ game.action.winner }}</span> Wins Match!</strong> Table will close in 60 seconds.
 			</div>
 
 		</div>

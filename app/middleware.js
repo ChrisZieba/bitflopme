@@ -9,7 +9,7 @@ var models = require('./models');
 exports.validateGame = function (req, res, next) {
 
 	// the table name comes from the url
-	req.check('tableName', 'Invalid url param').notEmpty().notNull().len(1,25).isAlphanumeric();
+	req.check('tableID', 'Invalid url param').notEmpty().notNull().isInt();
 	req.sanitize('tableName');
 
 	// validate the name, if its not valid we dont even bother checking the privledges
@@ -19,7 +19,7 @@ exports.validateGame = function (req, res, next) {
 		});
 	} else {
 		// if the input is valid, get the data for the intview being requsted
-		models.Games.findOne({ 'name': req.param('tableName') }, function (err, game) {
+		models.Games.findOne({ 'id': req.param('tableID') }, function (err, game) {
 			if (err) throw err;
 
 			if (!game || game.state === 'END') {

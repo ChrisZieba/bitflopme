@@ -1,12 +1,11 @@
-function Game (smallBlind, bigBlind, minBuyIn, maxBuyIn) {
+function Game (smallBlind, bigBlind, buyIn) {
 	this.dealer = -1;
 	this.smallBlind = smallBlind;
 	this.bigBlind = bigBlind;
 	this.minPlayers = 2;
 	this.maxPlayers =  2;
 	this.setPlayers = 2;
-	this.minBuyIn = minBuyIn;
-	this.maxBuyIn = maxBuyIn;
+	this.buyIn = buyIn;
 	this.events = [];
 	this.rounds = [];
 	// whos turn is it
@@ -164,7 +163,7 @@ Game.prototype.getWinner = function () {
 
 	if (this.state === 'END') {
 		for (var i = 0; i < this.players.length; i += 1) {
-			if (this.players[i].chips === (this.maxBuyIn*2)) {
+			if (this.players[i].chips === (this.buyIn*2)) {
 				winner = this.players[i].name;
 			}
 		}
@@ -294,7 +293,7 @@ Log('before we adjust the blinds', this);
 };
 
 Game.prototype.AddPlayer = function (id, name, chips) {
-	if (this.players.length < this.maxPlayers && chips >= this.minBuyIn && chips <= this.maxBuyIn) {
+	if (this.players.length < this.maxPlayers && chips == this.buyIn) {
 		var player = new Player(id, name, chips, this);
 		this.players.push(player);
 	}

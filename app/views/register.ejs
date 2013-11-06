@@ -13,63 +13,59 @@
 
 
 	<div class="row">
-		<div class="col-sm-4">  
-			<div class="row">
-				<div class="col-sm-12">  
-					<form role="form" method="post" action="/register" class="well">
+		<div class="col-md-4 col-md-offset-4">  
 
-						<input type="hidden" name="_csrf" value="<%= token %>"/>
-						
-						<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
-							<label>Username</label>
-							<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username">
-							<% if (errors.registerUsername) { %>
-								<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
-							<% } %>
-						</div>
-						
-						<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
-							<label>Password</label>
-							<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password">
-							<% if (errors.registerPassword) { %>
-								<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
-							<% } %>
-						</div>
-						
-						<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
-							<label>Confirm Password</label>
-							<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password">
-							<% if (errors.registerPasswordConfirm) { %>
-								<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
-							<% } %>
-						</div>
-						
-						<div class="form-group <% if (errors.registerEmail) { %>has-error<% } %>">
-							<label>Optional Email</label>
-							<input type="text" name="registerEmail" class="form-control mg-top-bot-5" placeholder="Optional Email">
-							<% if (errors.registerEmail) { %>
-								<div class="alert alert-danger"><p><%= errors.registerEmail.msg %></p></div>
-							<% } %>
-						</div>
+			<form role="form" method="post" action="/register" class="well">
 
-						<div class="form-group">
-							<input type="submit" class="btn btn-block btn-success mg-top-bot-5" value="Register" />
-						</div>
-
-					</form>
-
+				<input type="hidden" name="_csrf" value="<%= token %>"/>
+				
+				<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
+					<label>Username</label>
+					<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username">
+					<% if (errors.registerUsername) { %>
+						<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
+					<% } %>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">  
-
-					<a href="/login" class="btn btn-default btn-block">Already a Member? <strong>Login Here</strong></a>
-
+				
+				<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
+					<label>Password</label>
+					<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password">
+					<% if (errors.registerPassword) { %>
+						<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
+					<% } %>
 				</div>
-			</div>
+				
+				<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
+					<label>Confirm Password</label>
+					<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password">
+					<% if (errors.registerPasswordConfirm) { %>
+						<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
+					<% } %>
+				</div>
+				
+				<div class="form-group <% if (errors.registerEmail) { %>has-error<% } %>">
+					<label>Optional Email</label>
+					<input type="text" name="registerEmail" class="form-control mg-top-bot-5" placeholder="Optional Email">
+					<% if (errors.registerEmail) { %>
+						<div class="alert alert-danger"><p><%= errors.registerEmail.msg %></p></div>
+					<% } %>
+				</div>
+
+				<div class="form-group">
+					<input type="submit" class="btn btn-block btn-success mg-top-bot-5" value="Register" />
+				</div>
+
+				<a href="/login" class="btn btn-default btn-block">Already a Member? <strong>Login Here</strong></a>
+			</form>
+
+
 		</div>
 
-		<div class="col-sm-8">  
+
+	</div>
+
+	<!--<div class="row">
+		<div class="col-md-12">  
 			<h3>Why Do I Need to Register?</h3>
 			<p>BitFlop.me needs a unique username when you enter the website so we can retrieve any stored games, your player points, and any custom game data you may have entered. Otherwise you would have to enter this information each time you visited BitFlop.me. We need a password to use with your username so only you can view data that you have entered. <strong>A username and a password is the only information that is required to use BitFlop.me</strong>.</p>
 
@@ -87,9 +83,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-
-
+	</div>-->
 </div>
 
 <% include partials/footer.ejs %>

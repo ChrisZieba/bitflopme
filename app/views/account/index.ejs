@@ -11,32 +11,83 @@
 <div class="container">
 
 
-	<h3>My Games</h3>
+	<h3>Active Games</h3>
 	<div class="table-responsive">
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Name</th>
+					<th>Created</th>
 					<th>Status</th>
 					<th>Opponent</th>
 					<th>Settings</th>
+					<th></th>
 				</tr>
 			</thead>
 
 			<tbody>
-				<% for (var i = 0; i < games.length; i++) { %>
+				<% for (var i = 0; i < games.active.length; i++) { %>
 					<tr>
-						<td><%= games[i].id %></td>
-						<td><a href="/game/play/<%= games[i].name %>"><strong><%= games[i].name %></strong></a></td>
-						<td><em><%= games[i].state %></em></td>
-						<td><%= games[i].player2 %></td>
-						<td><%= games[i].settings %></td>
+
+						<td><em><%= moment(games.active[i].created).format("YYYY-MM-DD HH:mm") %></em></td>
+						<td><%= games.active[i].state %></td>
+						<td>
+							<% if (games.active[i].state === 'PLAYING') { %>
+
+								<% if (games.active[i].creator.id === user.id) { %>
+									<a href="" ><%= games.active[i].players[1].name %></a>
+								<% } else { %>
+									<a href="" ><%= games.active[i].players[0].name %></a>
+								<% } %>
+
+							<% } else { %>
+								No one yet
+							<% } %>
+
+
+						</td>
+						
+						<td>
+							<table class="table table-condensed table-bordered table-striped">
+								<tbody>
+									<tr>
+										<td>Starting Chips</td>
+										<td><%= games.active[i].settings.chipStack %> chips</td>
+									</tr>
+									<tr>
+										<td>Small Blind</td>
+										<td><%= games.active[i].settings.smallBlind %> chips</td>
+									</tr>
+									<tr>
+										<td>Big Blind</td>
+										<td><%= games.active[i].settings.bigBlind %> chips</td>
+									</tr>
+									<tr>
+										<td>Timer</td>
+										<td>None</td>
+									</tr>
+									<tr>
+										<td>Round</td>
+										<td>Unlimited</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<% if (games.active[i].creator.id === user.id) { %>
+								<a href="">Join this Table</a>
+								<span class="badge badege-success">Creator</span>
+							<% } else { %>
+								<span><%= games.active[i].creator.name %></span>
+							<% } %>
+						</td>
 					</tr>
 				<% } %>
 			</tbody>
 		</table>
 	</div>
+
+	<h3>New Games</h3>
+
 
 </div>
 

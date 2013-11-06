@@ -148,28 +148,9 @@ exports.listen = function (server, sessionStore, app) {
 		// the game is over. 
 		// copy the relevent game data to a completed database, so we can resue the gamname
 		// @data is the game document from the database
-		var endGame = function (Game, room, data) {
+		var endGame = function (Game, room) {
 
-			models.Counters.findOne({}, function (err, counter) {
 
-				var record = new models.Records();
-				var count = counter.records + 1;	
-
-				record.id = count;
-				record.name = data.name;
-				record.created = data.created;
-				record.creator = data.creator;
-				record.players = data.players;
-				record.settings = data.settings;
-				record.events = data.events;
-				record.rounds = data.rounds;
-				
-				record.save(function (err) {
-					if (err) throw err;
-
-					//update the counter in the database
-					models.Counters.update({records: count}, function (err) {
-						if (err) throw err;
 
 						// this gets sent to every connection
 						io.sockets.in(room).emit('game:end', { 
@@ -206,17 +187,6 @@ exports.listen = function (server, sessionStore, app) {
 							}
 						});
 
-						// this will remove the game record from the database
-						models.Games.findOne({ id: room}, function (err, game) {
-							if (err) throw new Error(501, err);
-
-							game.remove();
-						});
-
-					});	
-				});
-			});
-
 		};
 
 
@@ -246,7 +216,7 @@ exports.listen = function (server, sessionStore, app) {
 							players: [],
 							observers: []
 						};
-						Games[data.room].game = new poker.Game(game.settings.smallBlind, game.settings.bigBlind, game.settings.minBuyIn, game.settings.maxBuyIn);
+						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
 					}
 
 					// Every connected client gets access to the mainroom
@@ -326,7 +296,7 @@ exports.listen = function (server, sessionStore, app) {
 							for (var i = 0; i < game.players.length; i++) {
 								// it is very important that we use the loop counter for the playerID
 								// since the game uses the array index value to keep track of turn, dealer, blinds, etc...
-								Games[data.room].game.AddPlayer(i, game.players[i].name, game.settings.maxBuyIn);
+								Games[data.room].game.AddPlayer(i, game.players[i].name, game.settings.chipStack);
 							}
 
 							// this can only be called once
@@ -391,19 +361,14 @@ exports.listen = function (server, sessionStore, app) {
 							players: [],
 							observers: []
 						};
-						Games[data.room].game = new poker.Game(
-							game.settings.smallBlind, 
-							game.settings.bigBlind, 
-							game.settings.minBuyIn, 
-							game.settings.maxBuyIn
-						);
+						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
 					}
 
 					//	Are both players sitting at the table?
 					if (ready) {
 						switch (data.action.name) {
 							case 'BET':
-								Games[data.room].game.players[playerID].Bet(data.action.amount);
+								Games[data.room].game.players[playerID].Bet(parseInt(data.action.amount,10));
 								break;
 							case 'CALL':
 								Games[data.room].game.players[playerID].Call();
@@ -412,7 +377,7 @@ exports.listen = function (server, sessionStore, app) {
 								Games[data.room].game.players[playerID].Check();
 								break;
 							case 'RAISE':
-								Games[data.room].game.players[playerID].Raise(data.action.amount);
+								Games[data.room].game.players[playerID].Raise(parseInt(data.action.amount));
 								break;
 							case 'FOLD':
 								Games[data.room].game.players[playerID].Fold();
@@ -484,17 +449,8 @@ exports.listen = function (server, sessionStore, app) {
 									}
 								} else if (isGameOver) {
 									setTimeout(function () {
-										var record = {
-											name: game.name,
-											created: game.created,
-											creator: game.creator,
-											settings: game.settings,
-											events: game.events,
-											rounds: game.rounds
-										};
-
-										endGame(Games[data.room], data.room, record);
-										// we can now remove the record from the database
+										// once the table ends you cannot go back to it
+										endGame(Games[data.room], data.room);
 									}, 15000);
 								}
 							});
@@ -525,12 +481,7 @@ exports.listen = function (server, sessionStore, app) {
 								players: [],
 								observers: []
 							};
-							Games[scope.room].game = new poker.Game(
-								game.settings.smallBlind, 
-								game.settings.bigBlind, 
-								game.settings.minBuyIn, 
-								game.settings.maxBuyIn
-							);
+							Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
 						};
 
 						Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');

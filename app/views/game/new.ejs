@@ -11,23 +11,32 @@
 	
 
 	<div class="row">
-
-
-		<div class="col-md-4">  
-
+		<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">  
 			<form role="form" method="post" action="/game/new" class="well">
-
-				
 				<input type="hidden" name="_csrf" value="<%= token %>"/>
-
-				<div class='form-group <% if (errors.tableName) { %>has-error<% } %>'>
+				<div class='form-group <% if (errors.smallBlind) { %>has-error<% } %>'>
 					
-					<label class="control-label">Name</label>
-					<input class="form-control mg-top-bot-5" name="tableName" size="30" type="text" placeholder="Table Name" />
-					<% if (errors.tableName) { %>
-						<div class="alert alert-danger"><p><%= errors.tableName.msg %></p></div>
+					<label class="control-label">Small Blind</label>
+					<input class="form-control mg-top-bot-5" name="smallBlind" size="30" type="text" placeholder="Small Blind e.g. 15" />
+					<% if (errors.smallBlind) { %>
+						<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
 					<% } %>
+				</div>
 
+				<div class='form-group <% if (errors.bigBlind) { %>has-error<% } %>'>
+					<label class="control-label">Big Blind</label>
+					<input class="form-control mg-top-bot-5" name="bigBlind" size="30" type="text" placeholder="Big Blind" />
+					<% if (errors.bigBlind) { %>
+						<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
+					<% } %>
+				</div>
+
+				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>'>
+					<label class="control-label">Starting Chips</label>
+					<input class="form-control mg-top-bot-5" name="chipStack" size="30" type="text" placeholder="Chip Stack" />
+					<% if (errors.chipStack) { %>
+						<div class="alert alert-danger"><p><%= errors.chipStack.msg %></p></div>
+					<% } %>
 				</div>
 
 				<div class='form-group <% if (errors.tableTimer) { %>has-error<% } %>'>
@@ -46,21 +55,13 @@
 
 				<div class="form-group">
 
-					<input type="submit" class="btn btn-md btn-block btn-info" value="Create New Game" />
+					<input type="submit" class="btn btn-md btn-block btn-primary" value="Create New Game" />
 
 				</div>
 
 			</form>
 		</div>
-
-		<div class="col-md-8">  
-			<h3>Things to Keep in Mind</h3>
-			<p>Bitflop.me is still early in it's development (alpha), so if you find any bugs during game play, please <a href="/contact">let us know</a>, or just feel free to drop us a line with any comments, suggestions, or feature requests!</p>
-
-			<p>All table games do not have a timer, so that means you can take as long as you want to make your play. This is currently being worked on, and will be implemeneted in our next release. For more information on this, or other features to be added, please visit our <a href="/roadmap">roadmap</a>.</p>
-		</div>
 	</div>
-
 
 </div>
 
