@@ -51,26 +51,26 @@ module.exports = function (app) {
 		res.redirect('/');
 	});
 
+	// show all the games that are available to join
 	app.get('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
 
-		//	This is every room that the user has already joined
-		//var rooms = req.session.user.rooms;
 		var user = res.locals.user;
 
-		//	Get all the games that are 'NEW' or show the games the user is part of
-		models.Games.find({ 
-			$or: [
-				{ 'creator.id': req.session.user.id },
-				{ $and: [{ 'id': { $in: [] }}, {'state':'PLAYING'}]},
-				{ 'state':'NEW' }
-			]
-		}).sort('-created').exec(function(err, games) {
+		// only show games that the person is NOT already part of, and are NEW (1 person)
+		models.Games.find({ $and: [
+			{'state':'NEW'},
+			{'players.0.id':{$ne : user.id}}
+		]}).sort('-created').exec(function(err, games) {
+
 			if (err) throw err;
 
 			res.render('game/join.ejs', { 
 				title: 'bitflop.me',
+				moment: moment,
 				user: user,
-				games: games
+				games: {
+					open: games
+				}
 			});
 
 		});
@@ -106,7 +106,7 @@ module.exports = function (app) {
 							req.session.user = {
 								id: user.id,
 								name: user.username,
-								authenticated: true,
+								authenticated: true
 								//	This keeps track of what game rooms the user is a player in
 								//rooms: []
 							};
@@ -149,9 +149,9 @@ module.exports = function (app) {
 
 	app.post('/register', function (req, res) {
 
-		req.check('registerUsername', 'The username is required.').notEmpty().len(2,15).isAlphanumeric();
-		req.check('registerPassword', 'The password is required.').notEmpty().len(6,55);
-		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
+		req.check('registerUsername', 'The username is required and must be between 2 and 15 letters/numbers.').notEmpty().len(2,15).isAlphanumeric();
+		req.check('registerPassword', 'The password is required and must be at least 5 character.').notEmpty().len(5,55);
+		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(5,55).equals(req.param('registerPassword'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
 		req.sanitize('registerUsername');
@@ -236,26 +236,28 @@ module.exports = function (app) {
 
 	});
 
-
+	// when in the table, the user clicks the join button at the top and comes here to add themself to the players list
 	app.post('/game/join/:tableID', [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
 
 		var game = res.locals.game;
 		var user = res.locals.user;
 
+		// a person can only join if they are NOT a player already and the game has one player only
 		if (helpers.getPlayerID(user.id, game.players) === null && game.players.length === 1) {
-			// update the database game to hold the new players information
-			models.Games.update(
-				{
-					id:game.id
-				}, 
-				{
+
+			var update = {
+				state: 'PLAYING',
 				$push: { 
 					players: {
 						id:user.id, 
 						name: user.name
 					}
 				}
-			}, function (err) {
+
+			};
+
+			// update the database game to hold the new players information
+			models.Games.update({ id:game.id }, update, function (err) {
 				if (err) throw err;
 
 				// when the player is redirected back the game, the game will start if both players are there
@@ -381,6 +383,15 @@ module.exports = function (app) {
 		//req.check('private', 'The game security code is required');
 		req.sanitize('chipStack');
 
+		req.check('tableTimer', 'The timer is required.').notEmpty().notNull();
+		//req.check('private', 'The game security code is required');
+		req.sanitize('tableTimer');
+
+		req.check('blindLevel', 'The blind level is required.').notEmpty().notNull();
+		//req.check('private', 'The game security code is required');
+		req.sanitize('blindLevel');
+
+
 		// checks to see if the form passed validation
 		var errors = req.validationErrors(true); 
 
@@ -406,7 +417,9 @@ module.exports = function (app) {
 			        smallBlind: req.param('smallBlind'),
 			        bigBlind: req.param('bigBlind'),
 			        chipStack: req.param('chipStack'),
-			        timer: req.param('tableTimer')
+			        timer: req.param('tableTimer'),
+			        level: req.param('blindLevel'),
+
 				};
 				game.events = [];
 				game.rounds = [];
@@ -488,7 +501,7 @@ module.exports = function (app) {
 	});
 
 	// The middleware will check if the user is logged in
-	app.get('/account',  [middleware.validateUser], function (req, res) {
+	app.get('/account/games',  [middleware.validateUser], function (req, res) {
 
 		//	Get all the active games for the user 		
 		models.Games.find({ $and: [
@@ -502,7 +515,7 @@ module.exports = function (app) {
 		]}).sort('-created').exec(function(err, active) {
 			if (err) throw err;
 
-			res.render('account/index.ejs', { 
+			res.render('account/games.ejs', { 
 				title: 'bitflop.me',
 				moment: moment,
 				user: res.locals.user,
@@ -512,10 +525,54 @@ module.exports = function (app) {
 			});
 
 		});
-
-
 	});
 
+	// The middleware will check if the user is logged in
+	app.get('/account/settings',  [middleware.validateUser], function (req, res) {
+
+		// look up the user again to get more information
+		models.Users.findOne({ 'id': res.locals.user.id }, 'id username created', function (err, profile) {
+			if (err) throw err;
+
+			if (!profile) {
+				res.status(404).render('404.ejs',{
+					title: '404',
+					user: res.locals.user,
+					meta: ''
+				});	
+			} else {
+				res.render('account/settings.ejs', { 
+					title: 'bitflop.me',
+					moment: moment,
+					user: res.locals.user,
+					profile: profile
+				});
+			}
+		});
+	});
+
+	// Public profile page for the user
+	app.get('/user/:username', function (req, res) {
+
+		models.Users.findOne({ 'username': req.param('username') }, 'id username created', function (err, profile) {
+			if (err) throw err;
+
+			if (!profile) {
+				res.status(404).render('404.ejs',{
+					title: '404',
+					user: res.locals.user,
+					meta: ''
+				});	
+			} else {
+				res.render('user/index.ejs', { 
+					title: 'bitflop.me',
+					moment: moment,
+					user: res.locals.user,
+					profile: profile
+				});
+			}
+		});
+	});
 
 	app.get('/about',  [middleware.refererURL], function (req, res) {
 		// 	Show the errors on the form
@@ -533,18 +590,26 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/contact',  [middleware.refererURL], function (req, res) {
+	app.get('/roadmap',  [middleware.refererURL], function (req, res) {
 		// 	Show the errors on the form
-		res.render('contact.ejs', { 
+		res.render('roadmap.ejs', { 
 			title: 'bitflop.me',
 			user: res.locals.user
 		});
 	});
 
-	app.get('/roadmap',  [middleware.refererURL], function (req, res) {
+	app.get('/terms',  [middleware.refererURL], function (req, res) {
 		// 	Show the errors on the form
-		res.render('roadmap.ejs', { 
-			title: 'Bitflop.me',
+		res.render('terms.ejs', { 
+			title: 'bitflop.me',
+			user: res.locals.user
+		});
+	});
+
+	app.get('/contact',  [middleware.refererURL], function (req, res) {
+		// 	Show the errors on the form
+		res.render('contact.ejs', { 
+			title: 'bitflop.me',
 			user: res.locals.user
 		});
 	});

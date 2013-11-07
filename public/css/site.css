@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 .jumbotron {
 
-	background-color: #2C3E50;
+background: #222222;
 	padding-top: 35px;
 	padding-bottom: 35px;
 	border-bottom: 1px solid #dddedf;
@@ -83,6 +83,30 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	color: #b8c0c8;
 	font-size:90%;
 }
+
+
+.jumbotron .btn-outline-inverse {
+	width: auto;
+	margin: 20px 5px 20px 0;
+	padding: 18px 24px;
+	font-size: 21px;
+}
+
+.btn-outline-inverse {
+	color: #fff;
+	background-color: transparent;
+	border-color: #cdbfe3;
+}
+
+.btn-outline-inverse:hover,
+.btn-outline-inverse:focus,
+.btn-outline-inverse:active {
+  color: #222222;
+  text-shadow: none;
+  background-color: #fff;
+  border-color: #fff;
+}
+
 
 /* Wrapper for page content to push down footer */
 #wrap {
@@ -169,8 +193,9 @@ code {
 }
 
 #wrap .navbar-default {
-	background-color: #2C3E50;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
+	/*background-color: #2C3E50;*/
+	background-color: #222222;
+	text-shadow: none;
 	border-color: #999;
 	border-width: 0;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -185,7 +210,7 @@ code {
 }
 
 #wrap .navbar-default .navbar-nav > li > a {
-	color: #717387;
+	color: #666;
 	padding:15px 0 0 0;
 	margin:0 15px 0 0;
 }
@@ -201,7 +226,7 @@ code {
 }
 
 #wrap .navbar-default .navbar-nav > li > a.action {
-	padding-top: 8px;
+	padding-top: 10px;
 }
 
 #wrap .navbar > .container .navbar-brand {
@@ -214,7 +239,7 @@ code {
 }
 
 .btn-group {
-	padding-top:8px;
+	padding-top:10px;
 }
 
 .col-bg-1 {

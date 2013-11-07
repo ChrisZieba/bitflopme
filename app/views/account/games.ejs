@@ -1,0 +1,96 @@
+				
+<% include ../partials/header.ejs %>
+
+<div class="jumbotron sub">
+	<div class="container">
+		<h1>Account</h1>
+	</div>
+	
+</div>
+
+<div class="container">
+
+
+	<h3>Active Games (<%=games.active.length%>)</h3>
+
+	<% if (games.active.length > 0) { %>
+		<div class="table-responsive">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Created</th>
+						<th>Status</th>
+						<th>Opponent</th>
+						<th>Chips (SB/BB)</th>
+						<th>Level</th>
+						<th>Timer</th>
+						<th>Table</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<% for (var i = 0; i < games.active.length; i++) { %>
+						<tr>
+
+							<td>
+								<%= moment(games.active[i].created).format("MMM D, YYYY h:mma ZZ") %>
+								<span class="label label-default"><em><%= moment().from(moment(games.active[i].created), true) %> ago</em></span>
+							</td>
+							<td>
+								<% if (games.active[i].state === 'PLAYING') { %>
+
+									<span class="label label-danger">PLAYING</span>
+
+								<% } else { %>
+									This game has been created but <strong>not started</strong>.
+								<% } %>
+
+
+							</td>
+							<td>
+								<% if (games.active[i].state === 'PLAYING') { %>
+
+									<% if (games.active[i].creator.id === user.id) { %>
+										<a href="/user/<%= games.active[i].players[1].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[1].name %></a>
+									<% } else { %>
+										<a href="/user/<%= games.active[i].players[0].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[0].name %></a>
+									<% } %>
+
+								<% } else { %>
+									No one yet
+								<% } %>
+
+
+							</td>
+							
+							<td>
+								<%= games.active[i].settings.chipStack %> (<%= games.active[i].settings.smallBlind %>/<%= games.active[i].settings.bigBlind %>)
+							</td>
+							<td>
+								<% if (games.active[i].settings.timer === 0) { %>
+									&infin;
+								<% } else { %>
+									<%= games.active[i].settings.timer %> min
+								<% } %>
+							</td>
+							<td>
+								<% if (games.active[i].settings.level === 0) { %>
+									&infin;
+								<% } else { %>
+									<%= games.active[i].settings.level %> min
+								<% } %>
+							</td>
+							<td>
+								<a href="/game/play/<%= games.active[i].id %>" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-new-window"></span></a>
+							</td>
+						</tr>
+					<% } %>
+				</tbody>
+			</table>
+		</div>
+	<% } %>
+
+
+</div>
+
+<% include ../partials/footer.ejs %>

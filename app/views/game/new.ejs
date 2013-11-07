@@ -11,13 +11,14 @@
 	
 
 	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">  
-			<form role="form" method="post" action="/game/new" class="well">
+		<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
+			<form name="game" role="form" method="post" action="/game/new" class="well">
 				<input type="hidden" name="_csrf" value="<%= token %>"/>
+
 				<div class='form-group <% if (errors.smallBlind) { %>has-error<% } %>'>
 					
 					<label class="control-label">Small Blind</label>
-					<input class="form-control mg-top-bot-5" name="smallBlind" size="30" type="text" placeholder="Small Blind e.g. 15" />
+					<input class="form-control mg-top-bot-5" name="smallBlind" size="30" type="text" placeholder="Small Blind e.g. 15" required />
 					<% if (errors.smallBlind) { %>
 						<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
 					<% } %>
@@ -25,7 +26,7 @@
 
 				<div class='form-group <% if (errors.bigBlind) { %>has-error<% } %>'>
 					<label class="control-label">Big Blind</label>
-					<input class="form-control mg-top-bot-5" name="bigBlind" size="30" type="text" placeholder="Big Blind" />
+					<input class="form-control mg-top-bot-5" name="bigBlind" size="30" type="text" placeholder="Big Blind e.g. 30" required />
 					<% if (errors.bigBlind) { %>
 						<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
 					<% } %>
@@ -33,18 +34,32 @@
 
 				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>'>
 					<label class="control-label">Starting Chips</label>
-					<input class="form-control mg-top-bot-5" name="chipStack" size="30" type="text" placeholder="Chip Stack" />
+					<input class="form-control mg-top-bot-5" name="chipStack" size="30" type="text" placeholder="Chip Stack e.g. 1000" required/>
 					<% if (errors.chipStack) { %>
 						<div class="alert alert-danger"><p><%= errors.chipStack.msg %></p></div>
 					<% } %>
+				</div>
+
+				<div class='form-group <% if (errors.blindLevel) { %>has-error<% } %>'>
+					
+					<label class="control-label">Blind Level</label>
+
+					<select class="form-control mg-top-bot-5" name="blindLevel" disabled>
+						<option value="0">None</option>
+					</select>
+
+					<% if (errors.blindLevel) { %>
+						<div class="alert alert-danger"><p><%= errors.blindLevel.msg %></p></div>
+					<% } %>
+
 				</div>
 
 				<div class='form-group <% if (errors.tableTimer) { %>has-error<% } %>'>
 					
 					<label class="control-label">Timer</label>
 
-					<select class="form-control mg-top-bot-5" name="tableTimer">
-						<option>None</option>
+					<select class="form-control mg-top-bot-5" name="tableTimer" disabled>
+						<option value="0">None</option>
 					</select>
 
 					<% if (errors.tableTimer) { %>
@@ -53,9 +68,10 @@
 
 				</div>
 
+
 				<div class="form-group">
 
-					<input type="submit" class="btn btn-md btn-block btn-primary" value="Create New Game" />
+					<input type="submit" class="btn btn-lg btn-block btn-primary" value="Create New Game" />
 
 				</div>
 

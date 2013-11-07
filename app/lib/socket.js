@@ -317,7 +317,6 @@ exports.listen = function (server, sessionStore, app) {
 						// that way we can rebuild the game from where it was left off, as nothing happened at all
 						game.events = Games[data.room].game.events;
 						game.rounds = rounds;
-						game.state = "PLAYING";
 						game.save(function (err) {
 							if (err) throw err;
 							// sends the cards and any other data

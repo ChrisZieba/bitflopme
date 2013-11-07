@@ -44,7 +44,8 @@ db.games.insert({
         "smallBlind": 50,
         "bigBlind": 100,
         "chipStack": 10000,
-        "timer": null
+        "timer": 0,
+        "level": 0
     },
     //  Once a game has started the players do not change
     "players" : [

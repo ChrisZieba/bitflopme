@@ -34,32 +34,33 @@
 					</div>
 					<div class="collapse navbar-collapse">
 						<ul class="nav navbar-nav">
-							<li><a href="/about"><strong>About</strong></a></li>
-							<li><a href="/faq"><strong>FAQ</strong></a></li>
-							<li><a href="/contact"><strong>Contact</strong></a></li>
+							<li><a href="/about">About</a></li>
+							<li><a href="/faq">FAQ</a></li>
+							<li><a href="/contact">Contact</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
 
 							<% if (user.authenticated) { %>
 								<li class="dropdown">
 									<div class="btn-group">
-										<a type="button" href="/account" class="btn btn-default btn-md"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a>
-										<button type="button" class="btn btn-default btn-md dropdown-toggle">
+										<a type="button" href="/user/<%= user.name %>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-user"></span> <%= user.name %></a>
+										<button type="button" class="btn btn-default btn-sm dropdown-toggle">
 											<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
-											<li><a href="/account">My Games</a></li>
+											<li><a href="/account/games">My Games</a></li>
 											<li class="divider"></li>
-											<li><a href="/game/new">Start a new game</a></li>
-											<li><a href="/game/join">Join a game</a></li>
+											<li><a href="/game/new">Create a Game</a></li>
+											<li><a href="/game/join">Join a Game</a></li>
 											<li class="divider"></li>
+											<li><a href="/account/settings">Settings</a></li>
 											<li><a href="/logout">Logout</a></li>
 										</ul>
 									</div>
 								</li>
 							<% } else { %>
-								<li><a href="/login"><strong>Login</strong></a></li>
-								<li><a href="/register" class="action"><button type="button" class="btn btn-default btn-md"><span class="glyphicon glyphicon-log-in"></span> Register</button></a></li>
+								<li><a href="/login">Login</a></li>
+								<li><a href="/register" class="action"><button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-log-in"></span> Register</button></a></li>
 							<% } %>
 						</ul>
 					</div><!--/.nav-collapse -->
