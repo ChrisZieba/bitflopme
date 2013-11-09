@@ -380,7 +380,6 @@ function checkForEndOfBettingRound (game) {
 
 function nextBettingRound (game) {
 
-
 	if (game.state === 'RIVER') {
 		game.state = 'SHOWDOWN';
 		game.AddEvent('Dealer', '** Showdown **');
@@ -802,7 +801,7 @@ console.log('finsih redline round')
 			if (game.players[i].folded === false) {
 
 				game.players[i].chips += game.pot;
-				game.AddEvent('Dealer', '** Hand Over **' + game.players[i].name + ' wins ' + game.pot);
+				game.AddEvent('Dealer', 'Hand is over' + game.players[i].name + ' wins ' + game.pot);
 			}
 		}
 	}
@@ -992,24 +991,218 @@ function rankHandInt (hand) {
 	suits = handSuits.sort().toString().replace(/\W/g, "");
 	cards = hand.cards.toString();
 
+	// Royal Flush
+	if (rank === 0) {
+		if (cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && cards.indexOf('KC') > -1 && cards.indexOf('AC') > -1 && rank === 123) {
+			rank = 302;
+			message = 'Royal Flush';
+		}
+		if (cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && cards.indexOf('KD') > -1 && cards.indexOf('AD') > -1 && rank === 123) {
+			rank = 302;
+			message ='Royal Flush';
+		}
+		if (cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && cards.indexOf('KH') > -1 && cards.indexOf('AH') > -1 && rank === 123) {
+			rank = 302;
+			message = 'Royal Flush';
+		}
+		if (cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && cards.indexOf('KS') > -1 && cards.indexOf('AS') > -1 && rank === 123) {
+			rank = 302;
+			message = 'Royal Flush';
+		}
+
+	}
+
+	// Straight Flush
+	if (rank === 0) {
+		if (cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && cards.indexOf('KC') > -1 && rank === 123) {
+			rank = 301;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && cards.indexOf('KD') > -1 && rank === 123) {
+			rank = 301;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && cards.indexOf('KH') > -1 && rank === 123) {
+			rank = 301;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && cards.indexOf('KS') > -1 && rank === 123) {
+			rank = 301;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && rank === 123) {
+			rank = 300;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && rank === 123) {
+			rank = 300;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && rank === 123) {
+			rank = 300;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && rank === 123) {
+			rank = 300;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && rank === 123) {
+			rank = 299;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && rank === 123) {
+			rank = 299;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && rank === 123) {
+			rank = 299;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && rank === 123) {
+			rank = 299;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && rank === 123) {
+			rank = 298;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && rank === 123) {
+			rank = 298;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && rank === 123) {
+			rank = 298;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && rank === 123) {
+			rank = 298;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && rank === 123) {
+			rank = 297;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && rank === 123) {
+			rank = 297;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && rank === 123) {
+			rank = 297;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && rank === 123) {
+			rank = 297;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && rank === 123) {
+			rank = 296;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && rank === 123) {
+			rank = 296;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && rank === 123) {
+			rank = 296;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && rank === 123) {
+			rank = 296;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && rank === 123) {
+			rank = 295;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && rank === 123) {
+			rank = 295;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && rank === 123) {
+			rank = 295;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && rank === 123) {
+			rank = 295;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && rank === 123) {
+			rank = 294;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && rank === 123) {
+			rank = 294;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && rank === 123) {
+			rank = 294;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && rank === 123) {
+			rank = 294;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('AC') > -1 && cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && rank === 123) {
+			rank = 293;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('AS') > -1 && cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && rank === 123) {
+			rank = 293;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('AH') > -1 && cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && rank === 123) {
+			rank = 293;
+			message = 'Straight Flush';
+		}
+		if (cards.indexOf('AD') > -1 && cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && rank === 123) {
+			rank = 293;
+			message = 'Straight Flush';
+		}
+	}
+
+
 	// Four of a kind
 	if (rank === 0) {
-		if (ranks.indexOf('AAAA') > -1) {rank = 292 + rankKickers(ranks.replace('AAAA', ''), 1); }
-		if (ranks.indexOf('KKKK') > -1 && rank === 0) {rank = 291 + rankKickers(ranks.replace('KKKK', ''), 1); }
-		if (ranks.indexOf('QQQQ') > -1 && rank === 0) {rank = 290 + rankKickers(ranks.replace('QQQQ', ''), 1); }
-		if (ranks.indexOf('JJJJ') > -1 && rank === 0) {rank = 289 + rankKickers(ranks.replace('JJJJ', ''), 1); }
-		if (ranks.indexOf('TTTT') > -1 && rank === 0) {rank = 288 + rankKickers(ranks.replace('TTTT', ''), 1); }
-		if (ranks.indexOf('9999') > -1 && rank === 0) {rank = 287 + rankKickers(ranks.replace('9999', ''), 1); }
-		if (ranks.indexOf('8888') > -1 && rank === 0) {rank = 286 + rankKickers(ranks.replace('8888', ''), 1); }
-		if (ranks.indexOf('7777') > -1 && rank === 0) {rank = 285 + rankKickers(ranks.replace('7777', ''), 1); }
-		if (ranks.indexOf('6666') > -1 && rank === 0) {rank = 284 + rankKickers(ranks.replace('6666', ''), 1); }
-		if (ranks.indexOf('5555') > -1 && rank === 0) {rank = 283 + rankKickers(ranks.replace('5555', ''), 1); }
-		if (ranks.indexOf('4444') > -1 && rank === 0) {rank = 282 + rankKickers(ranks.replace('4444', ''), 1); }
-		if (ranks.indexOf('3333') > -1 && rank === 0) {rank = 281 + rankKickers(ranks.replace('3333', ''), 1); }
-		if (ranks.indexOf('2222') > -1 && rank === 0) {rank = 280 + rankKickers(ranks.replace('2222', ''), 1); }
-		if (rank !== 0) {
-			message = 'Four of a kind'; 
+		if (ranks.indexOf('AAAA') > -1) {
+			rank = 292 + rankKickers(ranks.replace('AAAA', ''), 1); 
 		}
+		if (ranks.indexOf('KKKK') > -1 && rank === 0) {
+			rank = 291 + rankKickers(ranks.replace('KKKK', ''), 1);
+		}
+		if (ranks.indexOf('QQQQ') > -1 && rank === 0) {
+			rank = 290 + rankKickers(ranks.replace('QQQQ', ''), 1);
+		}
+		if (ranks.indexOf('JJJJ') > -1 && rank === 0) {
+			rank = 289 + rankKickers(ranks.replace('JJJJ', ''), 1);
+		}
+		if (ranks.indexOf('TTTT') > -1 && rank === 0) {
+			rank = 288 + rankKickers(ranks.replace('TTTT', ''), 1);
+		}
+		if (ranks.indexOf('9999') > -1 && rank === 0) {
+			rank = 287 + rankKickers(ranks.replace('9999', ''), 1);
+		}
+		if (ranks.indexOf('8888') > -1 && rank === 0) {
+			rank = 286 + rankKickers(ranks.replace('8888', ''), 1);
+		}
+		if (ranks.indexOf('7777') > -1 && rank === 0) {
+			rank = 285 + rankKickers(ranks.replace('7777', ''), 1);
+		}
+		if (ranks.indexOf('6666') > -1 && rank === 0) {
+			rank = 284 + rankKickers(ranks.replace('6666', ''), 1);
+		}
+		if (ranks.indexOf('5555') > -1 && rank === 0) {
+			rank = 283 + rankKickers(ranks.replace('5555', ''), 1);
+		}
+		if (ranks.indexOf('4444') > -1 && rank === 0) {
+			rank = 282 + rankKickers(ranks.replace('4444', ''), 1);
+		}
+		if (ranks.indexOf('3333') > -1 && rank === 0) {
+			rank = 281 + rankKickers(ranks.replace('3333', ''), 1);
+		}
+		if (ranks.indexOf('2222') > -1 && rank === 0) {
+			rank = 280 + rankKickers(ranks.replace('2222', ''), 1);
+		}
+
 	}
 
 	// Full House
@@ -1177,209 +1370,518 @@ function rankHandInt (hand) {
 
 	//Flush
 	if (rank === 0) {
-		if (suits.indexOf('CCCCC') > -1 || suits.indexOf('DDDDD') > -1 || suits.indexOf('HHHHH') > -1 || suits.indexOf('SSSSS') > -1) {rank = 123; message = 'Flush';}
-
-		// Royal flush
-		if (cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && cards.indexOf('KC') > -1 && cards.indexOf('AC') > -1 && rank === 123) {rank = 302; message = 'Royal Flush';}
-		if (cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && cards.indexOf('KD') > -1 && cards.indexOf('AD') > -1 && rank === 123) {rank = 302; message = 'Royal Flush';}
-		if (cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && cards.indexOf('KH') > -1 && cards.indexOf('AH') > -1 && rank === 123) {rank = 302; message = 'Royal Flush';}
-		if (cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && cards.indexOf('KS') > -1 && cards.indexOf('AS') > -1 && rank === 123) {rank = 302; message = 'Royal Flush';}
-
-		// Straight Flush
-		if (cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && cards.indexOf('KC') > -1 && rank === 123) {rank = 301; message = 'Straight Flush';}
-		if (cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && cards.indexOf('KD') > -1 && rank === 123) {rank = 301; message = 'Straight Flush';}
-		if (cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && cards.indexOf('KH') > -1 && rank === 123) {rank = 301; message = 'Straight Flush';}
-		if (cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && cards.indexOf('KS') > -1 && rank === 123) {rank = 301; message = 'Straight Flush';}
-		if (cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && rank === 123) {rank = 300; message = 'Straight Flush';}
-		if (cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && rank === 123) {rank = 300; message = 'Straight Flush';}
-		if (cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && rank === 123) {rank = 300; message = 'Straight Flush';}
-		if (cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && rank === 123) {rank = 300; message = 'Straight Flush';}
-		if (cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && rank === 123) {rank = 299; message = 'Straight Flush';}
-		if (cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && rank === 123) {rank = 299; message = 'Straight Flush';}
-		if (cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && rank === 123) {rank = 299; message = 'Straight Flush';}
-		if (cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && rank === 123) {rank = 299; message = 'Straight Flush';}
-		if (cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && rank === 123) {rank = 298; message = 'Straight Flush';}
-		if (cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && rank === 123) {rank = 298; message = 'Straight Flush';}
-		if (cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && rank === 123) {rank = 298; message = 'Straight Flush';}
-		if (cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && rank === 123) {rank = 298; message = 'Straight Flush';}
-		if (cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && rank === 123) {rank = 297; message = 'Straight Flush';}
-		if (cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && rank === 123) {rank = 297; message = 'Straight Flush';}
-		if (cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && rank === 123) {rank = 297; message = 'Straight Flush';}
-		if (cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && rank === 123) {rank = 297; message = 'Straight Flush';}
-		if (cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && rank === 123) {rank = 296; message = 'Straight Flush';}
-		if (cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && rank === 123) {rank = 296; message = 'Straight Flush';}
-		if (cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && rank === 123) {rank = 296; message = 'Straight Flush';}
-		if (cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && rank === 123) {rank = 296; message = 'Straight Flush';}
-		if (cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && rank === 123) {rank = 295; message = 'Straight Flush';}
-		if (cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && rank === 123) {rank = 295; message = 'Straight Flush';}
-		if (cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && rank === 123) {rank = 295; message = 'Straight Flush';}
-		if (cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && rank === 123) {rank = 295; message = 'Straight Flush';}
-		if (cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && rank === 123) {rank = 294; message = 'Straight Flush';}
-		if (cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && rank === 123) {rank = 294; message = 'Straight Flush';}
-		if (cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && rank === 123) {rank = 294; message = 'Straight Flush';}
-		if (cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && rank === 123) {rank = 294; message = 'Straight Flush';}
-		if (cards.indexOf('AC') > -1 && cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && rank === 123) {rank = 293; message = 'Straight Flush';}
-		if (cards.indexOf('AS') > -1 && cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && rank === 123) {rank = 293; message = 'Straight Flush';}
-		if (cards.indexOf('AH') > -1 && cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && rank === 123) {rank = 293; message = 'Straight Flush';}
-		if (cards.indexOf('AD') > -1 && cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && rank === 123) {rank = 293; message = 'Straight Flush';}
-		if (rank === 123) {rank = rank + rankKickers(ranks, 5);} 
-
+		if (suits.indexOf('CCCCC') > -1 || suits.indexOf('DDDDD') > -1 || suits.indexOf('HHHHH') > -1 || suits.indexOf('SSSSS') > -1) {
+			// use the kickers to get the correct rank of the flush
+			rank = rank + rankKickers(ranks, 5);
+			message = 'Flush';
+		}
 	}
 
 	// Straight
 	if (rank === 0) {
-		if (cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && cards.indexOf('K') > -1 && cards.indexOf('A') > -1) {rank = 122; }
-		if (cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && cards.indexOf('K') > -1 && rank === 0) {rank = 121; }
-		if (cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && rank === 0) {rank = 120; }
-		if (cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && rank === 0) {rank = 119; }
-		if (cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && rank === 0) {rank = 118; }
-		if (cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && rank === 0) {rank = 117; }
-		if (cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && rank === 0) {rank = 116; }
-		if (cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && rank === 0) {rank = 115; }
-		if (cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && rank === 0) {rank = 114; }
-		if (cards.indexOf('A') > -1 && cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && rank === 0) {rank = 113; }
-		if (rank !== 0) {
-			message = 'Straight'; 
+		if (cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && cards.indexOf('K') > -1 && cards.indexOf('A') > -1) {
+			rank = 122;
+			message = 'Ace high straight';
+		}
+		if (cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && cards.indexOf('K') > -1 && rank === 0) {
+			rank = 121;
+			message = 'King high straight';
+		}
+		if (cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && rank === 0) {
+			rank = 120;
+			message = 'Queen high straight';
+		}
+		if (cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && rank === 0) {
+			rank = 119;
+			message = 'Jack high straight';
+		}
+		if (cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && rank === 0) {
+			rank = 118;
+			message = '10 high straight';
+		}
+		if (cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && rank === 0) {
+			rank = 117;
+			message = '9 high straight';
+		}
+		if (cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && rank === 0) {
+			rank = 116;
+			message = '8 high straight';
+		}
+		if (cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && rank === 0) {
+			rank = 115;
+			message = '7 high straight';
+		}
+		if (cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && rank === 0) {
+			rank = 114;
+			message = '6 high straight';
+		}
+		if (cards.indexOf('A') > -1 && cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && rank === 0) {
+			rank = 113;
+			message = '5 high straight';
 		}
 	}
 
 	// Three of a kind
 	if (rank === 0) {
-		if (ranks.indexOf('AAA') > -1) {rank = 112 + rankKickers(ranks.replace('AAA', ''), 2); }
-		if (ranks.indexOf('KKK') > -1 && rank === 0) {rank = 111 + rankKickers(ranks.replace('KKK', ''), 2); }
-		if (ranks.indexOf('QQQ') > -1 && rank === 0) {rank = 110 + rankKickers(ranks.replace('QQQ', ''), 2); }
-		if (ranks.indexOf('JJJ') > -1 && rank === 0) {rank = 109 + rankKickers(ranks.replace('JJJ', ''), 2); }
-		if (ranks.indexOf('TTT') > -1 && rank === 0) {rank = 108 + rankKickers(ranks.replace('TTT', ''), 2); }
-		if (ranks.indexOf('999') > -1 && rank === 0) {rank = 107 + rankKickers(ranks.replace('999', ''), 2); }
-		if (ranks.indexOf('888') > -1 && rank === 0) {rank = 106 + rankKickers(ranks.replace('888', ''), 2); }
-		if (ranks.indexOf('777') > -1 && rank === 0) {rank = 105 + rankKickers(ranks.replace('777', ''), 2); }
-		if (ranks.indexOf('666') > -1 && rank === 0) {rank = 104 + rankKickers(ranks.replace('666', ''), 2); }
-		if (ranks.indexOf('555') > -1 && rank === 0) {rank = 103 + rankKickers(ranks.replace('555', ''), 2); }
-		if (ranks.indexOf('444') > -1 && rank === 0) {rank = 102 + rankKickers(ranks.replace('444', ''), 2); }
-		if (ranks.indexOf('333') > -1 && rank === 0) {rank = 101 + rankKickers(ranks.replace('333', ''), 2); }
-		if (ranks.indexOf('222') > -1 && rank === 0) {rank = 100 + rankKickers(ranks.replace('222', ''), 2); }
-		if (rank !== 0) {
-			message = 'Three of a Kind'; 
+		if (ranks.indexOf('AAA') > -1) {
+			rank = 112 + rankKickers(ranks.replace('AAA', ''), 2);
+			message = 'three of a kind (trip A\'s)';
+		}
+		if (ranks.indexOf('KKK') > -1 && rank === 0) {
+			rank = 111 + rankKickers(ranks.replace('KKK', ''), 2);
+			message = 'three of a kind (trip K\'s)';
+		}
+		if (ranks.indexOf('QQQ') > -1 && rank === 0) {
+			rank = 110 + rankKickers(ranks.replace('QQQ', ''), 2);
+			message = 'three of a kind (trip Q\'s)';
+		}
+		if (ranks.indexOf('JJJ') > -1 && rank === 0) {
+			rank = 109 + rankKickers(ranks.replace('JJJ', ''), 2);
+			message = 'three of a kind (trip J\'s)';
+		}
+		if (ranks.indexOf('TTT') > -1 && rank === 0) {
+			rank = 108 + rankKickers(ranks.replace('TTT', ''), 2);
+			message = 'three of a kind (trip 0\'s)';
+		}
+		if (ranks.indexOf('999') > -1 && rank === 0) {
+			rank = 107 + rankKickers(ranks.replace('999', ''), 2);
+			message = 'three of a kind (trip 9\'s)';
+		}
+		if (ranks.indexOf('888') > -1 && rank === 0) {
+			rank = 106 + rankKickers(ranks.replace('888', ''), 2);
+			message = 'three of a kind (trip 8\'s)';
+		}
+		if (ranks.indexOf('777') > -1 && rank === 0) {
+			rank = 105 + rankKickers(ranks.replace('777', ''), 2);
+			message = 'three of a kind (trip 7\'s)';
+		}
+		if (ranks.indexOf('666') > -1 && rank === 0) {
+			rank = 104 + rankKickers(ranks.replace('666', ''), 2);
+			message = 'three of a kind (trip 6\'s)';
+		}
+		if (ranks.indexOf('555') > -1 && rank === 0) {
+			rank = 103 + rankKickers(ranks.replace('555', ''), 2);
+			message = 'three of a kind (trip 5\'s)';
+		}
+		if (ranks.indexOf('444') > -1 && rank === 0) {
+			rank = 102 + rankKickers(ranks.replace('444', ''), 2);
+			message = 'three of a kind (trip 4\'s)';
+		}
+		if (ranks.indexOf('333') > -1 && rank === 0) {
+			rank = 101 + rankKickers(ranks.replace('333', ''), 2);
+			message = 'three of a kind (trip 3\'s)';
+		}
+		if (ranks.indexOf('222') > -1 && rank === 0) {
+			rank = 100 + rankKickers(ranks.replace('222', ''), 2);
+			message = 'three of a kind (trip 2\'s)';
 		}
 	}
 
 	// Two pair
 	if (rank === 0) {
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('KK') > -1) {rank = 99 + rankKickers(ranks.replace('AA', '').replace('KK', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {rank = 98 + rankKickers(ranks.replace('AA', '').replace('QQ', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {rank = 97 + rankKickers(ranks.replace('AA', '').replace('JJ', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {rank = 96 + rankKickers(ranks.replace('AA', '').replace('TT', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('99') > -1 && rank === 0) {rank = 95 + rankKickers(ranks.replace('AA', '').replace('99', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 94 + rankKickers(ranks.replace('AA', '').replace('88', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 93 + rankKickers(ranks.replace('AA', '').replace('77', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 92 + rankKickers(ranks.replace('AA', '').replace('66', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 91 + rankKickers(ranks.replace('AA', '').replace('55', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 90 + rankKickers(ranks.replace('AA', '').replace('44', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 89 + rankKickers(ranks.replace('AA', '').replace('33', ''), 1); }
-		if (ranks.indexOf('AA') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 88 + rankKickers(ranks.replace('AA', '').replace('22', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {rank = 87 + rankKickers(ranks.replace('KK', '').replace('QQ', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {rank = 86 + rankKickers(ranks.replace('KK', '').replace('JJ', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {rank = 85 + rankKickers(ranks.replace('KK', '').replace('TT', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('99') > -1 && rank === 0) {rank = 84 + rankKickers(ranks.replace('KK', '').replace('99', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 83 + rankKickers(ranks.replace('KK', '').replace('88', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 82 + rankKickers(ranks.replace('KK', '').replace('77', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 81 + rankKickers(ranks.replace('KK', '').replace('66', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 80 + rankKickers(ranks.replace('KK', '').replace('55', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 79 + rankKickers(ranks.replace('KK', '').replace('44', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 78 + rankKickers(ranks.replace('KK', '').replace('33', ''), 1); }
-		if (ranks.indexOf('KK') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 77 + rankKickers(ranks.replace('KK', '').replace('22', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {rank = 76 + rankKickers(ranks.replace('QQ', '').replace('JJ', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {rank = 75 + rankKickers(ranks.replace('QQ', '').replace('TT', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {rank = 74 + rankKickers(ranks.replace('QQ', '').replace('99', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 73 + rankKickers(ranks.replace('QQ', '').replace('88', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 72 + rankKickers(ranks.replace('QQ', '').replace('77', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 71 + rankKickers(ranks.replace('QQ', '').replace('66', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 70 + rankKickers(ranks.replace('QQ', '').replace('55', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 69 + rankKickers(ranks.replace('QQ', '').replace('44', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 68 + rankKickers(ranks.replace('QQ', '').replace('33', ''), 1); }
-		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 67 + rankKickers(ranks.replace('QQ', '').replace('22', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {rank = 66 + rankKickers(ranks.replace('JJ', '').replace('TT', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {rank = 65 + rankKickers(ranks.replace('JJ', '').replace('99', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 64 + rankKickers(ranks.replace('JJ', '').replace('88', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 63 + rankKickers(ranks.replace('JJ', '').replace('77', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 62 + rankKickers(ranks.replace('JJ', '').replace('66', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 61 + rankKickers(ranks.replace('JJ', '').replace('55', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 60 + rankKickers(ranks.replace('JJ', '').replace('44', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 59 + rankKickers(ranks.replace('JJ', '').replace('33', ''), 1); }
-		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 58 + rankKickers(ranks.replace('JJ', '').replace('22', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('99') > -1 && rank === 0) {rank = 57 + rankKickers(ranks.replace('TT', '').replace('99', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 56 + rankKickers(ranks.replace('TT', '').replace('88', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 55 + rankKickers(ranks.replace('TT', '').replace('77', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 54 + rankKickers(ranks.replace('TT', '').replace('66', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 53 + rankKickers(ranks.replace('TT', '').replace('55', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 52 + rankKickers(ranks.replace('TT', '').replace('44', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 51 + rankKickers(ranks.replace('TT', '').replace('33', ''), 1); }
-		if (ranks.indexOf('TT') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 50 + rankKickers(ranks.replace('TT', '').replace('22', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('88') > -1 && rank === 0) {rank = 49 + rankKickers(ranks.replace('99', '').replace('88', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 48 + rankKickers(ranks.replace('99', '').replace('77', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 47 + rankKickers(ranks.replace('99', '').replace('66', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 46 + rankKickers(ranks.replace('99', '').replace('55', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 45 + rankKickers(ranks.replace('99', '').replace('44', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 44 + rankKickers(ranks.replace('99', '').replace('33', ''), 1); }
-		if (ranks.indexOf('99') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 43 + rankKickers(ranks.replace('99', '').replace('22', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('77') > -1 && rank === 0) {rank = 42 + rankKickers(ranks.replace('88', '').replace('77', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 41 + rankKickers(ranks.replace('88', '').replace('66', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 40 + rankKickers(ranks.replace('88', '').replace('55', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 39 + rankKickers(ranks.replace('88', '').replace('44', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 38 + rankKickers(ranks.replace('88', '').replace('33', ''), 1); }
-		if (ranks.indexOf('88') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 37 + rankKickers(ranks.replace('88', '').replace('22', ''), 1); }
-		if (ranks.indexOf('77') > -1 && ranks.indexOf('66') > -1 && rank === 0) {rank = 36 + rankKickers(ranks.replace('77', '').replace('66', ''), 1); }
-		if (ranks.indexOf('77') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 35 + rankKickers(ranks.replace('77', '').replace('55', ''), 1); }
-		if (ranks.indexOf('77') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 34 + rankKickers(ranks.replace('77', '').replace('44', ''), 1); }
-		if (ranks.indexOf('77') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 33 + rankKickers(ranks.replace('77', '').replace('33', ''), 1); }
-		if (ranks.indexOf('77') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 32 + rankKickers(ranks.replace('77', '').replace('22', ''), 1); }
-		if (ranks.indexOf('66') > -1 && ranks.indexOf('55') > -1 && rank === 0) {rank = 31 + rankKickers(ranks.replace('66', '').replace('55', ''), 1); }
-		if (ranks.indexOf('66') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 30 + rankKickers(ranks.replace('66', '').replace('44', ''), 1); }
-		if (ranks.indexOf('66') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 29 + rankKickers(ranks.replace('66', '').replace('33', ''), 1); }
-		if (ranks.indexOf('66') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 28 + rankKickers(ranks.replace('66', '').replace('22', ''), 1); }
-		if (ranks.indexOf('55') > -1 && ranks.indexOf('44') > -1 && rank === 0) {rank = 27 + rankKickers(ranks.replace('55', '').replace('44', ''), 1); }
-		if (ranks.indexOf('55') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 26 + rankKickers(ranks.replace('55', '').replace('33', ''), 1); }
-		if (ranks.indexOf('55') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 25 + rankKickers(ranks.replace('55', '').replace('22', ''), 1); }
-		if (ranks.indexOf('44') > -1 && ranks.indexOf('33') > -1 && rank === 0) {rank = 24 + rankKickers(ranks.replace('44', '').replace('33', ''), 1); }
-		if (ranks.indexOf('44') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 23 + rankKickers(ranks.replace('44', '').replace('22', ''), 1); }
-		if (ranks.indexOf('33') > -1 && ranks.indexOf('22') > -1 && rank === 0) {rank = 22 + rankKickers(ranks.replace('33', '').replace('22', ''), 1); }
-		if (rank !== 0) {
-			message = 'Two Pair'; 
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('KK') > -1) {
+			rank = 99 + rankKickers(ranks.replace('AA', '').replace('KK', ''), 1);
+			message = 'two pair (A\'s and K\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
+			rank = 98 + rankKickers(ranks.replace('AA', '').replace('QQ', ''), 1);
+			message = 'two pair (A\'s and Q\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
+			rank = 97 + rankKickers(ranks.replace('AA', '').replace('JJ', ''), 1);
+			message = 'two pair (A\'s and J\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
+			rank = 96 + rankKickers(ranks.replace('AA', '').replace('TT', ''), 1);
+			message = 'two pair (A\'s and 10\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 95 + rankKickers(ranks.replace('AA', '').replace('99', ''), 1);
+			message = 'two pair (A\'s and 9\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 94 + rankKickers(ranks.replace('AA', '').replace('88', ''), 1);
+			message = 'two pair (A\'s and 8\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 93 + rankKickers(ranks.replace('AA', '').replace('77', ''), 1);
+			message = 'two pair (A\'s and 7\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 92 + rankKickers(ranks.replace('AA', '').replace('66', ''), 1);
+			message = 'two pair (A\'s and 6\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 91 + rankKickers(ranks.replace('AA', '').replace('55', ''), 1);
+			message = 'two pair (A\'s and 5\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 90 + rankKickers(ranks.replace('AA', '').replace('44', ''), 1);
+			message = 'two pair (A\'s and 4\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 89 + rankKickers(ranks.replace('AA', '').replace('33', ''), 1);
+			message = 'two pair (A\'s and 3\'s)';
+		}
+		if (ranks.indexOf('AA') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 88 + rankKickers(ranks.replace('AA', '').replace('22', ''), 1);
+			message = 'two pair (A\'s and 2\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
+			rank = 87 + rankKickers(ranks.replace('KK', '').replace('QQ', ''), 1);
+			message = 'two pair (K\'s and Q\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
+			rank = 86 + rankKickers(ranks.replace('KK', '').replace('JJ', ''), 1);
+			message = 'two pair (K\'s and J\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
+			rank = 85 + rankKickers(ranks.replace('KK', '').replace('TT', ''), 1);
+			message = 'two pair (K\'s and 10\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 84 + rankKickers(ranks.replace('KK', '').replace('99', ''), 1);
+			message = 'two pair (K\'s and 9\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 83 + rankKickers(ranks.replace('KK', '').replace('88', ''), 1);
+			message = 'two pair (K\'s and 8\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 82 + rankKickers(ranks.replace('KK', '').replace('77', ''), 1);
+			message = 'two pair (K\'s and 7\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 81 + rankKickers(ranks.replace('KK', '').replace('66', ''), 1);
+			message = 'two pair (K\'s and 6\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 80 + rankKickers(ranks.replace('KK', '').replace('55', ''), 1);
+			message = 'two pair (K\'s and 5\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 79 + rankKickers(ranks.replace('KK', '').replace('44', ''), 1);
+			message = 'two pair (K\'s and 4\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 78 + rankKickers(ranks.replace('KK', '').replace('33', ''), 1);
+			message = 'two pair (K\'s and 3\'s)';
+		}
+		if (ranks.indexOf('KK') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 77 + rankKickers(ranks.replace('KK', '').replace('22', ''), 1);
+			message = 'two pair (K\'s and 2\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
+			rank = 76 + rankKickers(ranks.replace('QQ', '').replace('JJ', ''), 1);
+			message = 'two pair (Q\'s and J\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
+			rank = 75 + rankKickers(ranks.replace('QQ', '').replace('TT', ''), 1);
+			message = 'two pair (Q\'s and 10\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 74 + rankKickers(ranks.replace('QQ', '').replace('99', ''), 1);
+			message = 'two pair (Q\'s and 9\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 73 + rankKickers(ranks.replace('QQ', '').replace('88', ''), 1);
+			message = 'two pair (Q\'s and 8\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 72 + rankKickers(ranks.replace('QQ', '').replace('77', ''), 1);
+			message = 'two pair (Q\'s and 7\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 71 + rankKickers(ranks.replace('QQ', '').replace('66', ''), 1);
+			message = 'two pair (Q\'s and 6\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 70 + rankKickers(ranks.replace('QQ', '').replace('55', ''), 1);
+			message = 'two pair (Q\'s and 5\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 69 + rankKickers(ranks.replace('QQ', '').replace('44', ''), 1);
+			message = 'two pair (Q\'s and 4\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 68 + rankKickers(ranks.replace('QQ', '').replace('33', ''), 1);
+			message = 'two pair (Q\'s and 3\'s)';
+		}
+		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 67 + rankKickers(ranks.replace('QQ', '').replace('22', ''), 1);
+			message = 'two pair (Q\'s and 2\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
+			rank = 66 + rankKickers(ranks.replace('JJ', '').replace('TT', ''), 1);
+			message = 'two pair (J\'s and 10\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 65 + rankKickers(ranks.replace('JJ', '').replace('99', ''), 1);
+			message = 'two pair (J\'s and 9\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 64 + rankKickers(ranks.replace('JJ', '').replace('88', ''), 1);
+			message = 'two pair (J\'s and 8\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 63 + rankKickers(ranks.replace('JJ', '').replace('77', ''), 1);
+			message = 'two pair (J\'s and 7\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 62 + rankKickers(ranks.replace('JJ', '').replace('66', ''), 1);
+			message = 'two pair (J\'s and 6\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 61 + rankKickers(ranks.replace('JJ', '').replace('55', ''), 1);
+			message = 'two pair (J\'s and 5\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 60 + rankKickers(ranks.replace('JJ', '').replace('44', ''), 1);
+			message = 'two pair (J\'s and 4\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 59 + rankKickers(ranks.replace('JJ', '').replace('33', ''), 1);
+			message = 'two pair (J\'s and 3\'s)';
+		}
+		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 58 + rankKickers(ranks.replace('JJ', '').replace('22', ''), 1);
+			message = 'two pair (J\'s and 2\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 57 + rankKickers(ranks.replace('TT', '').replace('99', ''), 1);
+			message = 'two pair (10\'s and 9\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 56 + rankKickers(ranks.replace('TT', '').replace('88', ''), 1);
+			message = 'two pair (10\'s and 8\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 55 + rankKickers(ranks.replace('TT', '').replace('77', ''), 1);
+			message = 'two pair (10\'s and 7\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 54 + rankKickers(ranks.replace('TT', '').replace('66', ''), 1);
+			message = 'two pair (10\'s and 6\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 53 + rankKickers(ranks.replace('TT', '').replace('55', ''), 1);
+			message = 'two pair (10\'s and 5\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 52 + rankKickers(ranks.replace('TT', '').replace('44', ''), 1);
+			message = 'two pair (10\'s and 4\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 51 + rankKickers(ranks.replace('TT', '').replace('33', ''), 1);
+			message = 'two pair (10\'s and 3\'s)';
+		}
+		if (ranks.indexOf('TT') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 50 + rankKickers(ranks.replace('TT', '').replace('22', ''), 1);
+			message = 'two pair (10\'s and 2\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 49 + rankKickers(ranks.replace('99', '').replace('88', ''), 1);
+			message = 'two pair (9\'s and 8\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 48 + rankKickers(ranks.replace('99', '').replace('77', ''), 1);
+			message = 'two pair (9\'s and 7\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 47 + rankKickers(ranks.replace('99', '').replace('66', ''), 1);
+			message = 'two pair (9\'s and 6\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 46 + rankKickers(ranks.replace('99', '').replace('55', ''), 1);
+			message = 'two pair (9\'s and 5\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 45 + rankKickers(ranks.replace('99', '').replace('44', ''), 1);
+			message = 'two pair (9\'s and 4\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 44 + rankKickers(ranks.replace('99', '').replace('33', ''), 1);
+			message = 'two pair (9\'s and 3\'s)';
+		}
+		if (ranks.indexOf('99') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 43 + rankKickers(ranks.replace('99', '').replace('22', ''), 1);
+			message = 'two pair (9\'s and 2\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 42 + rankKickers(ranks.replace('88', '').replace('77', ''), 1);
+			message = 'two pair (8\'s and 7\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 41 + rankKickers(ranks.replace('88', '').replace('66', ''), 1);
+			message = 'two pair (8\'s and 6\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 40 + rankKickers(ranks.replace('88', '').replace('55', ''), 1);
+			message = 'two pair (8\'s and 5\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 39 + rankKickers(ranks.replace('88', '').replace('44', ''), 1);
+			message = 'two pair (8\'s and 4\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 38 + rankKickers(ranks.replace('88', '').replace('33', ''), 1);
+			message = 'two pair (8\'s and 3\'s)';
+		}
+		if (ranks.indexOf('88') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 37 + rankKickers(ranks.replace('88', '').replace('22', ''), 1);
+			message = 'two pair (8\'s and 2\'s)';
+		}
+		if (ranks.indexOf('77') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 36 + rankKickers(ranks.replace('77', '').replace('66', ''), 1);
+			message = 'two pair (7\'s and 6\'s)';
+		}
+		if (ranks.indexOf('77') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 35 + rankKickers(ranks.replace('77', '').replace('55', ''), 1);
+			message = 'two pair (7\'s and 5\'s)';
+		}
+		if (ranks.indexOf('77') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 34 + rankKickers(ranks.replace('77', '').replace('44', ''), 1);
+			message = 'two pair (7\'s and 4\'s)';
+		}
+		if (ranks.indexOf('77') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 33 + rankKickers(ranks.replace('77', '').replace('33', ''), 1);
+			message = 'two pair (7\'s and 3\'s)';
+		}
+		if (ranks.indexOf('77') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 32 + rankKickers(ranks.replace('77', '').replace('22', ''), 1);
+			message = 'two pair (7\'s and 2\'s)';
+		}
+		if (ranks.indexOf('66') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 31 + rankKickers(ranks.replace('66', '').replace('55', ''), 1);
+			message = 'two pair (6\'s and 5\'s)';
+		}
+		if (ranks.indexOf('66') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 30 + rankKickers(ranks.replace('66', '').replace('44', ''), 1);
+			message = 'two pair (6\'s and 4\'s)';
+		}
+		if (ranks.indexOf('66') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 29 + rankKickers(ranks.replace('66', '').replace('33', ''), 1);
+			message = 'two pair (6\'s and 3\'s)';
+		}
+		if (ranks.indexOf('66') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 28 + rankKickers(ranks.replace('66', '').replace('22', ''), 1);
+			message = 'two pair (6\'s and 2\'s)';
+		}
+		if (ranks.indexOf('55') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 27 + rankKickers(ranks.replace('55', '').replace('44', ''), 1);
+			message = 'two pair (5\'s and 4\'s)';
+		}
+		if (ranks.indexOf('55') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 26 + rankKickers(ranks.replace('55', '').replace('33', ''), 1);
+			message = 'two pair (5\'s and 3\'s)';
+		}
+		if (ranks.indexOf('55') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 25 + rankKickers(ranks.replace('55', '').replace('22', ''), 1);
+			message = 'two pair (5\'s and 2\'s)';
+		}
+		if (ranks.indexOf('44') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 24 + rankKickers(ranks.replace('44', '').replace('33', ''), 1);
+			message = 'two pair (4\'s and 3\'s)';
+		}
+		if (ranks.indexOf('44') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 23 + rankKickers(ranks.replace('44', '').replace('22', ''), 1);
+			message = 'two pair (4\'s and 2\'s)';
+		}
+		if (ranks.indexOf('33') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 22 + rankKickers(ranks.replace('33', '').replace('22', ''), 1);
+			message = 'two pair (3\'s and 2\'s)';
 		}
 	}
 
 	// One Pair
 	if (rank === 0) {
-		if (ranks.indexOf('AA') > -1) {rank = 21 + rankKickers(ranks.replace('AA', ''), 3); }
-		if (ranks.indexOf('KK') > -1 && rank === 0) {rank = 20 + rankKickers(ranks.replace('KK', ''), 3); }
-		if (ranks.indexOf('QQ') > -1 && rank === 0) {rank = 19 + rankKickers(ranks.replace('QQ', ''), 3); }
-		if (ranks.indexOf('JJ') > -1 && rank === 0) {rank = 18 + rankKickers(ranks.replace('JJ', ''), 3); }
-		if (ranks.indexOf('TT') > -1 && rank === 0) {rank = 17 + rankKickers(ranks.replace('TT', ''), 3); }
-		if (ranks.indexOf('99') > -1 && rank === 0) {rank = 16 + rankKickers(ranks.replace('99', ''), 3); }
-		if (ranks.indexOf('88') > -1 && rank === 0) {rank = 15 + rankKickers(ranks.replace('88', ''), 3); }
-		if (ranks.indexOf('77') > -1 && rank === 0) {rank = 14 + rankKickers(ranks.replace('77', ''), 3); }
-		if (ranks.indexOf('66') > -1 && rank === 0) {rank = 13 + rankKickers(ranks.replace('66', ''), 3); }
-		if (ranks.indexOf('55') > -1 && rank === 0) {rank = 12 + rankKickers(ranks.replace('55', ''), 3); }
-		if (ranks.indexOf('44') > -1 && rank === 0) {rank = 11 + rankKickers(ranks.replace('44', ''), 3); }
-		if (ranks.indexOf('33') > -1 && rank === 0) {rank = 10 + rankKickers(ranks.replace('33', ''), 3); }
-		if (ranks.indexOf('22') > -1 && rank === 0) {rank = 9 + rankKickers(ranks.replace('22', ''), 3); }
-		if (rank !== 0) {
-			message = 'Pair'; 
+		if (ranks.indexOf('AA') > -1) {
+			rank = 21 + rankKickers(ranks.replace('AA', ''), 3);
+			message = 'a pair of A\'s';
+		}
+		if (ranks.indexOf('KK') > -1 && rank === 0) {
+			rank = 20 + rankKickers(ranks.replace('KK', ''), 3);
+			message = 'a pair of K\'s';
+		}
+		if (ranks.indexOf('QQ') > -1 && rank === 0) {
+			rank = 19 + rankKickers(ranks.replace('QQ', ''), 3);
+			message = 'a pair of Q\'s';
+		}
+		if (ranks.indexOf('JJ') > -1 && rank === 0) {
+			rank = 18 + rankKickers(ranks.replace('JJ', ''), 3);
+			message = 'a pair of J\'s';
+		}
+		if (ranks.indexOf('TT') > -1 && rank === 0) {
+			rank = 17 + rankKickers(ranks.replace('TT', ''), 3);
+			message = 'a pair of T\'s';
+		}
+		if (ranks.indexOf('99') > -1 && rank === 0) {
+			rank = 16 + rankKickers(ranks.replace('99', ''), 3);
+			message = 'a pair of 9\'s';
+		}
+		if (ranks.indexOf('88') > -1 && rank === 0) {
+			rank = 15 + rankKickers(ranks.replace('88', ''), 3);
+			message = 'a pair of 8\'s';
+		}
+		if (ranks.indexOf('77') > -1 && rank === 0) {
+			rank = 14 + rankKickers(ranks.replace('77', ''), 3);
+			message = 'a pair of 7\'s';
+		}
+		if (ranks.indexOf('66') > -1 && rank === 0) {
+			rank = 13 + rankKickers(ranks.replace('66', ''), 3);
+			message = 'a pair of 6\'s';
+		}
+		if (ranks.indexOf('55') > -1 && rank === 0) {
+			rank = 12 + rankKickers(ranks.replace('55', ''), 3);
+			message = 'a pair of 5\'s';
+		}
+		if (ranks.indexOf('44') > -1 && rank === 0) {
+			rank = 11 + rankKickers(ranks.replace('44', ''), 3);
+			message = 'a pair of 4\'s';
+		}
+		if (ranks.indexOf('33') > -1 && rank === 0) {
+			rank = 10 + rankKickers(ranks.replace('33', ''), 3);
+			message = 'a pair of 3\'s';
+		}
+		if (ranks.indexOf('22') > -1 && rank === 0) {
+			rank = 9 + rankKickers(ranks.replace('22', ''), 3);
+			message = 'a pair of 2\'s';
 		}
 	}
 
 	// High Card
 	if (rank === 0) {
-		if (ranks.indexOf('A') > -1) {rank = 8 + rankKickers(ranks.replace('A', ''), 4); }
-		if (ranks.indexOf('K') > -1 && rank === 0) {rank = 7 + rankKickers(ranks.replace('K', ''), 4); }
-		if (ranks.indexOf('Q') > -1 && rank === 0) {rank = 6 + rankKickers(ranks.replace('Q', ''), 4); }
-		if (ranks.indexOf('J') > -1 && rank === 0) {rank = 5 + rankKickers(ranks.replace('J', ''), 4); }
-		if (ranks.indexOf('T') > -1 && rank === 0) {rank = 4 + rankKickers(ranks.replace('T', ''), 4); }
-		if (ranks.indexOf('9') > -1 && rank === 0) {rank = 3 + rankKickers(ranks.replace('9', ''), 4); }
-		if (ranks.indexOf('8') > -1 && rank === 0) {rank = 2 + rankKickers(ranks.replace('8', ''), 4); }
-		if (ranks.indexOf('7') > -1 && rank === 0) {rank = 1 + rankKickers(ranks.replace('7', ''), 4); }
-		if (rank !== 0) {
-			message = 'High Card'; 
+		if (ranks.indexOf('A') > -1) {
+			rank = 8 + rankKickers(ranks.replace('A', ''), 4);
+			message = 'A high';
+		}
+		if (ranks.indexOf('K') > -1 && rank === 0) {
+			rank = 7 + rankKickers(ranks.replace('K', ''), 4);
+			message = 'K high';
+		}
+		if (ranks.indexOf('Q') > -1 && rank === 0) {
+			rank = 6 + rankKickers(ranks.replace('Q', ''), 4);
+			message = 'Q high';
+		}
+		if (ranks.indexOf('J') > -1 && rank === 0) {
+			rank = 5 + rankKickers(ranks.replace('J', ''), 4);
+			message = 'J high';
+		}
+		if (ranks.indexOf('T') > -1 && rank === 0) {
+			rank = 4 + rankKickers(ranks.replace('T', ''), 4);
+			message = '10 high)';
+		}	
+		if (ranks.indexOf('9') > -1 && rank === 0) {
+			rank = 3 + rankKickers(ranks.replace('9', ''), 4);
+			message = '9 high';
+		}
+		if (ranks.indexOf('8') > -1 && rank === 0) {
+			rank = 2 + rankKickers(ranks.replace('8', ''), 4);
+			message = '8 high';
+		}
+		if (ranks.indexOf('7') > -1 && rank === 0) {
+			rank = 1 + rankKickers(ranks.replace('7', ''), 4);
+			message = '7 high';
 		}
 	}
 
@@ -1446,10 +1948,14 @@ function checkForWinner (game) {
 	var prize = 0;
 	var roundEnd = true;
 Log('checkforwinnter-before', game);
+
 	for (var i = 0; i < game.players.length; i += 1) {
 
 		// only check players who are still in the game (chips!==0)
 		if (game.players[i].out === false) {
+
+			game.AddEvent('Dealer', '<span class="text-danger">' + game.players[i].name + ' has <strong>' + game.players[i].hand.message + '</strong></span>');
+
 			// if the rank is equal to the previous hand, its a tie
 			if (game.players[i].hand.rank === maxRank && game.players[i].folded === false) {
 				winners.push(i);
@@ -1464,6 +1970,7 @@ Log('checkforwinnter-before', game);
 			}
 		}
 	}
+
 
 	/* pass the array of winners to see how many of them are allin
 	var allInPlayers = checkForAllInPlayers(game, winners);
@@ -1500,20 +2007,7 @@ Log('checkforwinnter-before', game);
 		console.log('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
 	}
 Log('checkforwinnter-after', game);
-	
-	//for (var i = 0; i < game.players.length; i += 1) {
-		//if (game.players[i].out === false) {
-			//if (game.players[i].roundBets !== 0) {
-				//roundEnd = false;
-				//console.log('roundbets');
-				//console.log(game.players[i].roundBets)
-			//}
-		//}
-	//}
 
-	//if (roundEnd === false) {
-		//checkForWinner(game);
-	//}
 }
 
 function checkForBankrupt (game) {
