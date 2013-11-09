@@ -434,6 +434,15 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.game.history = data.history;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;
+console.log('game:leave' + JSON.stringify(data.room));
+
+
+		if (data.action) $scope.game.action = data.action;
+
+		if (data.player) $scope.game.player = data.player;
+
+		if (data.opponent) $scope.game.opponent = data.opponent;
+
 	});
 
 

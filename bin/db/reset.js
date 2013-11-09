@@ -41,11 +41,11 @@ db.games.insert({
     "rounds" : [],
     "events" : [],
     "settings": {
-        "smallBlind": 50,
-        "bigBlind": 100,
-        "chipStack": 10000,
-        "timer": 0,
-        "level": 0
+        "smallBlind": '50',
+        "bigBlind": '100',
+        "chipStack": '10000',
+        "timer": '0',
+        "level": '0'
     },
     //  Once a game has started the players do not change
     "players" : [

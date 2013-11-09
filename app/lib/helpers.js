@@ -4,6 +4,7 @@
 // if the session-id matches the id of the user from the database game, then we have a player
 exports.getPlayerID = function (sid, players) {
 
+	// this is the ID from the headsup match, not the userID from the database
 	var playerID = null;
 
 	for (var i = 0; i < players.length; i++) {
@@ -72,7 +73,6 @@ exports.removeUserFromRoom = function (userID, users) {
 			u.push(users[i]);
 		}
 	}
-
 
 	return u;
 

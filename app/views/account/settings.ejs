@@ -11,7 +11,7 @@
 
 
 	<h3><%= profile.username %></h3>
-	<p><strong>User since:</strong> <%= moment(profile.created).format("YYYY-MM-DD HH:mm") %> (<%= moment(profile.created).diff(moment(),'days') %> days)</p>
+	<p><strong>User since:</strong> <%= moment(profile.created).format("MMM D, YYYY h:mma ZZ") %> <em>(<%= moment().from(moment(profile.created), true) %>)</em></p>
 	
 	<p>Settings Coming Soon</p>
 

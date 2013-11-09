@@ -42,3 +42,15 @@ site.directive('dropdownToggle', ['$document', function ($document) {
 	};
 }]);
 
+site.factory('ajax', function($http) {
+   return {
+		getActiveGames: function (userID) {
+			 //return the promise directly.
+			 return $http.get('/games').then(function (result) {
+					//resolve the promise as the data
+				return result.data;
+			});
+		}
+   }
+});
+

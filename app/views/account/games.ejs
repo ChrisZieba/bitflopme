@@ -10,87 +10,101 @@
 
 <div class="container">
 
-
-	<h3>Active Games (<%=games.active.length%>)</h3>
-
 	<% if (games.active.length > 0) { %>
-		<div class="table-responsive">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Created</th>
-						<th>Status</th>
-						<th>Opponent</th>
-						<th>Chips (SB/BB)</th>
-						<th>Level</th>
-						<th>Timer</th>
-						<th>Table</th>
-					</tr>
-				</thead>
 
-				<tbody>
-					<% for (var i = 0; i < games.active.length; i++) { %>
-						<tr>
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Active Games <span class="label label-danger"><%=games.active.length%></span></h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Created</th>
+								<th>Status</th>
+								<th>Opponent</th>
+								<th>Chips (SB/BB)</th>
+								<th>Level</th>
+								<th>Timer</th>
+								<th>Table</th>
+							</tr>
+						</thead>
 
-							<td>
-								<%= moment(games.active[i].created).format("MMM D, YYYY h:mma ZZ") %>
-								<span class="label label-default"><em><%= moment().from(moment(games.active[i].created), true) %> ago</em></span>
-							</td>
-							<td>
-								<% if (games.active[i].state === 'PLAYING') { %>
+						<tbody>
+							<% for (var i = 0; i < games.active.length; i++) { %>
+								<tr>
 
-									<span class="label label-danger">PLAYING</span>
+									<td>
+										<%= moment(games.active[i].created).format("MMM D, YYYY h:mma ZZ") %>
+										<span class="label label-default"><em><%= moment().from(moment(games.active[i].created), true) %> ago</em></span>
+									</td>
+									<td>
+										<% if (games.active[i].state === 'PLAYING') { %>
 
-								<% } else { %>
-									This game has been created but <strong>not started</strong>.
-								<% } %>
+											<span class="label label-danger">PLAYING</span>
 
-
-							</td>
-							<td>
-								<% if (games.active[i].state === 'PLAYING') { %>
-
-									<% if (games.active[i].creator.id === user.id) { %>
-										<a href="/user/<%= games.active[i].players[1].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[1].name %></a>
-									<% } else { %>
-										<a href="/user/<%= games.active[i].players[0].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[0].name %></a>
-									<% } %>
-
-								<% } else { %>
-									No one yet
-								<% } %>
+										<% } else { %>
+											This game has been created but <strong>not started</strong>.
+										<% } %>
 
 
-							</td>
-							
-							<td>
-								<%= games.active[i].settings.chipStack %> (<%= games.active[i].settings.smallBlind %>/<%= games.active[i].settings.bigBlind %>)
-							</td>
-							<td>
-								<% if (games.active[i].settings.timer === 0) { %>
-									&infin;
-								<% } else { %>
-									<%= games.active[i].settings.timer %> min
-								<% } %>
-							</td>
-							<td>
-								<% if (games.active[i].settings.level === 0) { %>
-									&infin;
-								<% } else { %>
-									<%= games.active[i].settings.level %> min
-								<% } %>
-							</td>
-							<td>
-								<a href="/game/play/<%= games.active[i].id %>" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-new-window"></span></a>
-							</td>
-						</tr>
-					<% } %>
-				</tbody>
-			</table>
+									</td>
+									<td>
+										<% if (games.active[i].state === 'PLAYING') { %>
+
+											<% if (games.active[i].creator.id === user.id) { %>
+												<a href="/user/<%= games.active[i].players[1].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[1].name %></a>
+											<% } else { %>
+												<a href="/user/<%= games.active[i].players[0].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[0].name %></a>
+											<% } %>
+
+										<% } else { %>
+											No one yet
+										<% } %>
+
+
+									</td>
+									
+									<td>
+										<%= games.active[i].settings.chipStack %> (<%= games.active[i].settings.smallBlind %>/<%= games.active[i].settings.bigBlind %>)
+									</td>
+									<td>
+										<% if (games.active[i].settings.timer === '0') { %>
+											&infin;
+										<% } else { %>
+											<%= games.active[i].settings.timer %> min
+										<% } %>
+									</td>
+									<td>
+										<% if (games.active[i].settings.level === '0') { %>
+											&infin;
+										<% } else { %>
+											<%= games.active[i].settings.level %> min
+										<% } %>
+									</td>
+									<td>
+										<a href="/game/play/<%= games.active[i].id %>" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-new-window"></span></a>
+									</td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
+
+
+		
+	<% } else { %>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
+
+				<p>You currently have no active games. You can start a <a href="/game/new">new game</a> or join an <a href="/game/join">existing game</a>.</p>
+			</div>
+		</div>
+
 	<% } %>
-
-
 </div>
 
 <% include ../partials/footer.ejs %>

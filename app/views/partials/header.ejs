@@ -48,13 +48,13 @@
 											<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
-											<li><a href="/account/games">My Games</a></li>
+											<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
 											<li class="divider"></li>
-											<li><a href="/game/new">Create a Game</a></li>
-											<li><a href="/game/join">Join a Game</a></li>
+											<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
+											<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
 											<li class="divider"></li>
-											<li><a href="/account/settings">Settings</a></li>
-											<li><a href="/logout">Logout</a></li>
+											<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
+											<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 										</ul>
 									</div>
 								</li>

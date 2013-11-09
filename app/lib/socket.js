@@ -150,45 +150,42 @@ exports.listen = function (server, sessionStore, app) {
 		// @data is the game document from the database
 		var endGame = function (Game, room) {
 
-
-
-						// this gets sent to every connection
-						io.sockets.in(room).emit('game:end', { 
-							uuid: Date.now(), 
-							room: {
-								id: room,
-								players: Game.room.players,
-								observers: Game.room.observers
-							},
-							events: Game.game.events,
-							action: {
-								dealer: null,
-								turn: null,
-								smallBlind: null,
-								bigBlind: null,
-								pot: 0,
-								state: "END",
-								board: [],
-								winner: Game.game.getWinner()
-							},
-							player: {
-								id: Game.game.players[0].id,
-								name: Game.game.players[0].name,
-								cards: [],
-								chips: 0,
-								options: Game.game.players[0].Options(true)
-							},
-							opponent: {
-								id: Game.game.players[1].id,
-								name: Game.game.players[1].name,
-								cards: [],
-								chips: 0,
-								options: Game.game.players[1].Options(true)
-							}
-						});
+			// this gets sent to every connection
+			io.sockets.in(room).emit('game:end', { 
+				uuid: Date.now(), 
+				room: {
+					id: room,
+					players: Game.room.players,
+					observers: Game.room.observers
+				},
+				events: Game.game.events,
+				action: {
+					dealer: null,
+					turn: null,
+					smallBlind: null,
+					bigBlind: null,
+					pot: 0,
+					state: "END",
+					board: [],
+					winner: Game.game.getWinner()
+				},
+				player: {
+					id: Game.game.players[0].id,
+					name: Game.game.players[0].name,
+					cards: [],
+					chips: 0,
+					options: Game.game.players[0].Options(true)
+				},
+				opponent: {
+					id: Game.game.players[1].id,
+					name: Game.game.players[1].name,
+					cards: [],
+					chips: 0,
+					options: Game.game.players[1].Options(true)
+				}
+			});
 
 		};
-
 
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
@@ -206,7 +203,7 @@ exports.listen = function (server, sessionStore, app) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
 
-					var playerID = helpers.getPlayerID(session.user.id, game.players)
+					var playerID = helpers.getPlayerID(session.user.id, game.players);
 
 					// Look up the table to see if it's still in mem, or if we need to create a new one
 					if (!Games.hasOwnProperty(data.room)) {
@@ -320,7 +317,7 @@ exports.listen = function (server, sessionStore, app) {
 						game.save(function (err) {
 							if (err) throw err;
 							// sends the cards and any other data
-							sendGameData(Games[data.room], data.room, false);
+							sendGameData(Games[data.room], data.room, false, false, false);
 
 						});
 
@@ -492,26 +489,72 @@ exports.listen = function (server, sessionStore, app) {
 							Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
 						}
 
-						// check to see if we need to close the table down
-						if (game.state === 'END' && Games[scope.room].room.players.length === 0) {
-
-						}
+console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
+						var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
 
 						game.events = Games[scope.room].game.events;
 						game.save(function (err) {
 
-							io.sockets.in(scope.room).emit('game:leave', { 
-								uuid: Date.now(), 
-								user: {
-									name: scope.user.name
-								},
-								events: Games[scope.room].game.events,
-								room: {
-									id: scope.room,
-									players: Games[scope.room].room.players,
-									observers: Games[scope.room].room.observers
+							if (err) throw err;
+
+							// if a player left then the table the game cannot continue
+							// check to make sure the game has started (PLAYING)
+							// check that a player actually left the table
+							if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
+
+								for (var i = 0; i < Games[scope.room].game.players.length; i++) {
+									io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
+										uuid: Date.now(), 
+										room: {
+											id: scope.room,
+											players: Games[scope.room].room.players,
+											observers: Games[scope.room].room.observers
+										},
+										events: Games[scope.room].game.events,
+										action: {
+											dealer: null,
+											turn: null,
+											smallBlind: null,
+											bigBlind: null,
+											pot: 0,
+											state: null,
+											board: [],
+											winner: Games[scope.room].game.getWinner()
+										},
+										player: {
+											id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
+											name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
+											cards: [],
+											chips: 0,
+											options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
+										},
+										opponent: {
+											id: null,
+											name: null,
+											cards: [],
+											chips: 0,
+											options: null
+										}
+									});
 								}
-							});
+
+
+							} else {
+								io.sockets.in(scope.room).emit('game:leave', { 
+									uuid: Date.now(), 
+									user: {
+										name: scope.user.name
+									},
+									events: Games[scope.room].game.events,
+									room: {
+										id: scope.room,
+										players: Games[scope.room].room.players,
+										observers: Games[scope.room].room.observers
+									}
+								});
+							}
+
+
 						});
 					}
 				});

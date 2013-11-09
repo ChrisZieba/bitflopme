@@ -9,14 +9,14 @@ var mongoose = require('mongoose'),
 
 module.exports = function (app) {
 	// define the urls, and the handlers for them
-	app.get('/', function (req, res) {
+	app.get('/', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		res.render('index.ejs', { 
 			title: 'bitflop.me',
 			user: res.locals.user
 		});
 	});
 
-	app.get('/login', function (req, res) {
+	app.get('/login', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		//	Check if the user is logged in already
 		if (res.locals.user.authenticated) {
 			res.redirect('/');
@@ -30,7 +30,7 @@ module.exports = function (app) {
 
 	});
 
-	app.get('/register', function (req, res) {
+	app.get('/register', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		//	Check if the user is logged in already
 		if (res.locals.user.authenticated) {
 			res.redirect('/');
@@ -41,18 +41,17 @@ module.exports = function (app) {
 				errors: {}
 			});
 		}
-
 	});
 
 	// execute when a user logs out
-	app.get('/logout', [middleware.validateUser], function (req, res) {
+	app.get('/logout', [middleware.validateUser, middleware.getUserGames], function (req, res) {
 
 		req.session.user = {};
 		res.redirect('/');
 	});
 
 	// show all the games that are available to join
-	app.get('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
+	app.get('/game/join', [middleware.refererURL, middleware.validateUser, middleware.getUserGames], function (req, res) {
 
 		var user = res.locals.user;
 
@@ -60,23 +59,44 @@ module.exports = function (app) {
 		models.Games.find({ $and: [
 			{'state':'NEW'},
 			{'players.0.id':{$ne : user.id}}
-		]}).sort('-created').exec(function(err, games) {
+		]}).sort('-created').exec(function(err, open) {
 
 			if (err) throw err;
 
-			res.render('game/join.ejs', { 
-				title: 'bitflop.me',
-				moment: moment,
-				user: user,
-				games: {
-					open: games
-				}
+
+
+			//	Get all the active games for the user 		
+			models.Games.find({ $and: [
+				{ 
+					$or: [
+						{ 'players.0.id': user.id },
+						{ 'players.1.id': user.id }
+					]
+				}, 
+				{'state':{$ne : "END"}}
+			]}).sort('-created').exec(function(err, active) {
+				if (err) throw err;
+
+				// find any games that the user is in
+				res.render('game/join.ejs', { 
+					title: 'bitflop.me',
+					moment: moment,
+					user: user,
+					games: {
+						open: open,
+						active: active
+					}
+				});
+
 			});
+
+
+
 
 		});
 	});
 
-	app.get('/game/new', [middleware.refererURL, middleware.validateUser], function (req, res) {
+	app.get('/game/new', [middleware.refererURL, middleware.validateUser, middleware.getUserGames], function (req, res) {
 		res.render('game/new.ejs', { 
 			title: 'bitflop.me',
 			user: res.locals.user,
@@ -84,7 +104,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.post('/login', function (req, res) {
+	app.post('/login', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 
 		req.check('loginUsername', 'The username is required.').notEmpty();
 		req.check('loginPassword', 'The password is required.').notEmpty();
@@ -106,9 +126,11 @@ module.exports = function (app) {
 							req.session.user = {
 								id: user.id,
 								name: user.username,
-								authenticated: true
-								//	This keeps track of what game rooms the user is a player in
-								//rooms: []
+								authenticated: true,
+								games: {
+									// this will hold the id's of the active user games
+									active: []
+								}
 							};
 							res.redirect(req.session.refererURL || '/');	
 						} else {
@@ -147,7 +169,7 @@ module.exports = function (app) {
 
 	});
 
-	app.post('/register', function (req, res) {
+	app.post('/register', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 
 		req.check('registerUsername', 'The username is required and must be between 2 and 15 letters/numbers.').notEmpty().len(2,15).isAlphanumeric();
 		req.check('registerPassword', 'The password is required and must be at least 5 character.').notEmpty().len(5,55);
@@ -213,8 +235,10 @@ module.exports = function (app) {
 										id: user.id,
 										name: user.username,
 										authenticated: true,
-										//	This keeps track of what game rooms the user is in
-										//rooms: []
+										games: {
+											active: []
+										}
+										
 									};
 									res.redirect(req.session.refererURL || '/account');	
 								});	
@@ -237,7 +261,7 @@ module.exports = function (app) {
 	});
 
 	// when in the table, the user clicks the join button at the top and comes here to add themself to the players list
-	app.post('/game/join/:tableID', [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
+	app.post('/game/join/:tableID', [middleware.refererURL, middleware.validateUser, middleware.getUserGames, middleware.validateGame], function (req, res) {
 
 		var game = res.locals.game;
 		var user = res.locals.user;
@@ -264,131 +288,24 @@ module.exports = function (app) {
 				res.redirect('/game/play/' + game.id);
 			});	
 		}
-	})
-
-	/*app.post('/game/join', [middleware.refererURL, middleware.validateUser], function (req, res) {
-		// validate the input that came from the form\
-		req.check('password', 'The game security code is required').notEmpty();
-		req.sanitize('_game');
-		req.sanitize('password');
-
-		var errors = req.validationErrors(); 
-
-		// If no errors were found we passed form validation
-		if (!errors) {
-			// get the current count of the game (auto-increment)
-			models.Games.findOne({ 'id': req.param('_game') }, function (err, game) {
-				if (err) throw err;
-
-				if (game) {
-					// the password was found!
-					if (game.password === req.param('password')) {
-						// 	Attach the id of the room they joined, only if its not there already
-						if (req.session.user.rooms.indexOf(game.id.toString()) == -1) req.session.user.rooms.push(game.id.toString());
-
-						//	Check to see if have room to add a player to the room
-						if (game.players.length >= game.settings.minPlayers && game.players.length <= game.settings.maxPlayers) {
-							//	Make sure we are not adding the same user onto the players array
-							var playerID = helpers.getPlayerID(req.session.user.id, game.players);
-
-							if (playerID === null) {
-								// 	Update the database
-								models.Games.update({id:game.id}, {$push: { players: {id:req.session.user.id, name: req.session.user.name}}}, function (err) {
-									if (err) throw err;
-
-									res.redirect('/game/play/' + game.id);
-								});	
-							} else {
-								//	The person who entered the game is already a player
-								res.redirect('/game/play/' + game.id);
-							}
-						} else {
-							//	The game already has the max number of players, so just redirect to the game to the rail
-							res.redirect('/game/play/' + game.id);
-						}
+	});
 
 
-
-						
-					} else {
-						//	Get all the games that are 'NEW'
-						models.Games.find({}).where('state').equals('NEW').sort('-created').exec(function(err, games) {
-							if (err) throw err;
-
-							// 	Show the errors on the form
-							res.render('game/join.ejs', { 
-								title: 'bitflop.me',
-								user: res.locals.user,
-								games: games,
-								errors: {
-									'name': 'password',
-									'msg': 'the password is not in the database or is wrong'
-								}
-							});
-						});
-					}
-				} else {
-					//	Get all the games that are 'NEW'
-					models.Games.find({}).where('state').equals('NEW').sort('-created').exec(function(err, games) {
-						if (err) throw err;
-
-						// 	Show the errors on the form
-						res.render('game/join.ejs', { 
-							title: 'bitflop.me',
-							user: res.locals.user,
-							games: games,
-							errors: {
-								'name': 'password',
-								'msg': 'the password is not in the database or is wrong'
-							}
-						});
-
-					});
-
-
-
-				}
-			});
-		} else {
-
-			//	Get all the games that are 'NEW'
-			models.Games.find({}).where('state').equals('NEW').sort('-created').exec(function(err, games) {
-				if (err) throw err;
-
-				// 	Show the errors on the form
-				res.render('game/join.ejs', { 
-					title: 'bitflop.me',
-					user: res.locals.user,
-					games: games,
-					errors: errors
-				});
-
-			});
-		}
-				
-
-	});*/
-
-	app.post('/game/new', [middleware.refererURL, middleware.validateUser], function (req, res) {
+	app.post('/game/new', [middleware.refererURL, middleware.validateUser, middleware.getUserGames], function (req, res) {
 		// validate the input that came from the form\
 		req.check('smallBlind', 'The small blind is required and cannot be greater than 1000.').notEmpty().notNull().isInt().min(1).max(1000);
-		//req.check('private', 'The game security code is required');
 		req.sanitize('smallBlind');
 
 		req.check('bigBlind', 'The big blind is required and must be exaclty double the small blind.').notEmpty().notNull().isInt().min(req.param('smallBlind')*2).max(req.param('smallBlind')*2);
-		//req.check('private', 'The game security code is required');
 		req.sanitize('bigBlind');
 
 		req.check('chipStack', 'The chip stack is required and must be between 5 and 100 big blinds.').notEmpty().notNull().isInt().min(req.param('bigBlind')*5).max(req.param('bigBlind')*100);
-		//req.check('private', 'The game security code is required');
 		req.sanitize('chipStack');
 
-		req.check('tableTimer', 'The timer is required.').notEmpty().notNull();
-		//req.check('private', 'The game security code is required');
+		req.check('tableTimer', 'The timer is required.').notNull();
 		req.sanitize('tableTimer');
 
-		req.check('blindLevel', 'The blind level is required.').notEmpty().notNull();
-		//req.check('private', 'The game security code is required');
+		req.check('blindLevel', 'The blind level is required.').notNull();
 		req.sanitize('blindLevel');
 
 
@@ -432,10 +349,10 @@ module.exports = function (app) {
 
 						var gameID = game.id.toString();
 
-						// here we are pushing a room the user is authorized to enter
-						//if (req.session.user.rooms.indexOf(gameID) === -1) {
-							//req.session.user.rooms.push(gameID);
-						//}
+						// here we are pushing a room the user is part of
+						if (req.session.user.games.active.indexOf(gameID) === -1) {
+							req.session.user.games.active.push(gameID);
+						}
 
 						res.redirect('/game/play/' + gameID);
 
@@ -457,7 +374,7 @@ module.exports = function (app) {
 	/* 	The middleware will check that the game exists
 		We do not need to check if a user is looged in becuase anyone can view this page, only logged in users can sit and play
 	*/
-	app.get('/game/play/:tableID',  [middleware.refererURL, middleware.validateUser, middleware.validateGame], function (req, res) {
+	app.get('/game/play/:tableID',  [middleware.refererURL, middleware.validateUser, middleware.getUserGames, middleware.validateGame], function (req, res) {
 
 		var game = res.locals.game;
 		var user = res.locals.user;
@@ -480,7 +397,7 @@ module.exports = function (app) {
 		} else {
 			// non player accessing the table
 			if (game.players.length === 2) {
-				res.render('game/private.ejs', { 
+				res.render('game/full.ejs', { 
 					title: 'bitflop.me',
 					user: user,
 					room: room
@@ -501,7 +418,7 @@ module.exports = function (app) {
 	});
 
 	// The middleware will check if the user is logged in
-	app.get('/account/games',  [middleware.validateUser], function (req, res) {
+	app.get('/account/games',  [middleware.validateUser, middleware.getUserGames], function (req, res) {
 
 		//	Get all the active games for the user 		
 		models.Games.find({ $and: [
@@ -528,7 +445,7 @@ module.exports = function (app) {
 	});
 
 	// The middleware will check if the user is logged in
-	app.get('/account/settings',  [middleware.validateUser], function (req, res) {
+	app.get('/account/settings',  [middleware.validateUser, middleware.getUserGames], function (req, res) {
 
 		// look up the user again to get more information
 		models.Users.findOne({ 'id': res.locals.user.id }, 'id username created', function (err, profile) {
@@ -552,7 +469,7 @@ module.exports = function (app) {
 	});
 
 	// Public profile page for the user
-	app.get('/user/:username', function (req, res) {
+	app.get('/user/:username', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 
 		models.Users.findOne({ 'username': req.param('username') }, 'id username created', function (err, profile) {
 			if (err) throw err;
@@ -574,7 +491,8 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/about',  [middleware.refererURL], function (req, res) {
+
+	app.get('/about',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('about.ejs', { 
 			title: 'bitflop.me',
@@ -582,7 +500,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/faq',  [middleware.refererURL], function (req, res) {
+	app.get('/faq',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('faq.ejs', { 
 			title: 'bitflop.me',
@@ -590,7 +508,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/roadmap',  [middleware.refererURL], function (req, res) {
+	app.get('/roadmap',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('roadmap.ejs', { 
 			title: 'bitflop.me',
@@ -598,7 +516,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/terms',  [middleware.refererURL], function (req, res) {
+	app.get('/terms',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('terms.ejs', { 
 			title: 'bitflop.me',
@@ -606,7 +524,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/contact',  [middleware.refererURL], function (req, res) {
+	app.get('/contact',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('contact.ejs', { 
 			title: 'bitflop.me',
@@ -618,7 +536,7 @@ module.exports = function (app) {
 	app.get('*', function(req, res) {
 		//res.send('404 errorsdf', 404);
 		res.status(404).render('404.ejs',{
-			title: '404',
+			title: 'Page Not Found',
 			user: res.locals.user,
 			meta: ''
 		});	

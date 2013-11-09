@@ -10,20 +10,27 @@ exports.validateGame = function (req, res, next) {
 
 	// the table name comes from the url
 	req.check('tableID', 'Invalid url param').notEmpty().notNull().isInt();
-	req.sanitize('tableName');
+	req.sanitize('tableID');
 
 	// validate the name, if its not valid we dont even bother checking the privledges
 	if (req.validationErrors()) {
 		res.status(404).render('404.ejs', {
-			title: '404 - Page Not Found'
+			title: 'Page Not Found'
 		});
 	} else {
 		// if the input is valid, get the data for the intview being requsted
 		models.Games.findOne({ 'id': req.param('tableID') }, function (err, game) {
 			if (err) throw err;
 
-			if (!game || game.state === 'END') {
-				res.redirect('/game/new');
+			if (!game) {
+				res.status(404).render('404.ejs', {
+					title: 'Page Not Found'
+				});
+			} else if (game.state === 'END') {
+				res.render('game/done.ejs', { 
+					title: 'bitflop.me - Move along, nothin to see here ...',
+					user: res.locals.user
+				});
 			} else {
 				// attach the interview data to the locals object, so we dont have to query the dbase again
 				res.locals.game = game;
@@ -36,7 +43,6 @@ exports.validateGame = function (req, res, next) {
 exports.validateUser = function (req, res, next) {
 
 	if (req.session.user) {
-		// groups with the val 0 are users who register during an interview
 		if (req.session.user.authenticated) {
 			next();
 		} else {
@@ -53,5 +59,36 @@ exports.refererURL = function (req, res, next) {
 
 	req.session.refererURL = req.url || '/';
 	next();
+
+};
+
+//	This attaches the last URL
+exports.getUserGames = function (req, res, next) {
+
+	if (req.session.user) {
+		if (req.session.user.authenticated) {
+			// if the user is logged in grab all the id's of the active games
+
+			models.Games.find({ $and: [
+				{ 
+					$or: [
+						{ 'players.0.id': req.session.user.id },
+						{ 'players.1.id': req.session.user.id }
+					]
+				}, 
+				{'state':{$ne : "END"}}
+			]}, 'id').exec(function(err, active) {
+				if (err) throw err;
+
+				req.session.user.games.active = (active) ? active : [];
+				next();
+			});
+
+		} else {
+			next();
+		}
+	} else {
+		next();
+	}
 
 };
