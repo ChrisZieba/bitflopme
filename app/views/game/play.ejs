@@ -292,10 +292,9 @@
 					<div class="history">
 						<div class="side-title"><strong>EVENTS</strong> <span class="badge"><small>{{game.events.length}}</small></span></div>
 						<ul class="events" scroll-glue ng-model="game.events">
-							<li ng-repeat="event in game.events" title="{{ fn.msToDateTime(event.time) }}">
+							<li ng-class="(event.owner != 'Dealer') ? 'text-muted' : ''" ng-repeat="event in game.events" title="{{ fn.msToDateTime(event.time) }}">
 								<span><strong>{{ event.owner }}:</strong> </span>
 								<span ng-bind-html-unsafe="event.event">{{ event.event }} </span>
-
 							</li>
 						</ul>
 					</div>

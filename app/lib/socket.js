@@ -228,9 +228,7 @@ exports.listen = function (server, sessionStore, app) {
 							id: session.user.id,
 							name: session.user.name
 						});
-						console.log(Games[data.room].room.players);
-						console.log('\n\n\n\n\n\n\n\n\n\n')
-						Games[data.room].game.AddEvent(session.user.name, 'seated and ready to play');
+						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
 						// this room is for non-players only
 						socket.join(data.room + '::');
@@ -241,7 +239,7 @@ exports.listen = function (server, sessionStore, app) {
 							name: session.user.name
 						});
 
-						Games[data.room].game.AddEvent('Dealer', '<strong>' + session.user.name + '</strong> is on the rail');
+						Games[data.room].game.AddEvent('Dealer', '<strong>' + session.user.name + '</strong> has joined the table');
 					}
 
 					// Are both players at the table and ready to play?

@@ -74,7 +74,7 @@ function Log (id, game) {
 Game.prototype.Start = function () {
 
 	this.state = 'START'
-	this.AddEvent('Dealer', 'Start Game');
+	this.AddEvent('Dealer', 'Beginning Match');
 	this.NewRound();
 };
 
@@ -237,15 +237,15 @@ Log('before we adjust the blinds', this);
 			// will force the round to be over
 			this.players[bigBlind].acted = true;
 
-			this.AddEvent(this.players[smallBlind].name, 'small blind of ' + this.players[smallBlind].bets);
-			this.AddEvent(this.players[smallBlind].name, 'allin');
+			this.AddEvent(this.players[smallBlind].name, 'posts small blind of ' + this.players[smallBlind].bets);
+			this.AddEvent(this.players[smallBlind].name, 'is forced allin');
 
 
 
 		} else {
 			this.players[smallBlind].chips -= this.smallBlind;
 			this.players[smallBlind].bets = this.smallBlind;
-			this.AddEvent(this.players[smallBlind].name, 'small blind of ' + this.smallBlind);
+			this.AddEvent(this.players[smallBlind].name, 'posts small blind of ' + this.smallBlind);
 		}
 
 
@@ -259,8 +259,8 @@ Log('before we adjust the blinds', this);
 			this.players[bigBlind].acted = true;
 			this.players[bigBlind].allIn = true;
 
-			this.AddEvent(this.players[bigBlind].name, 'big blind of ' + this.players[bigBlind].bets);
-			this.AddEvent(this.players[bigBlind].name, 'allin');
+			this.AddEvent(this.players[bigBlind].name, 'posts big blind of ' + this.players[bigBlind].bets);
+			this.AddEvent(this.players[bigBlind].name, 'is forced allin');
 
 			// check to see if the big blind had enough chips to cover the smallblind,
 			// otherwise the smallBlind needs to make a call still
@@ -278,14 +278,14 @@ Log('before we adjust the blinds', this);
 		} else {
 			this.players[bigBlind].chips -= this.bigBlind;
 			this.players[bigBlind].bets = this.bigBlind;
-			this.AddEvent(this.players[bigBlind].name, 'big blind of ' + this.bigBlind);
+			this.AddEvent(this.players[bigBlind].name, 'posts big blind of ' + this.bigBlind);
 		}
 	Log('after we adjust the blinds', this);	
 
 	} else {
 
 		// game over
-		this.AddEvent('Dealer', 'Game is over');
+		this.AddEvent('Dealer', 'Match is over');
 		this.state = 'END';
 	}
 
@@ -612,8 +612,7 @@ Player.prototype.Check = function() {
 	this.action = 'check';
 	this.acted = true;
 
-	//Attemp to progress the game
-	//this.game.Progress();
+	this.game.AddEvent(this.name, 'checks');
 
 };
 
@@ -623,8 +622,7 @@ Player.prototype.Bet = function (bet) {
 	this.chips -= bet;
 	this.acted = true;
 	this.action = 'bet';
-	//Attemp to progress the game
-	//this.game.Progress();
+	this.game.AddEvent(this.name, 'bets ' + bet);
 	
 };
 
@@ -656,7 +654,7 @@ Log('raise', this.game);
 
 	this.action = 'raise';
 	this.acted = true;
-	//this.game.Progress();
+	this.game.AddEvent(this.name, 'raises ' + bet);
 
 
 
@@ -691,8 +689,7 @@ Log('call', this.game);
 	this.action = 'call';
 	this.acted = true;
 Log('call', this.game);
-	//Attemp to move the game along
-	//this.game.Progress();
+	this.game.AddEvent(this.name, 'calls');
 
 
 };
@@ -721,8 +718,7 @@ Player.prototype.Fold = function() {
 	//Mark the player as folded
 	this.folded = true;
 	this.action = 'fold';
-	//Attemp to progress the game
-	//this.game.Progress();
+	this.game.AddEvent(this.name, 'folds');
 };
 
 // How many players are sitting at a table
