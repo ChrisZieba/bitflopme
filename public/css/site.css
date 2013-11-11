@@ -181,11 +181,10 @@ code {
 }
 
 #wrap .navbar-default {
-	/*background-color: #2C3E50;*/
 	background-color: #222222;
 	text-shadow: none;
-	border-color: #999;
-	border-width: 0;
+	border-color: #000;
+	border-width: 0 0 1px;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
 	
 }
@@ -225,6 +224,10 @@ code {
 #wrap .navbar-brand {
 
 	padding:3px 15px;
+}
+
+.margin-bottom-0 {
+	margin-bottom: 0;
 }
 
 .btn-group {
