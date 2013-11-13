@@ -1,6 +1,40 @@
 var site = angular.module('site', []);
 
 
+site.controller('CollapseCtrl', function($rootScope, $scope) {
+	$scope.isCollapsed = true;
+});
+
+
+site.directive('collapse', [function () {
+
+	return {
+		link: function(scope, element, attrs) {
+
+			var isCollapsed;
+
+			scope.$watch(attrs.collapse, function(value) {
+				if (value) {
+					collapse();
+				} else {
+					expand();
+				}
+			});
+		  
+			var expand = function() {
+				element.addClass('in');
+				isCollapsed = false;
+			};
+		  
+			var collapse = function() {
+				isCollapsed = true;
+				element.removeClass('in');
+			};
+		}
+	};
+}]);
+
+
 
 site.directive('dropdownToggle', ['$document', function ($document) {
 	var openElement = null,

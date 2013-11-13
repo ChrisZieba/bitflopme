@@ -5,11 +5,11 @@ html,
 body {
 	height: 100%;
 	background-color: #fff;
-	min-width:310px; /* suppose you want minimun width of 1000px */
-	width: auto !important;  /* Firefox will set width as auto */
-	width:310px;  
+
 
 }
+
+
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
@@ -60,12 +60,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	background: #222222;
 	padding-top: 35px;
 	padding-bottom: 35px;
+	padding-left:0px;
+	padding-right: 0px;
 	border-bottom: 1px solid #dddedf;
 
 }
 
 .jumbotron h1 {
-	font-size: 50px;
+	font-size: 44px;
 	margin-bottom: 20px;
 }
 .jumbotron h1, .jumbotron h2, .jumbotron h3 {
@@ -105,6 +107,32 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	margin: 0 auto -60px;
 	/* Pad bottom by footer height */
 	padding: 0 0 60px;
+}
+
+button.btn-user {
+	padding: 5px 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 0px;
+	color: #333333;
+	background-color: #ffffff;
+	border-color: #cccccc;
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: normal;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	border: 1px solid transparent;
+	border-radius: 0px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 /* Set the fixed height of the footer here */
@@ -186,7 +214,15 @@ code {
 	border-color: #000;
 	border-width: 0 0 1px;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
-	
+}
+
+#wrap .navbar-header {
+	min-height: 50px;
+}
+
+#wrap .navbar-default .navbar-collapse, 
+#wrap .navbar-default .navbar-form {
+	border-color: #000;
 }
 
 #wrap .navbar-default .navbar-brand {
@@ -205,12 +241,10 @@ code {
 
 #wrap .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
 	color: #FFFFFF;
-
 }
 
 #wrap .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
 	color: #FFFFFF;
-
 }
 
 #wrap .navbar-default .navbar-nav > li > a.action {
@@ -218,12 +252,11 @@ code {
 }
 
 #wrap .navbar > .container .navbar-brand {
-	margin-left: -15px;
+	margin-left: -0px;
 }
 
 #wrap .navbar-brand {
-
-	padding:3px 15px;
+	padding:3px 1px;
 }
 
 .margin-bottom-0 {
@@ -232,6 +265,10 @@ code {
 
 .btn-group {
 	padding-top:10px;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+	background-color: #333;
 }
 
 .col-bg-1 {
@@ -257,9 +294,9 @@ code {
 }
 
 .sub p {
-	font-size: 16px;
-	overflow: hidden;
-	color:#b8c0c8;
+	font-size: 14px;
+	text-align: center;
+	color:#f8f8f8;
 }
 
 
@@ -269,51 +306,135 @@ code {
 
 
 
- 
-@media(min-width:1200px){
 
-    h1 {text-size:34px}
 
-}
-@media(min-width:992px){
+@media only screen and (max-width: 419px), only screen and (max-device-width: 419px){
 
-    h1 {text-size:32px}
+	button.btn-user {
+		padding: 8px 0 8px 0;
+		font-size: 14px;
+		line-height: 1.5;
+		border-radius: 0px;
+		color: #666;
+		background-color: #222222;
+		position: relative;
+		float: left;
+		display: inline-block;
+		margin: 0;
+		font-weight: normal;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		cursor: pointer;
+		border: 0px solid transparent;
+		border-radius: 0px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+	}
 
-}
-@media(min-width:768px){
+	button.btn-user:hover {
+		color:#FFFFFF;
+	}
 
-    h1 {text-size:28px}
+	.btn-group.open .dropdown-toggle {
+		-webkit-box-shadow: none;
+		box-shadow:none;
+	}
 
-}
-@media(max-width:767px){
+	.nav .caret {
+		border-top-color: #666;
+		border-bottom-color: #666;
+	}
 
-    h1 {text-size:26px}
+	.nav .caret:hover {
+		border-top-color: #FFF;
+		border-bottom-color: #FFF;
+	}
 
-}
 
-@media only screen and (max-width: 299px), only screen and (max-device-width: 299px){
+	.dropdown-menu .divider {
+		background-color: #333333;
+	}
+
+
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+		color: #FFF;
+	}
+
+	.btn-group {
+		padding-top: 0px;
+	}
+
+	.jumbotron {
+		margin-bottom: 15px;
+	}
 
 	.jumbotron h1 {
-		font-size:11px;
+		font-size:28px;
 	}
+
+	.sub h1 {
+		padding-top: 46px;
+	}
+
+	.jumbotron p {
+		font-size: 14px;
+	}
+
+	.btn-xs {
+		padding: 3px 5px;
+		font-size: 8px;
+	}
+
+	.btn-sm {
+		padding: 3px 5px;
+		font-size: 10px;
+	}
+
+	.btn-md {
+		padding: 4px 6px;
+		font-size: 12px;
+	}
+
+	.btn-lg {
+		padding: 8px 8px;
+		font-size: 14px;
+	}
+
+	h1, .h1 {
+		font-size: 28px;
+	}
+
+	h2, .h2 {
+		font-size: 26px;
+	}
+
+	h3, .h3 {
+		font-size: 24px;
+	}
+
+	h1, h2, h3 {
+		margin-top: 15px;
+		margin-bottom: 8px;
+	}
+
+}
+
+@media only screen and (min-width: 420px) and (max-width: 639px), only screen and (min-device-width: 420px) and (max-device-width: 639px) {
 
 
 
 }
-@media only screen and (min-width: 300px) and (max-width: 639px), only screen and (min-device-width: 300px) and (max-device-width: 639px) {
 
-	.jumbotron h1 {
-		font-size:11px;
-	}
+@media only screen and (min-width: 640px) and (max-width: 767px), only screen and (min-device-width: 640px) and (max-device-width: 767px){
 
-	.jumbotron .btn-outline-inverse {
-		font-size:14px;
-		padding:8px 16px;
-		margin: 10px 5px 10px 0;
-	}
+
 }
 
-@media only screen and (min-width: 640px) and (max-width: 991px), only screen and (min-device-width: 640px) and (max-device-width: 991px){
-	
+@media only screen and (min-width: 768px) and (max-width: 991px), only screen and (min-device-width: 768px) and (max-device-width: 991px){
+
 
 }

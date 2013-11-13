@@ -171,7 +171,7 @@ module.exports = function (app) {
 
 	app.post('/register', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 
-		req.check('registerUsername', 'The username is required and must be between 2 and 15 letters/numbers.').notEmpty().len(2,15).isAlphanumeric();
+		req.check('registerUsername', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
 		req.check('registerPassword', 'The password is required and must be at least 5 character.').notEmpty().len(5,55);
 		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(5,55).equals(req.param('registerPassword'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();

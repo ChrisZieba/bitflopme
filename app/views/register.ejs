@@ -20,16 +20,16 @@
 				<input type="hidden" name="_csrf" value="<%= token %>"/>
 				
 				<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
-					<label>Username</label>
-					<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username">
+					<label>Choose a Username</label> <span class="text-muted"><small>(Alphanumerics Only)</small></span>
+					<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username (between 2 and 15 characters)" maxlength="15">
 					<% if (errors.registerUsername) { %>
 						<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
 					<% } %>
 				</div>
 				
 				<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
-					<label>Password</label>
-					<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password">
+					<label>Choose a Password</label>
+					<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password (at least 5 characters)" maxlength="55">
 					<% if (errors.registerPassword) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
 					<% } %>
@@ -56,7 +56,7 @@
 					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register" />
 				</div>
 
-				<a href="/login" class="btn btn-default btn-block">Already a Member? <strong>Login Here</strong></a>
+				<a href="/login" class="btn btn-default btn-block"><strong>Login Here</strong></a>
 			</form>
 
 
