@@ -163,36 +163,34 @@ app.directive('localVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 
-			var localVideo = element[0];
+			if (getUserMedia !== null) {
+				var localVideo = element[0];
+
+				// check if the video is visible
+				// the video becomes available when  aplayer sits
+				if (localVideo) {
+
+					getUserMedia({video: true, audio: false}, function (stream) {
+						scope.peer.local.stream = stream;
+						scope.peer.local.element = localVideo;
+						scope.peer.connection.addStream(stream);
+
+						localVideo.src = URL.createObjectURL(stream);
+						localVideo.play();
+						
+						if (scope.game.ready) {
+							scope.initPeerConnection();
+						}
+					}, function (error) {
+						alert('There was an error.');
+						console.log(JSON.stringify(error));
+						return;
+					});
+				}
+			}
 
 			// weitd bug in firefox sets the height of the video container UNLESS it has controls on page load
 			element.removeAttr('controls');
-
-			// check if the video is visible
-			// the video becomes available when  aplayer sits
-			if (localVideo) {
-
-				getUserMedia({video: true, audio: false}, function (stream) {
-					scope.peer.local.stream = stream;
-					scope.peer.local.element = localVideo;
-					scope.peer.connection.addStream(stream);
-
-					localVideo.src = URL.createObjectURL(stream);
-					localVideo.play();
-					
-					if (scope.game.ready) {
-						scope.initPeerConnection();
-					}
-				}, function (error) {
-					alert('There was an error.');
-					console.log(JSON.stringify(error));
-					return;
-				});
-
-
-
-			}
-
 		}
 	};
 }]);
@@ -202,7 +200,10 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		priority: 1,
 		restrict: 'A',
 		link: function (scope, element, attrs) {
-			scope.peer.remote.element = element[0];
+			if (getUserMedia !== null) {
+				scope.peer.remote.element = element[0];
+			}
+
 			element.removeAttr('controls');
 
 		}
@@ -211,30 +212,33 @@ app.directive('remoteVideo', ['socket', function (socket) {
 
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
-	var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
+	// this will get set in adapter.js
+	if (RTCPeerConnection !== null) {
 
-	pc.onicecandidate = function (event) {
-		if (event.candidate) {
+		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
 
-			socket.emit('peer:send_candidate', { 
-				room: GLOBAL.ROOM,
-				candidate: event.candidate 
-			}, function (res) {
-				console.log(res);
-			});
+		pc.onicecandidate = function (event) {
+			if (event.candidate) {
+
+				socket.emit('peer:send_candidate', { 
+					room: GLOBAL.ROOM,
+					candidate: event.candidate 
+				}, function (res) {
+					console.log(res);
+				});
+				
+			}
+		};
+
+		pc.onaddstream = function (event) {
 			
-		}
-	};
-
-	pc.onaddstream = function (event) {
-		
-		if ($scope.peer.remote.element) {
-			console.log(event);
-			$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
-			$scope.peer.remote.element.play();
-		}
-	};
-
+			if ($scope.peer.remote.element) {
+				console.log(event);
+				$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
+				$scope.peer.remote.element.play();
+			}
+		};
+	}
 
 
 	var playerOptions = {
@@ -261,27 +265,30 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	// this gets called when both players are ready and have their webcams on
 	$scope.initPeerConnection = function () {
-		//console.log('is the game ready:'+scope.game.ready)
-		// Only when both players are in the room can we start broadcasting the streams
-		// this will be initiated by the second player who joins
 
-		console.log('create offer')
-		$scope.peer.connection.createOffer(function (desc) {
+		if (RTCPeerConnection !== null) {
+			//console.log('is the game ready:'+scope.game.ready)
+			// Only when both players are in the room can we start broadcasting the streams
+			// this will be initiated by the second player who joins
 
-			$scope.peer.connection.setLocalDescription(desc);
-			console.log('send offer');
-			socket.emit('peer:send_offer', { 
-				room: GLOBAL.ROOM,
-				sdp: desc 
-			}, function (res) {
-				console.log(res);
+			console.log('create offer')
+			$scope.peer.connection.createOffer(function (desc) {
+
+				$scope.peer.connection.setLocalDescription(desc);
+				console.log('send offer');
+				socket.emit('peer:send_offer', { 
+					room: GLOBAL.ROOM,
+					sdp: desc 
+				}, function (res) {
+					console.log(res);
+				});
+			}, null, {
+				'mandatory': {
+					'OfferToReceiveAudio':true, 
+					'OfferToReceiveVideo':true
+				}
 			});
-		}, null, {
-			'mandatory': {
-				'OfferToReceiveAudio':true, 
-				'OfferToReceiveVideo':true
-			}
-		});
+		}
 
 	};
 
@@ -447,37 +454,40 @@ console.log('game:leave' + JSON.stringify(data.room));
 
 
 	socket.on('peer:receive_candidate', function (data) {
-		console.log('peer:candidate has been received');
-		//console.log(data.candidate);
-
-		// wait until the remote description is set to use these
-		//$scope.peer.candidates.push(data.candidate);
-		$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
+		
+		if (RTCPeerConnection !== null) {
+			console.log('peer:candidate has been received');
+			$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
+		}
 
 	});
 
 
 	socket.on('peer:receive_offer', function (data) {
 
-		console.log('peer:offer has been received');
-		//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+		if (RTCPeerConnection !== null) {
+			console.log('peer:offer has been received');
+			//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
-		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-		$scope.peer.connection.createAnswer(function (desc) {
-			$scope.peer.connection.setLocalDescription(desc);
+			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+			$scope.peer.connection.createAnswer(function (desc) {
+				$scope.peer.connection.setLocalDescription(desc);
 
-			socket.emit('peer:send_answer', { 
-				room: GLOBAL.ROOM,
-				sdp: desc 
-			}, function (res) {
-				console.log(res);
-			});	
-		});
+				socket.emit('peer:send_answer', { 
+					room: GLOBAL.ROOM,
+					sdp: desc 
+				}, function (res) {
+					console.log(res);
+				});	
+			});
+		}
 	});
 
 	socket.on('peer:receive_answer', function (data) {
-		//console.log('peer:answer has been received');
-		$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+		if (RTCPeerConnection !== null) {
+			//console.log('peer:answer has been received');
+			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+		}
 	});
 
 

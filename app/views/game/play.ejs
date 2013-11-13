@@ -24,6 +24,7 @@
 			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
 
 			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
+
 			<script src="/js/vendor/angular.js"></script>
 			<script src="/js/vendor/adapter.js"></script>
 			<script src="/js/vendor/angular-slider.js"></script>
@@ -90,7 +91,20 @@
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center"></div>
 				<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 
-
+					<div class="btn-group pull-right">
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle">
+							<span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;&nbsp;&nbsp;<span class="caret"></span>
+						</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
+								<li class="divider"></li>
+								<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
+								<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
+								<li class="divider"></li>
+								<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
+								<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+							</ul>
+					</div>
 
 					<% if (!join) { %>
 						<div class="btn-group pull-right">
@@ -104,21 +118,6 @@
 						</div>
 
 					<% } %>
-
-					<div class="btn-group pull-right">
-						<button type="button" class="btn btn-default btn-sm dropdown-toggle">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
-						</button>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
-								<li class="divider"></li>
-								<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
-								<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
-								<li class="divider"></li>
-								<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
-								<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-							</ul>
-					</div>
 
 				</div>
 
