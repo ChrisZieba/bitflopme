@@ -17,7 +17,7 @@
 
 				<div class='form-group <% if (errors.smallBlind) { %>has-error<% } %>'>
 					
-					<label class="control-label">Small Blind</label>
+					<label class="control-label">Small Blind</label> <span class="text-muted"><small>(Numbers Only - Max is 1000)</small></span>
 					<input class="form-control mg-top-bot-5" name="smallBlind" size="30" type="text" placeholder="Small Blind e.g. 15" required />
 					<% if (errors.smallBlind) { %>
 						<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
@@ -25,7 +25,7 @@
 				</div>
 
 				<div class='form-group <% if (errors.bigBlind) { %>has-error<% } %>'>
-					<label class="control-label">Big Blind</label>
+					<label class="control-label">Big Blind</label> <span class="text-muted"><small>(Must be twice the BB)</small></span>
 					<input class="form-control mg-top-bot-5" name="bigBlind" size="30" type="text" placeholder="Big Blind e.g. 30" required />
 					<% if (errors.bigBlind) { %>
 						<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
@@ -33,7 +33,7 @@
 				</div>
 
 				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>'>
-					<label class="control-label">Starting Chips</label>
+					<label class="control-label">Starting Chips</label> <span class="text-muted"><small>(At most 100 BB's)</small></span>
 					<input class="form-control mg-top-bot-5" name="chipStack" size="30" type="text" placeholder="Chip Stack e.g. 1000" required/>
 					<% if (errors.chipStack) { %>
 						<div class="alert alert-danger"><p><%= errors.chipStack.msg %></p></div>

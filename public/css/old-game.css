@@ -1,6 +1,5 @@
 body {
   margin-top: 50px;
-  background-color: #181818;
 }
 
 #wrapper {
@@ -12,8 +11,64 @@ body {
   padding: 5px 15px;
 }
 
-.navbar-brand {
-	padding:3px 1px;
+/* Nav Messages */
+
+.messages-dropdown .dropdown-menu .message-preview .avatar,
+.messages-dropdown .dropdown-menu .message-preview .name,
+.messages-dropdown .dropdown-menu .message-preview .message,
+.messages-dropdown .dropdown-menu .message-preview .time {
+  display: block;
+}
+
+.messages-dropdown .dropdown-menu .message-preview .avatar {
+  float: left;
+  margin-right: 15px;
+}
+
+.messages-dropdown .dropdown-menu .message-preview .name {
+  font-weight: bold;
+}
+
+.messages-dropdown .dropdown-menu .message-preview .message {
+  font-size: 12px;
+}
+
+.messages-dropdown .dropdown-menu .message-preview .time {
+  font-size: 12px;
+}
+
+
+/* Nav Announcements */
+
+.announcement-heading {
+  font-size: 50px;
+  margin: 0;
+}
+
+.announcement-text {
+  margin: 0;
+}
+
+/* Table Headers */
+
+table.tablesorter thead {
+  cursor: pointer;
+}
+
+table.tablesorter thead tr th:hover {
+  background-color: #f5f5f5;
+}
+
+/* Flot Chart Containers */
+
+.flot-chart {
+  display: block;
+  height: 400px;
+}
+
+.flot-chart-content {
+  width: 100%;
+  height: 100%;
 }
 
 /* Edit Below to Customize Widths > 768px */
@@ -70,19 +125,16 @@ body {
 	background-color: #080808;
   }
 
+  .side-nav>li>a {
+	width: 225px;
+  }
 
-	.side-nav>li {
-		padding:5px 15px;
-		width:225px;
-		font-size: 12px;
-	}
+  .navbar-inverse .navbar-nav>li>a:hover,
+  .navbar-inverse .navbar-nav>li>a:focus {
+	background-color: #080808;
+  }
 
-	.navbar-inverse .navbar-nav>li:hover,
-	.navbar-inverse .navbar-nav>li:focus {
-		background-color: #080808;
-	}
-
-
+  /* Nav Messages */
 
   .messages-dropdown .dropdown-menu {
 	min-width: 300px;
@@ -108,6 +160,23 @@ body {
 
 
 
+
+
+
+html,
+body {
+	height: 100%;
+	background-color: #181818;
+	min-width:768px; /* suppose you want minimun width of 1000px */
+	width: auto !important;  /* Firefox will set width as auto */
+	width:768px;  
+	
+}
+
+#game {
+	color: #FFFFFF;
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -126,6 +195,14 @@ body {
   display: none !important;
 }
 
+.wrap {
+ 
+	word-wrap: break-word;
+}
+
+.btn-group {
+	margin-right:3px;
+}
 
 .notify-player {
 	color: #3a87ad;
@@ -159,9 +236,109 @@ body {
 	background-color: #376e37;
 }
 
+.navbar {
+	border-width: 0;
+	border-radius: 0;
+	padding:10px 15px 10px 15px;
+	margin-bottom: 0;
+}
+
+.sidebar {
+	border-width: 0;
+	border-radius: 0;
+	padding:10px 15px 10px 15px;
+	background: #222;
+	position: absolute;
+	top:0;
+	bottom:0;
+	width:250px;
+}
 
 
+button.btn-user {
+	padding: 5px 10px;
+	font-size: 14px;
+	line-height: 1.5;
+	border-radius: 0px;
+	color: #666;
+	background-color: #222222;
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin: 0;
+	font-weight: normal;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	border: 0px solid #333;
+	border-radius: 0px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
 
+button.btn-user:active,
+button.btn-user:focus,
+button.btn-user:hover {
+
+}
+
+.navbar .caret {
+	border-top-color: #666;
+	border-bottom-color: #666;
+}
+div.side-title {
+	font-size: 13px;
+	padding-bottom:6px;
+
+}
+
+.side-players ul, .side-railbirds ul {
+	list-style: none;
+	margin:0 0 8px 20px;
+	padding:0;
+}
+
+.side-players ul li, .side-railbirds ul li {
+	color:#fdfdd9;
+	font-size: 12px;
+	padding: 2px 4px;
+
+}
+
+
+.buffer { margin:10px 0; }
+
+.center {
+     float: none;
+     margin-left: auto;
+     margin-right: auto;
+     display: block;
+}
+
+code {
+  font-size: 80%;
+}
+
+.top-buffer {
+	margin-top:25px;
+}
+
+
+/* Wrapper for page content to push down footer */
+#game {
+
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 15px 15px;
+
+}
 .table {
 	text-align: center;
 	min-height:200px;
@@ -182,15 +359,57 @@ body {
 }
 
 .opp-player-options .btn {
-	margin-top: 1px;
-	margin-right: 2px;
-	margin-bottom: 1px;
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
-	background: -moz-linear-gradient(top, #fff, #ededed);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
-	border:3px solid #000;
-	font-weight: 700;
+  margin-top: 1px;
+  margin-right: 2px;
+  margin-bottom: 1px;
+
+
+background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+background: -moz-linear-gradient(top, #fff, #ededed);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+
+
+  border:3px solid #000;
+  font-weight: 700;
 }
+
+
+.player-container {
+
+	color: #FFF;
+	overflow: hidden;
+	padding:10px;
+}
+
+.history {
+	height: 450px;
+	max-height:450px;
+	padding-left: 1px;
+	padding-right: 1px;
+
+
+}
+
+
+.settings {
+	color: #FFFFFF;
+	font-size: 12px;
+}
+
+.history ul.events {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 100%;
+	list-style: none;
+	margin:0;
+	padding: 0;
+}
+
+.history ul.events li {
+	font-size: 12px;
+
+}
+
 
 
 .video {
@@ -200,21 +419,35 @@ body {
 	border-color: transparent;
 	background-color: #111111;
 	display: block;
+
 }
+
+
 
 .player {
+
+
 	height: 100%;
+
 	border-width: 4px;
 	border-style:solid;
 	border-color: transparent;
+
+
 
 }
 
+
 .opponent {
+
+
 	height: 100%;
+
 	border-width: 4px;
 	border-style:solid;
 	border-color: transparent;
+
+
 }
 
 .opp-player-data {
@@ -223,13 +456,18 @@ body {
 	bottom: 4px;
 	left: 15px;
 	padding:15px;
+
 }
 
+
 .opp-player-name {
+
 	position: absolute;
 	top: 0;
 	left: 15px;
 	padding:15px;
+
+
 }
 
 .opp-player-options {
@@ -239,6 +477,7 @@ body {
 	left: 120px;
 	right:18px;
 	padding:15px;
+
 }
 
 .action-btn {
@@ -246,9 +485,18 @@ body {
 	float:left;
 	margin:0 1px;
 }
+.opp-player-co {
+
+}
+
+.opp-player-cards {
+
+}
 
 .player-turn {
 	border-color: red;
+
+    
 }
 
 ul.cards {
@@ -424,3 +672,11 @@ span.dealer-button {
 
 .card-sm span.card-5D { background-position: -664px -1505px; }
 .card-xs span.card-7S { background-position: -0px -1621px }
+
+
+
+
+
+
+
+

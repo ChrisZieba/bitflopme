@@ -37,7 +37,7 @@
 				
 				<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
 					<label>Confirm Password</label>
-					<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password">
+					<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55">
 					<% if (errors.registerPasswordConfirm) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
 					<% } %>

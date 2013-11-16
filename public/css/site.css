@@ -109,30 +109,37 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	padding: 0 0 60px;
 }
 
+
+
 button.btn-user {
 	padding: 5px 10px;
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 1.5;
 	border-radius: 0px;
-	color: #333333;
-	background-color: #ffffff;
-	border-color: #cccccc;
+	color: #666;
+	background-color: #222222;
 	position: relative;
 	float: left;
 	display: inline-block;
-	margin-bottom: 0;
+	margin: 0;
 	font-weight: normal;
 	text-align: center;
 	white-space: nowrap;
 	vertical-align: middle;
 	cursor: pointer;
-	border: 1px solid transparent;
+	border: 0px solid #333;
 	border-radius: 0px;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+button.btn-user:active,
+button.btn-user:focus,
+button.btn-user:hover {
+
 }
 
 /* Set the fixed height of the footer here */
@@ -204,8 +211,8 @@ code {
 }
 
 .nav .caret {
-	border-top-color: #000000;
-	border-bottom-color: #000000;
+	border-top-color: #666;
+	border-bottom-color: #666;
 }
 
 #wrap .navbar-default {
@@ -356,13 +363,20 @@ code {
 
 
 	.dropdown-menu .divider {
-		background-color: #333333;
+		background-color: #222222;
+		padding: 0;
+		margin: 0;
 	}
 
 
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
 		color: #FFF;
 	}
+
+	#wrap .navbar > .container .navbar-brand {
+		margin-left: 15px;
+	}
+
 
 	.btn-group {
 		padding-top: 0px;
@@ -375,16 +389,17 @@ code {
 
 	.jumbotron h1 {
 		font-size:28px;
+	}
 
+	.jumbotron p {
+		font-size: 14px;
 	}
 
 	.sub h1 {
 		padding-top: 46px;
 	}
 
-	.jumbotron p {
-		font-size: 14px;
-	}
+
 
 	.btn-xs {
 		padding: 3px 5px;
@@ -426,17 +441,168 @@ code {
 }
 
 @media only screen and (min-width: 420px) and (max-width: 639px), only screen and (min-device-width: 420px) and (max-device-width: 639px) {
+	button.btn-user {
+		padding: 8px 0 8px 0;
+		font-size: 14px;
+		line-height: 1.5;
+		border-radius: 0px;
+		color: #666;
+		background-color: #222222;
+		position: relative;
+		float: left;
+		display: inline-block;
+		margin: 0;
+		font-weight: normal;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		cursor: pointer;
+		border: 0px solid transparent;
+		border-radius: 0px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+	}
+
+	button.btn-user:hover {
+		color:#FFFFFF;
+	}
+
+	.btn-group.open .dropdown-toggle {
+		-webkit-box-shadow: none;
+		box-shadow:none;
+	}
+
+	.nav .caret {
+		border-top-color: #666;
+		border-bottom-color: #666;
+	}
+
+	.nav .caret:hover {
+		border-top-color: #FFF;
+		border-bottom-color: #FFF;
+	}
+
+
+	.dropdown-menu .divider {
+		background-color: #222222;
+		padding: 0;
+		margin: 0;
+	}
+
+
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+		color: #FFF;
+	}
+
+	#wrap .navbar > .container .navbar-brand {
+		margin-left: 15px;
+	}
+
+
+	.btn-group {
+		padding-top: 0px;
+	}
+
+	.jumbotron {
+		margin-bottom: 15px;
+		text-align: center;
+	}
+
 
 
 
 }
 
 @media only screen and (min-width: 640px) and (max-width: 767px), only screen and (min-device-width: 640px) and (max-device-width: 767px){
+	button.btn-user {
+		padding: 8px 0 8px 0;
+		font-size: 14px;
+		line-height: 1.5;
+		border-radius: 0px;
+		color: #666;
+		background-color: #222222;
+		position: relative;
+		float: left;
+		display: inline-block;
+		margin: 0;
+		font-weight: normal;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		cursor: pointer;
+		border: 0px solid transparent;
+		border-radius: 0px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+	}
+
+	button.btn-user:hover {
+		color:#FFFFFF;
+	}
+
+	.btn-group.open .dropdown-toggle {
+		-webkit-box-shadow: none;
+		box-shadow:none;
+	}
+
+	.nav .caret {
+		border-top-color: #666;
+		border-bottom-color: #666;
+	}
+
+	.nav .caret:hover {
+		border-top-color: #FFF;
+		border-bottom-color: #FFF;
+	}
+
+
+	.dropdown-menu .divider {
+		background-color: #222222;
+		padding: 0;
+		margin: 0;
+	}
+
+
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+		color: #FFF;
+	}
+
+	#wrap .navbar > .container .navbar-brand {
+		margin-left: 15px;
+	}
+
+
+	.btn-group {
+		padding-top: 0px;
+	}
+
+	.jumbotron {
+		margin-bottom: 15px;
+		text-align: center;
+	}
 
 
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px), only screen and (min-device-width: 768px) and (max-device-width: 991px){
 
+	.jumbotron h1 {
+		font-size:32px;
+	}
+
+	.jumbotron p {
+		font-size: 16px;
+	}
+
+	.btn-lg {
+		padding: 8px 8px;
+		font-size: 16px;
+	}
 
 }

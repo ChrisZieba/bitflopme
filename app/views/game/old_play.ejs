@@ -1,88 +1,55 @@
-<!DOCTYPE html>
-<html ng-app="app">
-	<head>
-		<title><%= title %></title>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<div ng-cloak ng-show="game.action.state == null">
 
 
-		<% if (settings.env === 'development') { %>
-			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
-			<link href="/css/game.css" rel="stylesheet" media="screen" />
-			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
+			<% if (join) { %>
 
-			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
-			<script src="/js/vendor/angular.js"></script>
-			<script src="/js/vendor/adapter.js"></script>
-			<script src="/js/vendor/angular-slider.js"></script>
-			<script src="/js/app.js"></script>
-			<script src="/socket.io/socket.io.js"></script>
+				<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.id %>">
+					<input type="hidden" name="_csrf" value="<%= token %>"/>
 
-		<% } else { %>
-			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
-			<link href="/css/game.css" rel="stylesheet" media="screen" />
-			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
+					<button type="submit" class="btn btn-md btn-block btn-success"><strong>Play Against <span class="notify-label notify-label-success"><span class="glyphicon glyphicon-user"></span> <%= room.creator.name%></span></strong></button>
+				</form>
+			<% } else { %>
 
-			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
+				<% if (room.creator.id === user.id) { %>
 
-			<script src="/js/vendor/angular.js"></script>
-			<script src="/js/vendor/adapter.js"></script>
-			<script src="/js/vendor/angular-slider.js"></script>
-			<script src="/js/app.js"></script>
-			<script src="/socket.io/socket.io.js"></script>
-		<% } %>
-	</head>
+					<div class="notify-player wrap">
+						<span class="glyphicon glyphicon-link"></span>
+						<span><strong>Waiting for opponent: </strong></span>
+							
+						<span class="notify-label notify-label-primary">https://bitflop.me/game/play/<%= room.id %></span>
+					</div>
+				<% } else { %>
+					<div class="notify-player wrap">
+						<span class="glyphicon glyphicon-time"></span>
+						<span><strong>Waiting for <span class="notify-label notify-label-primary"><span class="glyphicon glyphicon-user"></span> <%= room.creator.name%></span> to join.</strong></span>
+					</div>
+				<% } %>
+
+			<% } %>
+
+		</div>
 
 
-	<body ng-controller="GameCtrl">
-
-		<div id="wrapper">
-
-		  <!-- Sidebar -->
-		  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-			  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			  </button>
-			  <a class="navbar-brand" href="/"><img src="/img/bitflop.png"></a>
+		<div ng-cloak ng-show="game.action.state == 'END'">
+			<div class="notify-player">
+				<strong><span class="notify-label notify-label-primary">{{ game.action.winner }}</span> Wins Match!</strong>
 			</div>
 
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse navbar-ex1-collapse">
-
-				<ul class="nav navbar-nav side-nav events" scroll-glue ng-model="game.events">
-					<li ng-class="(event.owner != 'Dealer') ? 'text-muted' : ''" ng-repeat="event in game.events" title="{{ fn.msToDateTime(event.time) }}">
-						<span title="{{ fn.msToDateTime(event.time) }}"><strong>{{ event.owner }}:</strong> </span>
-						<span ng-bind-html-unsafe="event.event">{{ event.event }} </span>
-					</li>
-				</ul>
+		</div>
 
 
 
-			  <ul class="nav navbar-nav navbar-right navbar-user">
-				<li class="dropdown alerts-dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> Room <span class="badge">{{room.players.length + room.observers.length}}</span> <b class="caret"></b></a>
-					<ul class="dropdown-menu" role="menu">
-						<li ng-repeat="player in room.players">
-							<a>
-								<span class="glyphicon glyphicon-user"></span>
-								<span>{{ player.name }}</span> <span class="label label-danger">Player</span>
-							</a>
-						</li>
-						<li ng-repeat="observer in room.observers">
-							<a>
-								<span class="glyphicon glyphicon-user"></span>
-								<span>{{ observer.name }}</span>
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li class="dropdown user-dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span></a>
+		<div class="navbar navbar-inverse">
+			<div class="row">
+
+
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+					<div class="btn-group pull-right">
+						<button type="button" class="btn-user dropdown-toggle">
+							<span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span>
+						</button>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
 							<li class="divider"></li>
@@ -93,17 +60,58 @@
 							<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
 							<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
 						</ul>
-				</li>
-			  </ul>
-			</div><!-- /.navbar-collapse -->
-		  </nav>
+					</div>
 
-		  <div id="page-wrapper">
+					<% if (!join) { %>
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-default btn-sm dropdown-toggle">
+								<span class="glyphicon glyphicon-facetime-video"></span>&nbsp;&nbsp;<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a ng-click="fn.killVideoStream()" href="">Turn off Video</a></li>
+								<li><a ng-click="fn.StartVideoStream()" href="">Turn off Video</a></li>
+							</ul>
+						</div>
 
+					<% } %>
+
+				</div>
+
+
+			</div>
+		</div>
+
+		<div class="sidebar">
+			<div class="side-players">
+				<div class="side-title"><strong>ROOM</strong> <span class="badge"><small>{{room.players.length + room.observers.length}}</small></span></div>
+				<ul>
+					<li ng-repeat="player in room.players">
+						<span class="glyphicon glyphicon-user"></span>
+						<span>{{ player.name }}</span> <span class="label label-danger">Player</span>
+					</li>
+					<li ng-repeat="observer in room.observers">
+						<span class="glyphicon glyphicon-user"></span>
+						<span>{{ observer.name }}</span>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="history">
+				<div class="side-title"><strong>EVENTS</strong> <span class="badge"><small>{{game.events.length}}</small></span></div>
+				<ul class="events" scroll-glue ng-model="game.events">
+					<li ng-class="(event.owner != 'Dealer') ? 'text-muted' : ''" ng-repeat="event in game.events" title="{{ fn.msToDateTime(event.time) }}">
+						<span title="{{ fn.msToDateTime(event.time) }}"><strong>{{ event.owner }}:</strong> </span>
+						<span ng-bind-html-unsafe="event.event">{{ event.event }} </span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="game">
 
 			<div class="row">
 
-				<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					<div class="row">
 
 						<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 opponent">
@@ -235,28 +243,11 @@
 				
 			</div>
 
-		  </div><!-- /#page-wrapper -->
 
-		</div><!-- /#wrapper -->
 
-		<% if (settings.env === 'development') { %>
 
-		<% } else { %>
-			<script type="text/javascript">
 
-			  var _gaq = _gaq || [];
-			  _gaq.push(['_setAccount', 'UA-44747340-1']);
-			  _gaq.push(['_trackPageview']);
 
-			  (function() {
-				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			  })();
 
-			</script>
-		<% } %>
 
-	</body>
-
-</html>
+		</div>
