@@ -184,7 +184,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		};
 
 		pc.onaddstream = function (event) {
-			
+			console.log('onaddstream called')
 			if ($scope.peer.remote.element) {
 				console.log(event);
 				$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
