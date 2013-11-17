@@ -155,7 +155,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 				scope.peer.remote.element = element[0];
 			}
 
-			//element.removeAttr('controls');
+			element.removeAttr('controls');
 
 		}
 	};
