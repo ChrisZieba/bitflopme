@@ -361,7 +361,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		//console.log('is the game ready:'+scope.game.ready)
 		// Only when both players are in the room can we start broadcasting the streams
 		// this will be initiated by the second player who joins
-		if ($scope.game.ready) {
+		if ($scope.game.ready) {console.log($scope.game.player.id);
 			if ($scope.game.player.id == 1) {
 				$scope.initPeerConnection();
 			}
