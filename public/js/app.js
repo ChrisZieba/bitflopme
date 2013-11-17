@@ -130,7 +130,7 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.play();
 						
 						if (scope.game.ready) {
-							scope.initPeerConnection();
+							//scope.initPeerConnection();
 						}
 					}, function (error) {
 						alert('There was an error.');
@@ -362,7 +362,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		// Only when both players are in the room can we start broadcasting the streams
 		// this will be initiated by the second player who joins
 		if ($scope.game.ready) {
-			//$scope.initPeerConnection();
+			if ($scope.game.player.id == 1) {
+				$scope.initPeerConnection();
+			}
+			
 		}
 
 
