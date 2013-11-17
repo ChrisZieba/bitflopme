@@ -1,6 +1,7 @@
 body {
   margin-top: 50px;
   background-color: #181818;
+  color: #999;
 }
 
 #wrapper {
@@ -13,7 +14,11 @@ body {
 }
 
 .navbar-brand {
-	padding:3px 1px;
+	padding:4px 15px 0 15px;
+}
+
+.navbar-inverse {
+	border-width: 0;
 }
 
 /* Edit Below to Customize Widths > 768px */
@@ -26,7 +31,7 @@ body {
   }
 
   #page-wrapper {
-	padding: 15px 25px;
+	padding: 15px;
   }
 
   /* Side Nav */
@@ -74,15 +79,8 @@ body {
 	.side-nav>li {
 		padding:5px 15px;
 		width:225px;
-		font-size: 12px;
+		font-size: 13px;
 	}
-
-	.navbar-inverse .navbar-nav>li:hover,
-	.navbar-inverse .navbar-nav>li:focus {
-		background-color: #080808;
-	}
-
-
 
   .messages-dropdown .dropdown-menu {
 	min-width: 300px;
@@ -130,12 +128,12 @@ body {
 .notify-player {
 	color: #3a87ad;
 	background-color: #d9edf7;
-	padding: 6px 0px;
-	margin-bottom: 1px;
-	border-width: 0 0 1px 0;
+	padding: 6px;
+	border-width: 1px;
 	border-style: solid;
 	border-color: #bce8f1;
 	text-align: center;
+	margin: 10px 0;
 }
 
 .notify-label {
@@ -362,6 +360,11 @@ span.dealer-button {
 	background-color: #F2EE7B;
 	border-radius: 2px;
 	font-weight: 700;
+}
+
+span.event-time {
+	font-size:11px;
+	color:#636363;
 }
 
 .card span.card-AS { background-position: -0px -0px; }

@@ -51,91 +51,41 @@ app.factory('socket', function($rootScope) {
 		}
 	}
 });
-/*
-app.factory('rtc', function($rootScope) {
-	function trace (text) {
-		console.log((performance.now() / 1000).toFixed(3) + ": " + text);
-	}
+
+
+app.directive('collapse', [function () {
 
 	return {
+		link: function(scope, element, attrs) {
 
-		call: function(scope) {
+			var isCollapsed;
 
-			if (scope.streams.local.stream.getVideoTracks().length > 0) {
-				trace('Using video device: ' + scope.streams.local.stream.getVideoTracks()[0].label);
-			}
-
-			if (scope.streams.local.stream.getAudioTracks().length > 0) {
-				trace('Using audio device: ' + scope.streams.local.stream.getAudioTracks()[0].label);
-			}
-
-			var servers = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
-
-			localPeerConnection = new RTCPeerConnection(servers);
-
-
-			trace("Created local peer connection object localPeerConnection");
-			localPeerConnection.onicecandidate = function (event) {
-				if (event.candidate) {
-					remotePeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
-					
+			scope.$watch(attrs.collapse, function(value) {
+				if (value) {
+					collapse();
+				} else {
+					expand();
 				}
-			}
-
-			remotePeerConnection = new RTCPeerConnection(servers);
-			trace("Created remote peer connection object remotePeerConnection");
-			remotePeerConnection.onicecandidate = this.gotRemoteIceCandidate;
-
-			remotePeerConnection.onaddstream = function (event) {
-				console.log(scope.streams)
-				var remoteVideo = scope.streams.remote.element;
-
-				remoteVideo.src = URL.createObjectURL(event.stream);
-				trace("Received remote stream");
+			});
+		  
+			var expand = function() {
+				element.addClass('in');
+				isCollapsed = false;
 			};
-
-			localPeerConnection.addStream(scope.streams.local.stream);
-			trace("Added scope.localStream to localPeerConnection");
-			localPeerConnection.createOffer(this.gotLocalDescription, function () {console.log('error')});
-		},
-
-
-		gotLocalDescription: function (description) {
-			localPeerConnection.setLocalDescription(description);
-			trace("Offer from localPeerConnection: \n" + description.sdp);
-			remotePeerConnection.setRemoteDescription(description);
-
-			remotePeerConnection.createAnswer(function (description) {
-				remotePeerConnection.setLocalDescription(description);
-				trace("Answer from remotePeerConnection: \n" + description.sdp);
-				localPeerConnection.setRemoteDescription(description);
-			}, function () {});
-			},
-
-		gotRemoteDescription: function (description) {
-			remotePeerConnection.setLocalDescription(description);
-			trace("Answer from remotePeerConnection: \n" + description.sdp);
-			localPeerConnection.setRemoteDescription(description);
-		},
-
-		hangup: function () {
-			trace("Ending call");
-			localPeerConnection.close();
-			remotePeerConnection.close();
-			localPeerConnection = null;
-			remotePeerConnection = null;
-			hangupButton.disabled = true;
-			callButton.disabled = false;
-		},
-
-		gotRemoteIceCandidate: function (event) {
-			if (event.candidate) {
-				localPeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
-				trace("Remote ICE candidate: \n " + event.candidate.candidate);
-			}
+		  
+			var collapse = function() {
+				isCollapsed = true;
+				element.removeClass('in');
+			};
 		}
-	}
-});*/
+	};
+}]);
+
+app.filter('reverse', function() {
+	return function(items) {
+		return items.slice().reverse();
+	};
+});
 
 app.directive('scrollGlue', function(){
 	return {
@@ -147,9 +97,10 @@ app.directive('scrollGlue', function(){
 			// do nothing if no ng-model
 			if (!ngModel) return; 
 
+			// when the event history changes
 			scope.$watch(function(){
 				if (ngModel.$viewValue){
-					element[0].scrollTop = element[0].scrollHeight;
+					element[0].scrollTop = 0;
 				}
 			});
 
@@ -211,6 +162,8 @@ app.directive('remoteVideo', ['socket', function (socket) {
 }]);
 
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
+
+	$scope.isCollapsed = true;
 
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
@@ -438,6 +391,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	});
 
 	socket.on('game:leave', function (data) {
+		$scope.game.events = data.events;
 		$scope.game.history = data.history;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;

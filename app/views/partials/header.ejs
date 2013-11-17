@@ -22,7 +22,7 @@
 		<div id="wrap">
 
 			<!-- Fixed navbar -->
-			<div class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container" ng-controller="CollapseCtrl">
 
 					<div class="navbar-header">
@@ -45,26 +45,21 @@
 
 							<% if (user.authenticated) { %>
 								<li class="dropdown">
-									<div class="btn-group">
-
-										<button type="button" class="btn-user dropdown-toggle">
-											<span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu" role="menu">
-											<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
-											<li class="divider"></li>
-											<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
-											<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
-											<li class="divider"></li>
-											<li><a type="button" href="/user/<%= user.name %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-											<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
-											<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
-										</ul>
-									</div>
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span></a>
+									<ul class="dropdown-menu" role="menu">
+										<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
+										<li class="divider"></li>
+										<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
+										<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
+										<li class="divider"></li>
+										<li><a type="button" href="/user/<%= user.name %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+										<li><a href="/account/settings"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
+										<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+									</ul>
 								</li>
 							<% } else { %>
 								<li><a href="/login">Login</a></li>
-								<li><a href="/register" class="action"><button type="button" class="btn-user"><span class="glyphicon glyphicon-log-in"></span> Register</button></a></li>
+								<li><a href="/register" class="action"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
 							<% } %>
 						</ul>
 					</div><!--/.nav-collapse -->

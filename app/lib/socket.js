@@ -487,7 +487,7 @@ exports.listen = function (server, sessionStore, app) {
 							Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
 						}
 
-console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
+//console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
 						var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
 
 						game.events = Games[scope.room].game.events;
@@ -499,8 +499,9 @@ console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,nul
 							// check to make sure the game has started (PLAYING)
 							// check that a player actually left the table
 							if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
-
+console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4))
 								for (var i = 0; i < Games[scope.room].game.players.length; i++) {
+									console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
 									io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
 										uuid: Date.now(), 
 										room: {
