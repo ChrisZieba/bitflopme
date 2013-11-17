@@ -130,7 +130,7 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.play();
 						
 						if (scope.game.ready) {
-							scope.initPeerConnection();
+							//scope.initPeerConnection();
 						}
 					}, function (error) {
 						alert('There was an error.');
@@ -430,15 +430,12 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				socket.emit('peer:send_answer', { 
 					room: GLOBAL.ROOM,
 					sdp: desc 
-				}, function (res) {
-					console.log(res);
 				});	
 			});
 		}
 	});
 
 	socket.on('peer:receive_answer', function (data) {
-		console.log('peer:answer has been received');
 		if (RTCPeerConnection !== null) {
 			console.log('peer:answer has been received');
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
