@@ -155,7 +155,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 				scope.peer.remote.element = element[0];
 			}
 
-			element.removeAttr('controls');
+			//element.removeAttr('controls');
 
 		}
 	};
@@ -189,6 +189,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				console.log(event);
 				$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
 				$scope.peer.remote.element.play();
+				console.log($scope.peer.remote.element);
+				console.log('remote video should ow be playing')
 			}
 		};
 	}
@@ -436,6 +438,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	});
 
 	socket.on('peer:receive_answer', function (data) {
+		console.log('peer:answer has been received');
 		if (RTCPeerConnection !== null) {
 			//console.log('peer:answer has been received');
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
