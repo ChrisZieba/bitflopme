@@ -351,10 +351,11 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.room.observers = data.room.observers;
 
 		if (data.player.id !== null) {
+			$scope.game.ready = data.start;
+			
 			if ($scope.game.player.id === -1) {
 				$scope.game.player.id = data.player.id;
 				$scope.game.player.name = data.user.name;
-				$scope.game.ready = data.start;
 			} 
 		}
 
