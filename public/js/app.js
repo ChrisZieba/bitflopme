@@ -134,8 +134,7 @@ app.directive('localVideo', ['socket', function (socket) {
 							room: GLOBAL.ROOM
 						});
 					}, function (error) {
-						alert('There was an error.');
-						console.log(JSON.stringify(error));
+						alert('There was an error connecting your webcam. Make sure it is not being used by any other applications.');
 						return;
 					});
 				}

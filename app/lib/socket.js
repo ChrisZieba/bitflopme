@@ -329,14 +329,20 @@ exports.listen = function (server, sessionStore, app) {
 
 		});
 
+// this gets called before join!
 		socket.on('peer:ready', function (data, callback) {console.log('\n\n\n\n\n----------PEER:INIT\n\n\n\n\n\n\n')
 			socket.get('scope', function(err, scope) {
+
+				console.log('\n\n\n\n\n----------scope\n\n\n\n\n\n\n' + JSON.stringify(scope,null,2))
+
 				if (err) throw err;
 
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
 					
+
+
 					// add the cam to the player
 					Games[scope.room].room.players = helpers.updatePlayerCam(scope.user.id, Games[scope.room].room.players);
 
