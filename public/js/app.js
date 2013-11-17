@@ -129,6 +129,7 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.src = URL.createObjectURL(stream);
 						localVideo.play();
 						
+						console.log('isgameready' + scope.game.ready)
 						if (scope.game.ready) {
 							console.log('initPeerConnection')
 							scope.initPeerConnection();
