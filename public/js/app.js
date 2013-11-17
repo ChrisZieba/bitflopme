@@ -129,11 +129,11 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.src = URL.createObjectURL(stream);
 						localVideo.play();
 						
-						console.log('isgameready' + scope.game.ready)
-						if (scope.game.ready) {
+						//console.log('isgameready' + scope.game.ready)
+						//if (scope.game.ready) {
 							console.log('initPeerConnection')
 							scope.initPeerConnection();
-						}
+						//}
 					}, function (error) {
 						alert('There was an error.');
 						console.log(JSON.stringify(error));
@@ -357,16 +357,16 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		//console.log('is the game ready:'+scope.game.ready)
 		// Only when both players are in the room can we start broadcasting the streams
 		// this will be initiated by the second player who joins
-		console.log('isgameready2' + $scope.game.ready)
-		if ($scope.game.ready) {
+		//console.log('isgameready2' + $scope.game.ready)
+		//if ($scope.game.ready) {
 
 			// make sure only one player intializez the peer connection, in this case it will be the creator of the game
-			if ($scope.game.player.id === 0) {
+			//if ($scope.game.player.id === 0) {
 				
-				$scope.initPeerConnection();
-			}
+				//$scope.initPeerConnection();
+			//}
 			
-		}
+		//}
 
 
 	});
