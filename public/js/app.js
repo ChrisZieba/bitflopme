@@ -440,7 +440,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	socket.on('peer:receive_answer', function (data) {
 		console.log('peer:answer has been received');
 		if (RTCPeerConnection !== null) {
-			//console.log('peer:answer has been received');
+			console.log('peer:answer has been received');
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 		}
 	});
