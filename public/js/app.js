@@ -130,7 +130,7 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.play();
 						
 						if (scope.game.ready) {
-							//scope.initPeerConnection();
+							scope.initPeerConnection();
 						}
 					}, function (error) {
 						alert('There was an error.');
@@ -220,11 +220,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	$scope.initPeerConnection = function () {
 
 		if (RTCPeerConnection !== null) {
-			//console.log('is the game ready:'+scope.game.ready)
 			// Only when both players are in the room can we start broadcasting the streams
 			// this will be initiated by the second player who joins
-
-			console.log('create offer')
 			$scope.peer.connection.createOffer(function (desc) {
 
 				$scope.peer.connection.setLocalDescription(desc);
@@ -326,8 +323,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		socket.emit('player:action', {
 			room: GLOBAL.ROOM,
 			action: action
-		}, function (res) {
-			console.log(res);
 		});
 	}
 
@@ -364,6 +359,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 			// make sure only one player intializez the peer connection, in this case it will be the creator of the game
 			if ($scope.game.player.id === 0) {
+				console.log('initPeerConnection')
 				$scope.initPeerConnection();
 			}
 			
