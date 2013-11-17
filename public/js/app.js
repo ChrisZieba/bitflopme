@@ -365,7 +365,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if ($scope.game.ready) {
 
 			// make sure only one player intializez the peer connection, in this case it will be the creator of the game
-			if ($scope.game.player.id == 0) {
+			if ($scope.game.player.id === 0) {
 				$scope.initPeerConnection();
 			}
 			
