@@ -232,8 +232,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				socket.emit('peer:send_offer', { 
 					room: GLOBAL.ROOM,
 					sdp: desc 
-				}, function (res) {
-					console.log(res);
 				});
 			}, null, {
 				'mandatory': {
@@ -395,7 +393,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.game.history = data.history;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;
-console.log('game:leave' + JSON.stringify(data.room));
+		console.log('game:leave' + JSON.stringify(data.room));
 
 
 		if (data.action) $scope.game.action = data.action;

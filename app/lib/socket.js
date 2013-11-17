@@ -561,26 +561,23 @@ console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,
 		});
 
 		socket.on('peer:send_offer', function (data, callback) {
-			socket.get('scope', function(err, scope) {
-				socket.broadcast.to(data.room).emit('peer:receive_offer', { 
-					sdp: data.sdp,
-				});
+			console.log('peer:receive_offer');
+			socket.broadcast.to(data.room).emit('peer:receive_offer', { 
+				sdp: data.sdp,
 			});
 		});
 
 		socket.on('peer:send_candidate', function (data, callback) {
-			socket.get('scope', function(err, scope) {
-				socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
-					candidate: data.candidate
-				});
+			console.log('peer:receive_candidate');
+			socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
+				candidate: data.candidate
 			});
 		});
 
 		socket.on('peer:send_answer', function (data, callback) {
-			socket.get('scope', function(err, scope) {
-				socket.broadcast.to(data.room).emit('peer:receive_answer', { 
-        			sdp: data.sdp
-				});
+			console.log('peer:receive_answer');
+			socket.broadcast.to(data.room).emit('peer:receive_answer', { 
+    			sdp: data.sdp
 			});
 		});
 
