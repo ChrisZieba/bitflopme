@@ -373,7 +373,7 @@ exports.listen = function (server, sessionStore, app) {
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
 					console.log(Games[data.room].room.peers);
 					if (ready) {
-						io.sockets.in(data.room + ':' + playerID).emit('peer:init', { 
+						socket.broadcast.to(data.room).emit('peer:init', { 
 							uuid: Date.now()
 						});
 					}
