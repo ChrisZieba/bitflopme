@@ -422,15 +422,19 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if (RTCPeerConnection !== null) {
 			console.log('peer:offer has been received');
 
-			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-			$scope.peer.connection.createAnswer(function (desc) {
-				$scope.peer.connection.setLocalDescription(desc);
+			setTimeout(function(){
+				$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+				$scope.peer.connection.createAnswer(function (desc) {
+					$scope.peer.connection.setLocalDescription(desc);
 
-				socket.emit('peer:send_answer', { 
-					room: GLOBAL.ROOM,
-					sdp: desc 
-				});	
-			});
+					socket.emit('peer:send_answer', { 
+						room: GLOBAL.ROOM,
+						sdp: desc 
+					});	
+				});
+				
+			},2000);
+
 		}
 	});
 
