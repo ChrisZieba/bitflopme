@@ -121,7 +121,7 @@ app.directive('localVideo', ['socket', function (socket) {
 				// the video becomes available when  aplayer sits
 				if (localVideo) {
 
-					getUserMedia({video: true, audio: false}, function (stream) {
+					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
 						scope.peer.local.element = localVideo;
 						scope.peer.connection.addStream(stream);
@@ -176,8 +176,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				socket.emit('peer:send_candidate', { 
 					room: GLOBAL.ROOM,
 					candidate: event.candidate 
-				}, function (res) {
-					console.log(res);
 				});
 				
 			}
@@ -246,7 +244,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	};
 
 	$scope.peer = {
-		connection: pc,
+		connection: pc || null,
 		candidates: [],
 		local: {},
 		remote: {},
@@ -427,7 +425,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 		if (RTCPeerConnection !== null) {
 			console.log('peer:offer has been received');
-			//$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 			$scope.peer.connection.createAnswer(function (desc) {
