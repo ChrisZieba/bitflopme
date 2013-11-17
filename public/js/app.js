@@ -130,6 +130,7 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.play();
 						
 						// on a page refresh this gets called before the server sends back that the game is ready
+						console.log('emit peer ready')
 						socket.emit('peer:ready', { 
 							room: GLOBAL.ROOM
 						});
