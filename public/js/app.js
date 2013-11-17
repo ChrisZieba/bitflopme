@@ -118,10 +118,10 @@ app.directive('localVideo', ['socket', function (socket) {
 				var localVideo = element[0];
 
 				// check if the video is visible
-				// the video becomes available when  aplayer sits
+				// the video becomes available when a player sits
 				if (localVideo) {
 
-					getUserMedia({video: true, audio: true}, function (stream) {
+					getUserMedia({video: true, audio: false}, function (stream) {
 						scope.peer.local.stream = stream;
 						scope.peer.local.element = localVideo;
 						scope.peer.connection.addStream(stream);
@@ -129,11 +129,10 @@ app.directive('localVideo', ['socket', function (socket) {
 						localVideo.src = URL.createObjectURL(stream);
 						localVideo.play();
 						
-						//console.log('isgameready' + scope.game.ready)
-						//if (scope.game.ready) {
-							console.log('initPeerConnection')
-							scope.initPeerConnection();
-						//}
+						// on a page refresh this gets called before the server sends back that the game is ready
+						socket.emit('peer:ready', { 
+							room: GLOBAL.ROOM
+						});
 					}, function (error) {
 						alert('There was an error.');
 						console.log(JSON.stringify(error));
@@ -409,6 +408,12 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	});
 
+	socket.on('peer:init', function (data) {
+		if (RTCPeerConnection !== null) {
+			console.log('peer:init');
+			$scope.initPeerConnection()
+		}
+	});
 
 	socket.on('peer:receive_candidate', function (data) {
 		

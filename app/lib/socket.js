@@ -226,7 +226,8 @@ exports.listen = function (server, sessionStore, app) {
 						// only push the player if they are not already in the room
 						Games[data.room].room.players.push({
 							id: session.user.id,
-							name: session.user.name
+							name: session.user.name,
+							camera: false
 						});
 						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
@@ -326,6 +327,29 @@ exports.listen = function (server, sessionStore, app) {
 				});  
 			});
 
+		});
+
+		socket.on('peer:ready', function (data, callback) {console.log('\n\n\n\n\n----------PEER:INIT\n\n\n\n\n\n\n')
+			socket.get('scope', function(err, scope) {
+				if (err) throw err;
+
+				sessionStore.get(socket.handshake.sessionID, function (err, session) {
+					if (err) throw err;
+					if (!session) throw new Error(504, 'Could not make connection to session');
+					
+					// add the cam to the player
+					Games[scope.room].room.players = helpers.updatePlayerCam(scope.user.id, Games[scope.room].room.players);
+
+					var ready = helpers.isCameraReady(Games[scope.room].room.players);
+console.log(Games[scope.room].room.players);
+					if (ready) {
+						io.sockets.in(data.room + ':' + scope.player.id).emit('peer:init', { 
+							uuid: Date.now()
+						});
+					}
+
+				});  
+			});
 		});
 
 
