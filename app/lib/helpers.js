@@ -65,18 +65,11 @@ exports.isGameReady = function (room, rooms, players) {
 };
 
 
-exports.isCameraReady = function (players) {
+exports.isCameraReady = function (peers) {
 
 	var cameraReady = true;
 
-	if (players.length === 2) {
-		for (var i = 0; i < players.length; i++) {
-			if (!players[i].camera) {
-				cameraReady = false;
-				break;
-			}
-		}
-	} else {
+	if (peers.length < 2) {
 		cameraReady = false;
 	}
 
@@ -96,20 +89,6 @@ exports.removeUserFromRoom = function (userID, users) {
 
 	return u;
 
-};
-
-
-exports.updatePlayerCam = function (id, players) {
-
-	for (var i = 0; i < players.length; i++) {
-		if (players[i].id === id) {
-			players[i].camera = true;
-			break;
-		}
-		
-	}
-
-	return players;
 };
 
 

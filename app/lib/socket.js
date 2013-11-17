@@ -8,7 +8,6 @@ var fs = require('fs'),
 
 var Games = {};
 
-
 // the app param is used for retriving vars via app.get()
 exports.listen = function (server, sessionStore, app) {
 
@@ -206,14 +205,24 @@ exports.listen = function (server, sessionStore, app) {
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
 
 					// Look up the table to see if it's still in mem, or if we need to create a new one
-					if (!Games.hasOwnProperty(data.room)) {
+					if ( ! Games.hasOwnProperty(data.room)) {
 						Games[data.room] = {};
 						Games[data.room].room = {
 							id: data.room,
 							players: [],
-							observers: []
+							observers: [],
+							// this array hold data pertaining to camera setup
+							peers: []
 						};
+
+						// Create the Game object
 						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+						
+					} else {
+						// The Game [Object] might have been created by the peer:init
+						if ( ! Games[data.room].game) {
+							Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+						}
 					}
 
 					// Every connected client gets access to the mainroom
@@ -226,8 +235,7 @@ exports.listen = function (server, sessionStore, app) {
 						// only push the player if they are not already in the room
 						Games[data.room].room.players.push({
 							id: session.user.id,
-							name: session.user.name,
-							camera: false
+							name: session.user.name
 						});
 						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
@@ -270,7 +278,7 @@ exports.listen = function (server, sessionStore, app) {
 					// This is later used when a socket disconnects
 					socket.set('scope', {
 						user: {
-							id: session.user.id,
+							id: session.user.id, 
 							name: session.user.name
 						},
 						player: {
@@ -329,32 +337,48 @@ exports.listen = function (server, sessionStore, app) {
 
 		});
 
-// this gets called before join!
+
+
+
+		//	When someone joins the room
+		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
 		socket.on('peer:ready', function (data, callback) {console.log('\n\n\n\n\n----------PEER:INIT\n\n\n\n\n\n\n')
-			socket.get('scope', function(err, scope) {
-
-				console.log('\n\n\n\n\n----------scope\n\n\n\n\n\n\n' + JSON.stringify(scope,null,2))
-
-				if (err) throw err;
+			//	Get the game data from the database
+			models.Games.findOne({ id: data.room}, function (err, game) {
+				if (err) throw new Error(501, err);
+				if (!game) throw new Error(502, 'Could not make connection to game');
 
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
-					
+
+					var playerID = helpers.getPlayerID(session.user.id, game.players);
+
+					// Look up the table to see if it was started by the join
+					if (!Games.hasOwnProperty(data.room)) {
+						Games[data.room] = {};
+						Games[data.room].room = {
+							id: data.room,
+							players: [],
+							observers: [],
+							peers: []
+						};
+					}
+
 
 
 					// add the cam to the player
-					Games[scope.room].room.players = helpers.updatePlayerCam(scope.user.id, Games[scope.room].room.players);
+					Games[data.room].room.peers.push(playerID);
 
-					var ready = helpers.isCameraReady(Games[scope.room].room.players);
-console.log(Games[scope.room].room.players);
+					var ready = helpers.isCameraReady(Games[data.room].room.peers);
+					console.log(Games[data.room].room.players);
 					if (ready) {
-						io.sockets.in(data.room + ':' + scope.player.id).emit('peer:init', { 
+						io.sockets.in(data.room + ':' + playerID).emit('peer:init', { 
 							uuid: Date.now()
 						});
 					}
+				});
 
-				});  
 			});
 		});
 
@@ -488,105 +512,109 @@ console.log(Games[scope.room].room.players);
 			});
 		});
 
-
+		// you can't send any data back with the disconnect
 		socket.on('disconnect', function (data, callback) {
+	console.log('\n\n\n\n\n\n\n\n\n\n\n 550' +JSON.stringify(data,null,4))
 			socket.get('scope', function(err, scope) {
 				if (err) throw err;
 
-				models.Games.findOne({ id: scope.room }, function (err, game) {
-					if (err) throw new Error(501, err);
-					
-					if (game) {
+				if (scope) {
+					models.Games.findOne({ id: scope.room }, function (err, game) {
+						if (err) throw new Error(501, err);
+						
+						if (game) {
 
-						if (!Games.hasOwnProperty(scope.room)) {
-							Games[scope.room] = {};
-							Games[scope.room].room = {
-								id: scope.room,
-								players: [],
-								observers: []
+							if (!Games.hasOwnProperty(scope.room)) {
+								Games[scope.room] = {};
+								Games[scope.room].room = {
+									id: scope.room,
+									players: [],
+									observers: []
+								};
+								Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
 							};
-							Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
-						};
 
-						Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
+							Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
 
-						// remove the user from the room
-						if (scope.player.id !== null) {
-							Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
-						} else {
-							Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
-						}
+							// remove the user from the room
+							if (scope.player.id !== null) {
+								Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
+							} else {
+								Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
+							}
 
-//console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
-						var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
+	//console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
+							var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
 
-						game.events = Games[scope.room].game.events;
-						game.save(function (err) {
+							game.events = Games[scope.room].game.events;
+							game.save(function (err) {
 
-							if (err) throw err;
+								if (err) throw err;
 
-							// if a player left then the table the game cannot continue
-							// check to make sure the game has started (PLAYING)
-							// check that a player actually left the table
-							if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
-console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4))
-								for (var i = 0; i < Games[scope.room].game.players.length; i++) {
-									console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
-									io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
+								// if a player left then the table the game cannot continue
+								// check to make sure the game has started (PLAYING)
+								// check that a player actually left the table
+								if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
+	console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4))
+									for (var i = 0; i < Games[scope.room].game.players.length; i++) {
+										console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
+										io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
+											uuid: Date.now(), 
+											room: {
+												id: scope.room,
+												players: Games[scope.room].room.players,
+												observers: Games[scope.room].room.observers
+											},
+											events: Games[scope.room].game.events,
+											action: {
+												dealer: null,
+												turn: null,
+												smallBlind: null,
+												bigBlind: null,
+												pot: 0,
+												state: null,
+												board: [],
+												winner: Games[scope.room].game.getWinner()
+											},
+											player: {
+												id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
+												name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
+												cards: [],
+												chips: 0,
+												options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
+											},
+											opponent: {
+												id: null,
+												name: null,
+												cards: [],
+												chips: 0,
+												options: null
+											}
+										});
+									}
+
+
+								} else {
+									io.sockets.in(scope.room).emit('game:leave', { 
 										uuid: Date.now(), 
+										user: {
+											name: scope.user.name
+										},
+										events: Games[scope.room].game.events,
 										room: {
 											id: scope.room,
 											players: Games[scope.room].room.players,
 											observers: Games[scope.room].room.observers
-										},
-										events: Games[scope.room].game.events,
-										action: {
-											dealer: null,
-											turn: null,
-											smallBlind: null,
-											bigBlind: null,
-											pot: 0,
-											state: null,
-											board: [],
-											winner: Games[scope.room].game.getWinner()
-										},
-										player: {
-											id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
-											name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
-											cards: [],
-											chips: 0,
-											options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
-										},
-										opponent: {
-											id: null,
-											name: null,
-											cards: [],
-											chips: 0,
-											options: null
 										}
 									});
 								}
 
 
-							} else {
-								io.sockets.in(scope.room).emit('game:leave', { 
-									uuid: Date.now(), 
-									user: {
-										name: scope.user.name
-									},
-									events: Games[scope.room].game.events,
-									room: {
-										id: scope.room,
-										players: Games[scope.room].room.players,
-										observers: Games[scope.room].room.observers
-									}
-								});
-							}
-
-
-						});
-					}
-				});
+							});
+						}
+					});
+				}
+	
 			});
 		});
 

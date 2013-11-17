@@ -334,6 +334,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		
 	});
 
+	socket.on('disconnect', function () {
+		socket.emit('disconnect', {});
+	});
+
 
 	socket.on('game:join', function (data) {
 		console.log('game:join');
