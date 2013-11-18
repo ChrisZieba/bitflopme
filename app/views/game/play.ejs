@@ -175,7 +175,7 @@
 
 									<div ng-switch-default>
 										<% if (!join) { %>
-											<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls></video>
+											<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" src controls></video>
 											<div class="opp-player-name">
 												<span class="player-name">{{ game.opponent.name }}</span>
 												<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.opponent.id">D</span>
@@ -210,7 +210,7 @@
 								<div class="col-md-12">
 
 									<% if (!join) { %>
-										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video autoplay poster="/img/webcam.png" controls></video>
+										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video src poster="/img/webcam.png" controls></video>
 										<div class="opp-player-name">
 											<span class="player-name">{{ game.player.name }}</span>
 											<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.player.id">D</span>
