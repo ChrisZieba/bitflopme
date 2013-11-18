@@ -77,6 +77,32 @@ exports.isCameraReady = function (peers) {
 	return cameraReady;
 };
 
+// Only add a user if the ID is not in the array already
+exports.addUserToRoom = function (users, userID, userName) {
+
+	var u = [];
+	var push = true;
+
+	for (var i = 0; i < users.length; i++) {
+
+		u.push(users[i]);
+
+		if (users[i].id === userID) {
+			push = false;
+		}
+	}
+
+	if (push) {
+		u.push({
+			id: userID,
+			name: userName
+		});
+	}
+
+	return u;
+
+};
+
 exports.removeUserFromRoom = function (userID, users) {
 
 	var u = [];

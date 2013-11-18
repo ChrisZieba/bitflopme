@@ -194,10 +194,7 @@ exports.listen = function (server, sessionStore, app) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(502, 'Could not make connection to game');
 
-				//	Grab the session data associoated with the socket client/ We will figure out if the client is player1, player2, or just a railbird
-				//	If the client is player1 (the person who created the game) then join the main room, and room.player1, which sends only player1 data
-				//	If the client is player2 (a player joining the game using the secret pass OR the second connected client if an open table)
-				//	then join the main room and room.player2 	
+				//	Grab the session data associoated with the socket client/ We will figure out if the client is player1, player2
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
@@ -233,21 +230,14 @@ exports.listen = function (server, sessionStore, app) {
 						socket.join(data.room + ':' + playerID);
 
 						// only push the player if they are not already in the room
-						Games[data.room].room.players.push({
-							id: session.user.id,
-							name: session.user.name
-						});
+						Games[data.room].room.players = helpers.addUserToRoom(Games[data.room].room.players, session.user.id, session.user.name);
 						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
 						// this room is for non-players only
 						socket.join(data.room + '::');
 
 						// push the name of the observer
-						Games[data.room].room.observers.push({
-							id: session.user.id,
-							name: session.user.name
-						});
-
+						Games[data.room].room.observers = helpers.addUserToRoom(Games[data.room].room.observers, session.user.id, session.user.name);
 						Games[data.room].game.AddEvent('Dealer', '<strong>' + session.user.name + '</strong> has joined the table');
 					}
 
@@ -352,8 +342,6 @@ exports.listen = function (server, sessionStore, app) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
 
-					var playerID = helpers.getPlayerID(session.user.id, game.players);
-
 					// Look up the table to see if it was started by the join
 					if (!Games.hasOwnProperty(data.room)) {
 						Games[data.room] = {};
@@ -365,10 +353,7 @@ exports.listen = function (server, sessionStore, app) {
 						};
 					}
 
-
-
-					// add the cam to the player
-					Games[data.room].room.peers.push(playerID);
+					Games[data.room].room.peers = helpers.addUserToRoom(Games[data.room].room.peers, session.user.id, session.user.name);
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
 					console.log(Games[data.room].room.peers);
@@ -539,6 +524,7 @@ exports.listen = function (server, sessionStore, app) {
 							// remove the user from the room
 							if (scope.player.id !== null) {
 								Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
+								Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
 							} else {
 								Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
 							}
