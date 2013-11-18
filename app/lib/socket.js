@@ -229,15 +229,22 @@ exports.listen = function (server, sessionStore, app) {
 					if (playerID !== null) {
 						socket.join(data.room + ':' + playerID);
 
-						// only push the player if they are not already in the room
-						Games[data.room].room.players = helpers.addUserToRoom(Games[data.room].room.players, session.user.id, session.user.name);
+						// dupliates are allowed
+						Games[data.room].room.players.push({
+							id: session.user.id,
+							name:session.user.name
+						});
+
 						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
 						// this room is for non-players only
 						socket.join(data.room + '::');
 
 						// push the name of the observer
-						Games[data.room].room.observers = helpers.addUserToRoom(Games[data.room].room.observers, session.user.id, session.user.name);
+						Games[data.room].room.observers.push({
+							id: session.user.id,
+							name:session.user.name
+						});
 						Games[data.room].game.AddEvent('Dealer', '<strong>' + session.user.name + '</strong> has joined the table');
 					}
 
@@ -353,7 +360,10 @@ exports.listen = function (server, sessionStore, app) {
 						};
 					}
 
-					Games[data.room].room.peers = helpers.addUserToRoom(Games[data.room].room.peers, session.user.id, session.user.name);
+					Games[data.room].room.peers.push({
+						id: session.user.id,
+						name: session.user.name
+					});
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
 					console.log('\n\n\n\n\n\n\n\n\n\n\n 557 peers' +JSON.stringify(Games[data.room].room.peers,null,4))

@@ -67,53 +67,30 @@ exports.isGameReady = function (room, rooms, players) {
 
 exports.isCameraReady = function (peers) {
 
-	var cameraReady = true;
+	var ready = false;
 
-	if (peers.length < 2) {
-		cameraReady = false;
-	}
-
-
-	return cameraReady;
-};
-
-// Only add a user if the ID is not in the array already
-exports.addUserToRoom = function (users, userID, userName) {
-
-	var u = [];
-	var push = true;
-
-	for (var i = 0; i < users.length; i++) {
-
-		u.push(users[i]);
-
-		if (users[i].id === userID) {
-			push = false;
+	if (peers.length >= 2) {
+		for (var i = peers.length-1; i >= 0; i--) {
+			// test ofr uniquenss
+			if (peers[i].id !== peers[0].id) {
+				ready = true;
+			}
 		}
 	}
 
-	if (push) {
-		u.push({
-			id: userID,
-			name: userName
-		});
-	}
-
-	return u;
-
+	return ready;
 };
 
+// remove the first match and keep the other duplicates
 exports.removeUserFromRoom = function (userID, users) {
 
-	var u = [];
-
 	for (var i = 0; i < users.length; i++) {
-		if (users[i].id !== userID) {
-			u.push(users[i]);
+		if (users[i].id === userID) {
+			users.splice(i, 1);
 		}
 	}
 
-	return u;
+	return users;
 
 };
 
