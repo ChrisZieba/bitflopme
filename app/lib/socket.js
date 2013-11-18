@@ -534,7 +534,7 @@ exports.listen = function (server, sessionStore, app) {
 							// remove the user from the room
 							if (scope.player.id !== null) {
 								Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
-								Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
+								Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.peers);
 							} else {
 								Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
 							}
