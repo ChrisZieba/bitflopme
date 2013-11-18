@@ -16,7 +16,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.get('/login', [middleware.refererURL, middleware.getUserGames], function (req, res) {
+	app.get('/login', [middleware.getUserGames], function (req, res) {
 		//	Check if the user is logged in already
 		if (res.locals.user.authenticated) {
 			res.redirect('/');
@@ -30,7 +30,7 @@ module.exports = function (app) {
 
 	});
 
-	app.get('/register', [middleware.refererURL, middleware.getUserGames], function (req, res) {
+	app.get('/register', [middleware.getUserGames], function (req, res) {
 		//	Check if the user is logged in already
 		if (res.locals.user.authenticated) {
 			res.redirect('/');
@@ -44,7 +44,7 @@ module.exports = function (app) {
 	});
 
 	// execute when a user logs out
-	app.get('/logout', [middleware.validateUser, middleware.getUserGames], function (req, res) {
+	app.get('/logout', [middleware.getUserGames], function (req, res) {
 
 		req.session.user = {};
 		res.redirect('/');
@@ -104,7 +104,7 @@ module.exports = function (app) {
 		});
 	});
 
-	app.post('/login', [middleware.refererURL, middleware.getUserGames], function (req, res) {
+	app.post('/login', [middleware.getUserGames], function (req, res) {
 
 		req.check('loginUsername', 'The username is required.').notEmpty();
 		req.check('loginPassword', 'The password is required.').notEmpty();
@@ -169,7 +169,7 @@ module.exports = function (app) {
 
 	});
 
-	app.post('/register', [middleware.refererURL, middleware.getUserGames], function (req, res) {
+	app.post('/register', [middleware.getUserGames], function (req, res) {
 
 		req.check('registerUsername', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
 		req.check('registerPassword', 'The password is required and must be at least 5 character.').notEmpty().len(5,55);
