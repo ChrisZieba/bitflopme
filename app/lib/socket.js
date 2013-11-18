@@ -356,7 +356,7 @@ exports.listen = function (server, sessionStore, app) {
 					Games[data.room].room.peers = helpers.addUserToRoom(Games[data.room].room.peers, session.user.id, session.user.name);
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
-					console.log(Games[data.room].room.peers);
+					console.log('\n\n\n\n\n\n\n\n\n\n\n 557 peers' +JSON.stringify(Games[data.room].room.peers,null,4))
 					if (ready) {
 						socket.broadcast.to(data.room).emit('peer:init', { 
 							uuid: Date.now()
@@ -541,7 +541,8 @@ exports.listen = function (server, sessionStore, app) {
 								// check to make sure the game has started (PLAYING)
 								// check that a player actually left the table
 								if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
-	console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4))
+	console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4));
+
 									for (var i = 0; i < Games[scope.room].game.players.length; i++) {
 										console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
 										io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
