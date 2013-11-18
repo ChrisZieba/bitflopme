@@ -168,7 +168,6 @@
 							<div class="row">
 
 								<div ng-switch="game.opponent.name" class="col-md-12 opp-player-co">
-								<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls></video>
 									<div ng-switch-when="null">
 										<!--<span class="player-name">Waiting for opponent ...</span>-->
 										<span>&nbsp;</span> 
@@ -176,7 +175,7 @@
 
 									<div ng-switch-default>
 										<% if (!join) { %>
-											
+											<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls></video>
 											<div class="opp-player-name">
 												<span class="player-name">{{ game.opponent.name }}</span>
 												<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.opponent.id">D</span>

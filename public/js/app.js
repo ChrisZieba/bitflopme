@@ -121,7 +121,7 @@ app.directive('localVideo', ['socket', function (socket) {
 				// the video becomes available when a player sits
 				if (localVideo) {
 
-					getUserMedia({video: true, audio: false}, function (stream) {
+					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
 						scope.peer.local.element = localVideo;
 						scope.peer.connection.addStream(stream);
