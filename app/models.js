@@ -27,6 +27,7 @@ exports.Users = db.model('Users', new Schema({
     username : { type: String, required: true },
     password : { type: String, required: true },
     email : { type: String, required: false },
+    settings : { type: Schema.Types.Mixed, required: true },
     //games : { type: Schema.Types.Mixed, required: true, default: null },
     created: { type: Date, default: Date.now },
     reset_date: { type: Date, required: false },

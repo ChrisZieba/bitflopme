@@ -14,6 +14,7 @@ db.users.insert({
     "id" : 1,
     "username": "ziebac",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
+    "settings": {},
     "created": Date.now()
 });
 
@@ -21,6 +22,7 @@ db.users.insert({
     "id" : 2,
     "username": "tony",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
+    "settings": {},
     "created": Date.now()
 });
 
@@ -28,6 +30,7 @@ db.users.insert({
     "id" : 3,
     "username": "random",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
+    "settings": {},
     "created": Date.now()
 });
 

@@ -104,6 +104,14 @@ module.exports = function (app) {
 		});
 	});
 
+	app.get('/password/new', [middleware.refererURL, middleware.getUserGames], function (req, res) {
+		res.render('account/password.ejs', { 
+			title: 'bitflop.me',
+			user: res.locals.user,
+			errors: {}
+		});
+	});
+
 	app.post('/login', [middleware.getUserGames], function (req, res) {
 
 		req.check('loginUsername', 'The username is required.').notEmpty();
@@ -169,10 +177,103 @@ module.exports = function (app) {
 
 	});
 
+	app.post('/account/email', [middleware.validateUser, middleware.getUserGames], function (req, res) {
+
+		req.check('email', 'The email address is required.').notEmpty().isEmail();
+
+		var errors = req.validationErrors(true); 
+
+		if (!errors) {
+			models.Users.update({ 'id': res.locals.user.id }, { 'email': req.param('email')}, function (err) {
+				if (err) throw err;
+				res.redirect('/account');	
+			});
+		} else {
+
+			models.Users.findOne({ 'id': res.locals.user.id }, 'id username email created', function (err, profile) {
+				if (err) throw err;
+
+				if (!profile) {
+					res.status(404).render('404.ejs',{
+						title: '404',
+						user: res.locals.user,
+						meta: ''
+					});	
+				} else {
+					res.render('account/email.ejs', { 
+						title: 'bitflop.me',
+						moment: moment,
+						user: res.locals.user,
+						profile: profile,
+						errors: errors
+					});
+				}
+			});
+		}
+
+	});
+
+	app.post('/password/new', [middleware.getUserGames], function (req, res) {
+
+		req.check('username', 'The username is required.').notEmpty();
+
+		var errors = req.validationErrors(true); 
+
+		if (!errors) {
+			models.Users.findOne({ 'username': req.param('username') }, 'id email', function (err, profile) {
+				if (err) throw err;
+
+				if (!profile) {console.log(errors);
+					res.render('account/password.ejs', { 
+						title: 'bitflop.me',
+						moment: moment,
+						user: res.locals.user,
+						errors: {
+							'username': {
+								'param': 'username',
+								'msg': 'The username could not be found.'
+							}
+						}
+					});
+				} else if (!profile.email) {
+					res.render('account/password.ejs', { 
+						title: 'bitflop.me',
+						moment: moment,
+						user: res.locals.user,
+						errors: {
+							'username': {
+								'param': 'username',
+								'msg': 'The username does not have an email address.'
+							}
+						}
+					});
+				} else {
+					// generate a reset token and update the database
+					models.Users.findOneAndUpdate({ 'id': profile.id }, { reset_date: new Date(), reset_token: 'sdf' }, function (err) {
+						if (err) throw err;
+						res.redirect('/password/new');	
+					});
+				}
+
+			});
+		} else {
+			res.render('account/password.ejs', { 
+				title: 'bitflop.me',
+				moment: moment,
+				user: res.locals.user,
+				errors: errors
+			});
+		}
+
+
+
+
+	});
+
 	app.post('/register', [middleware.getUserGames], function (req, res) {
 
 		req.check('registerUsername', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
-		req.check('registerPassword', 'The password is required and must be at least 5 character.').notEmpty().len(5,55);
+		req.check('registerPassword', 'The password is required and must be at least 5 characters.').notEmpty().len(5,55);
 		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(5,55).equals(req.param('registerPassword'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
@@ -182,7 +283,7 @@ module.exports = function (app) {
 		//req.sanitize('registerTerms');
 
 		if (req.param('registerEmail')) {
-			req.check('registerEmail').isEmail();
+			req.check('registerEmail').notEmpty().isEmail();
 			req.sanitize('registerEmail');
 		}
 
@@ -219,6 +320,7 @@ module.exports = function (app) {
 							user.id = count;
 							user.username = req.param('registerUsername');
 							user.password = hash;
+							user.settings = {};
 
 							if (req.param('registerEmail')) {
 								user.email = req.param('registerEmail');
@@ -445,10 +547,34 @@ module.exports = function (app) {
 	});
 
 	// The middleware will check if the user is logged in
+	app.get('/account',  [middleware.validateUser, middleware.getUserGames], function (req, res) {
+
+		// look up the user again to get more information
+		models.Users.findOne({ 'id': res.locals.user.id }, 'id username settings email created', function (err, profile) {
+			if (err) throw err;
+
+			if (!profile) {
+				res.status(404).render('404.ejs',{
+					title: '404',
+					user: res.locals.user,
+					meta: ''
+				});	
+			} else {
+				res.render('account/index.ejs', { 
+					title: 'bitflop.me',
+					moment: moment,
+					user: res.locals.user,
+					profile: profile
+				});
+			}
+		});
+	});
+
+	// The middleware will check if the user is logged in
 	app.get('/account/settings',  [middleware.validateUser, middleware.getUserGames], function (req, res) {
 
 		// look up the user again to get more information
-		models.Users.findOne({ 'id': res.locals.user.id }, 'id username created', function (err, profile) {
+		models.Users.findOne({ 'id': res.locals.user.id }, 'id username settings email created', function (err, profile) {
 			if (err) throw err;
 
 			if (!profile) {
@@ -468,10 +594,35 @@ module.exports = function (app) {
 		});
 	});
 
+	// The middleware will check if the user is logged in
+	app.get('/account/email',  [middleware.validateUser, middleware.getUserGames], function (req, res) {
+
+		// look up the user again to get more information
+		models.Users.findOne({ 'id': res.locals.user.id }, 'id username email created', function (err, profile) {
+			if (err) throw err;
+
+			if (!profile) {
+				res.status(404).render('404.ejs',{
+					title: '404',
+					user: res.locals.user,
+					meta: ''
+				});	
+			} else {
+				res.render('account/email.ejs', { 
+					title: 'bitflop.me',
+					moment: moment,
+					user: res.locals.user,
+					profile: profile,
+					errors: {}
+				});
+			}
+		});
+	});
+
 	// Public profile page for the user
 	app.get('/user/:username', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 
-		models.Users.findOne({ 'username': req.param('username') }, 'id username created', function (err, profile) {
+		models.Users.findOne({ 'username': req.param('username') }, 'id username email created', function (err, profile) {
 			if (err) throw err;
 
 			if (!profile) {

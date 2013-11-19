@@ -2,7 +2,7 @@
 
 <div class="jumbotron sub">
 	<div class="container">
-		<h1>Account Settings</h1>
+		<h1>Settings</h1>
 	</div>
 	
 </div>
@@ -12,8 +12,6 @@
 
 	<h3><%= profile.username %></h3>
 	<p><strong>User since:</strong> <%= moment(profile.created).format("MMM D, YYYY h:mma ZZ") %> <em>(<%= moment().from(moment(profile.created), true) %>)</em></p>
-	
-	<p>Settings Coming Soon</p>
 
 </div>
 
