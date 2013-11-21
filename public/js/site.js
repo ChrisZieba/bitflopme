@@ -97,28 +97,27 @@ site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout)
 		link: function(scope, ele, attrs, c) {
 			scope.$watch(attrs.ngModel, function (val) {
 
-				// if the value changes before we hit the server, cancel
+				// reset the validity if empty string
 				if (!val) {
+					c.$setValidity('unique', true);
 					return;
 				} 
-
+				
 				$http({
 					method: 'POST',
 					url: '/api/username/',
 					data: {
 						'_csrf': scope.token,
-						'registerUsername': val
+						'username': val
 					}
 				}).success(function(data, status, headers, cfg) {
 					c.$setValidity('unique', true);
-					checking = null;
 				}).error(function(data, status, headers, cfg) {
 					if (data.pattern) {
 						c.$setValidity('pattern', false);
 					} else if (data.taken) {
 						c.$setValidity('unique', false);
 					}
-					checking = null;
 				});
 
 			});

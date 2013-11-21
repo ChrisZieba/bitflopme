@@ -24,8 +24,6 @@ app.configure('production', function () {
 	}
 });
 
-
-
 var 
 	mongo = require('connect-mongo')(express),
 	session = new mongo({url:app.get('mongo_url'), auto_reconnect: true}),
@@ -54,7 +52,7 @@ app.configure(function () {
 			httpOnly: true,  
 			maxAge: 1000*60*60*24*30*12,
 			//secure: true,
-			domain: '.'+app.get('base_vhost')
+			domain: '.' + app.get('base_vhost')
 		}
 	}));
 

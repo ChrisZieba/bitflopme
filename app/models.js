@@ -28,8 +28,8 @@ exports.Users = db.model('Users', new Schema({
     password : { type: String, required: true },
     email : { type: String, required: false },
     settings : { type: Schema.Types.Mixed, required: true },
-    //games : { type: Schema.Types.Mixed, required: true, default: null },
     created: { type: Date, default: Date.now },
+    last_login: { type: Date, default: Date.now },
     reset_date: { type: Date, required: false },
     reset_token :  { type: String, required: false }
 }));

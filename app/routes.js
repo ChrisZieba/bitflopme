@@ -140,6 +140,8 @@ module.exports = function (app) {
 									active: []
 								}
 							};
+
+							req.session.ip = req.ip;
 							res.redirect(req.session.refererURL || '/');	
 						} else {
 							res.render('login.ejs', { 
@@ -272,26 +274,26 @@ module.exports = function (app) {
 
 	app.post('/register', [middleware.getUserGames], function (req, res) {
 
-		req.check('registerUsername', 'The username is required and cannot be more than 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
-		req.check('registerPassword', 'The password is required and must be at least 6 characters.').notEmpty().len(6,55);
-		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
+		req.check('username', 'The username is required and cannot be more than 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
+		req.check('password', 'The password is required and must be at least 6 characters.').notEmpty().len(6,55);
+		req.check('passwordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('password'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
-		req.sanitize('registerUsername').trim();
-		req.sanitize('registerPassword').trim();
-		req.sanitize('registerPasswordConfirm').trim();
+		req.sanitize('username').trim();
+		req.sanitize('password').trim();
+		req.sanitize('passwordConfirm').trim();
 		//req.sanitize('registerTerms');
 
-		if (req.param('registerEmail')) {
-			req.check('registerEmail').notEmpty().isEmail();
-			req.sanitize('registerEmail');
+		if (req.param('email')) {
+			req.check('email').notEmpty().isEmail();
+			req.sanitize('email');
 		}
 
 		var errors = req.validationErrors(true); 
 
 		if (!errors) {
 			// Check if the username is available
-			models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {
+			models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {
 				if (err) throw err;
 
 				if (checkUser) {
@@ -299,15 +301,15 @@ module.exports = function (app) {
 						title: 'Register | Bitflop',
 						user: res.locals.user,
 						errors: {
-							'registerUsername': {
-								'param': 'registerUsername',
+							'username': {
+								'param': 'username',
 								'msg': 'The username is not available.'
 							}
 						}
 					});
 				} else {
 					// the username is available
-					bcrypt.hash(req.param('registerPassword'), 10, function(err, hash) {
+					bcrypt.hash(req.param('password'), 10, function(err, hash) {
 
 						if (err) throw err;
 
@@ -318,12 +320,12 @@ module.exports = function (app) {
 							var count = counter.users + 1;	
 
 							user.id = count;
-							user.username = req.param('registerUsername');
+							user.username = req.param('username');
 							user.password = hash;
 							user.settings = {};
 
-							if (req.param('registerEmail')) {
-								user.email = req.param('registerEmail');
+							if (req.param('email')) {
+								user.email = req.param('email');
 							}
 
 							user.save(function(err){
@@ -342,6 +344,10 @@ module.exports = function (app) {
 										}
 										
 									};
+
+									// This gets set in Varnish
+									req.session.ip = req.headers['X-Forwarded-For'] || req.connection.remoteAddress;
+									console.log(req.session.ip);
 									res.redirect(req.session.refererURL || '/account');	
 								});	
 							});
@@ -694,18 +700,19 @@ module.exports = function (app) {
 
 	app.post('/api/username/', function (req, res) {
 
-		req.check('registerUsername', 'The username is required.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
-		req.sanitize('registerUsername');
+		req.check('username', 'The username is required.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
+		req.sanitize('username');
 
 		var errors = req.validationErrors(true); 
 
 		if (errors) {
+			console.log('errors' + JSON.stringify(errors,null,4))
 			res.json(403, { pattern: true });
 			return;
 		}
 
 		// Check if the username is available
-		models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('registerUsername'))
+		models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('username'))
 			if (err) throw err;
 			if (checkUser) {
 				// the username is not available

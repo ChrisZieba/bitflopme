@@ -15,7 +15,8 @@ db.users.insert({
     "username": "ziebac",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
     "settings": {},
-    "created": Date.now()
+    "created": Date.now(),
+    "last_login": Date.now()
 });
 
 db.users.insert({
@@ -23,7 +24,8 @@ db.users.insert({
     "username": "tony",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
     "settings": {},
-    "created": Date.now()
+    "created": Date.now(),
+    "last_login": Date.now()
 });
 
 db.users.insert({
@@ -31,7 +33,8 @@ db.users.insert({
     "username": "random",
     "password": "$2a$10$bVC3rDN834S4P4yFXG7kn..HTxXEt76AsuGY.JVbNZj4Q7KbnX2Ry",
     "settings": {},
-    "created": Date.now()
+    "created": Date.now(),
+    "last_login": Date.now()
 });
 
 db.games.insert({
