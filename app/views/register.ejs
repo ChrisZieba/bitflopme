@@ -26,8 +26,8 @@
 					<% if (errors.registerUsername) { %>
 						<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
 					<% } %>
-					
-					<div class="alert alert-danger" ng-cloak ng-show="registerForm.registerUsername.$dirty && registerForm.registerUsername.$invalid && !registerForm.registerUsername.$focused">
+
+					<div class="alert alert-danger" ng-cloak ng-show="registerForm.registerUsername.$dirty && registerForm.registerUsername.$invalid">
 						<div ng-show="registerForm.registerUsername.$error.required">A username is required!</div>
 						<div ng-show="registerForm.registerUsername.$error.maxlength">Can't be more than 15 characters.</div>
 						<div ng-show="registerForm.registerUsername.$error.pattern">Invalid Username! Alphanumerics only.</div>
@@ -61,7 +61,7 @@
 
 				<div class="form-group">
 					<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
-					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register" ng-disabled="registerForm.$dirty && registerForm.$invalid"/>
+					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"/>
 				</div>
 			</form>
 

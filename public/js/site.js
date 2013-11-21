@@ -92,33 +92,35 @@ site.factory('ajax', function($http) {
 });
 
 site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout) {
-	var checking = null;
 	return {
 		require: 'ngModel',
 		link: function(scope, ele, attrs, c) {
-			scope.$watch(attrs.ngModel, function (newVal) {
+			scope.$watch(attrs.ngModel, function (val) {
 
 				// if the value changes before we hit the server, cancel
-				if (checking) {
-					$timeout.cancel(checking);
+				if (!val) {
+					return;
+				} 
+
+				$http({
+					method: 'POST',
+					url: '/api/username/',
+					data: {
+						'_csrf': scope.token,
+						'registerUsername': val
+					}
+				}).success(function(data, status, headers, cfg) {
+					c.$setValidity('unique', true);
 					checking = null;
-				} else {
-					checking = $timeout(function() {
-						$http({
-							method: 'POST',
-							url: '/api/username/',
-							data: {
-								'_csrf': scope.token,
-								'registerUsername': newVal
-							}
-						}).success(function(data, status, headers, cfg) {
-							c.$setValidity('unique', data.available);
-							checking = null;
-						}).error(function(data, status, headers, cfg) {
-							checking = null;
-						});
-					}, 200);
-				}
+				}).error(function(data, status, headers, cfg) {
+					if (data.pattern) {
+						c.$setValidity('pattern', false);
+					} else if (data.taken) {
+						c.$setValidity('unique', false);
+					}
+					checking = null;
+				});
+
 			});
 		}
 	}

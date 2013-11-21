@@ -116,8 +116,8 @@ module.exports = function (app) {
 
 		req.check('loginUsername', 'The username is required.').notEmpty();
 		req.check('loginPassword', 'The password is required.').notEmpty();
-		req.sanitize('loginUsername');
-		req.sanitize('loginPassword');
+		req.sanitize('loginUsername').trim();
+		req.sanitize('loginPassword').trim();
 
 		var errors = req.validationErrors(true); 
 
@@ -277,9 +277,9 @@ module.exports = function (app) {
 		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
-		req.sanitize('registerUsername');
-		req.sanitize('registerPassword');
-		req.sanitize('registerPasswordConfirm');
+		req.sanitize('registerUsername').trim();
+		req.sanitize('registerPassword').trim();
+		req.sanitize('registerPasswordConfirm').trim();
 		//req.sanitize('registerTerms');
 
 		if (req.param('registerEmail')) {
@@ -699,21 +699,24 @@ module.exports = function (app) {
 
 		var errors = req.validationErrors(true); 
 
-		if (!errors) {
-			// Check if the username is available
-			models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('registerUsername'))
-				if (err) throw err;
-				if (checkUser) {
-					// the username is available
-					res.json({ available: false });
-				} else {
-					// the username is available
-					res.json({ available: true });
-				}	
-			});
-		} else {
-			res.json({ available: false });
+		if (errors) {
+			res.json(403, { pattern: true });
+			return;
 		}
+
+		// Check if the username is available
+		models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('registerUsername'))
+			if (err) throw err;
+			if (checkUser) {
+				// the username is not available
+				res.json(403, { taken: true });
+			} else {
+				// The username is available
+				res.send(200);
+			}
+		});
+
+
 	});
 
 	//keep this last!
