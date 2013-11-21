@@ -11,7 +11,7 @@ module.exports = function (app) {
 	// define the urls, and the handlers for them
 	app.get('/', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		res.render('index.ejs', { 
-			title: 'bitflop.me',
+			title: 'Play Online Poker Against your Opponents using a Webcam | Bitflop',
 			user: res.locals.user
 		});
 	});
@@ -22,7 +22,7 @@ module.exports = function (app) {
 			res.redirect('/');
 		} else {
 			res.render('login.ejs', { 
-				title: 'bitflop.me',
+				title: 'Login | Bitflop',
 				user: res.locals.user,
 				errors: {}
 			});
@@ -36,7 +36,7 @@ module.exports = function (app) {
 			res.redirect('/');
 		} else {
 			res.render('register.ejs', { 
-				title: 'bitflop.me',
+				title: 'Register | Bitflop',
 				user: res.locals.user,
 				errors: {}
 			});
@@ -79,7 +79,7 @@ module.exports = function (app) {
 
 				// find any games that the user is in
 				res.render('game/join.ejs', { 
-					title: 'bitflop.me',
+					title: 'Join a Game | Bitflop',
 					moment: moment,
 					user: user,
 					games: {
@@ -98,7 +98,7 @@ module.exports = function (app) {
 
 	app.get('/game/new', [middleware.refererURL, middleware.validateUser, middleware.getUserGames], function (req, res) {
 		res.render('game/new.ejs', { 
-			title: 'bitflop.me',
+			title: 'Start a New Game | Bitflop',
 			user: res.locals.user,
 			errors: {}
 		});
@@ -106,7 +106,7 @@ module.exports = function (app) {
 
 	app.get('/password/new', [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		res.render('account/password.ejs', { 
-			title: 'bitflop.me',
+			title: 'Reset Password | Bitflop',
 			user: res.locals.user,
 			errors: {}
 		});
@@ -143,7 +143,7 @@ module.exports = function (app) {
 							res.redirect(req.session.refererURL || '/');	
 						} else {
 							res.render('login.ejs', { 
-								title: 'bitflop.me',
+								title: 'Login | Bitflop',
 								errors: {
 									'loginPassword': {
 										'param': 'loginPassword',
@@ -155,7 +155,7 @@ module.exports = function (app) {
 					});
 				} else {
 					res.render('login.ejs', { 
-						title: 'bitflop.me',
+						title: 'Login | Bitflop',
 						user: res.locals.user,
 						errors: {
 							'loginUsername': {
@@ -169,7 +169,7 @@ module.exports = function (app) {
 		} else {
 			// Show the errors on the form
 			res.render('login.ejs', { 
-				title: 'bitflop.me',
+				title: 'Login | Bitflop',
 				user: res.locals.user,
 				errors: errors
 			});
@@ -201,7 +201,7 @@ module.exports = function (app) {
 					});	
 				} else {
 					res.render('account/email.ejs', { 
-						title: 'bitflop.me',
+						title: 'Account Email | Bitflop',
 						moment: moment,
 						user: res.locals.user,
 						profile: profile,
@@ -225,7 +225,7 @@ module.exports = function (app) {
 
 				if (!profile) {console.log(errors);
 					res.render('account/password.ejs', { 
-						title: 'bitflop.me',
+						title: 'Account Password | Bitflop',
 						moment: moment,
 						user: res.locals.user,
 						errors: {
@@ -237,7 +237,7 @@ module.exports = function (app) {
 					});
 				} else if (!profile.email) {
 					res.render('account/password.ejs', { 
-						title: 'bitflop.me',
+						title: 'Account Password | Bitflop',
 						moment: moment,
 						user: res.locals.user,
 						errors: {
@@ -258,7 +258,7 @@ module.exports = function (app) {
 			});
 		} else {
 			res.render('account/password.ejs', { 
-				title: 'bitflop.me',
+				title: 'Account Password | Bitflop',
 				moment: moment,
 				user: res.locals.user,
 				errors: errors
@@ -296,7 +296,7 @@ module.exports = function (app) {
 
 				if (checkUser) {
 					res.render('register.ejs', { 
-						title: 'bitflop.me',
+						title: 'Register | Bitflop',
 						user: res.locals.user,
 						errors: {
 							'registerUsername': {
@@ -354,7 +354,7 @@ module.exports = function (app) {
 		} else {
 			// Show the errors on the form
 			res.render('register.ejs', { 
-				title: 'bitflop.me',
+				title: 'Register | Bitflop',
 				user: res.locals.user,
 				errors: errors
 			});
@@ -465,7 +465,7 @@ module.exports = function (app) {
 		} else {
 			// Show the errors on the form
 			res.render('game/new.ejs', { 
-				title: 'bitflop.me',
+				title: 'Start a New Game | Bitflop',
 				user: res.locals.user,
 				errors: errors
 			});
@@ -491,7 +491,7 @@ module.exports = function (app) {
 		// if a player is accessing the table
 		if (helpers.getPlayerID(user.id, game.players) !== null) {
 			res.render('game/play.ejs', { 
-				title: 'bitflop.me',
+				title: 'Game ' + game.id + ' | Bitflop',
 				user: user,
 				room: room,
 				join: false
@@ -500,23 +500,20 @@ module.exports = function (app) {
 			// non player accessing the table
 			if (game.players.length === 2) {
 				res.render('game/full.ejs', { 
-					title: 'bitflop.me',
+					title: 'Game ' + game.id + ' | Bitflop',
 					user: user,
 					room: room
 				});
 			} else {
 				// Show the game to a non player who can join if they want
 				res.render('game/play.ejs', { 
-					title: 'bitflop.me',
+					title: 'Game ' + game.id + ' | Bitflop',
 					user: user,
 					room: room,
 					join: true
 				});
 			}
 		}
-
-		
-			
 	});
 
 	// The middleware will check if the user is logged in
@@ -535,7 +532,7 @@ module.exports = function (app) {
 			if (err) throw err;
 
 			res.render('account/games.ejs', { 
-				title: 'bitflop.me',
+				title: 'Account Games | Bitflop',
 				moment: moment,
 				user: res.locals.user,
 				games: {
@@ -561,7 +558,7 @@ module.exports = function (app) {
 				});	
 			} else {
 				res.render('account/index.ejs', { 
-					title: 'bitflop.me',
+					title: 'Account | Bitflop',
 					moment: moment,
 					user: res.locals.user,
 					profile: profile
@@ -585,7 +582,7 @@ module.exports = function (app) {
 				});	
 			} else {
 				res.render('account/settings.ejs', { 
-					title: 'bitflop.me',
+					title: 'Account Settings | Bitflop',
 					moment: moment,
 					user: res.locals.user,
 					profile: profile
@@ -609,7 +606,7 @@ module.exports = function (app) {
 				});	
 			} else {
 				res.render('account/email.ejs', { 
-					title: 'bitflop.me',
+					title: 'Account Email | Bitflop',
 					moment: moment,
 					user: res.locals.user,
 					profile: profile,
@@ -633,7 +630,7 @@ module.exports = function (app) {
 				});	
 			} else {
 				res.render('user/index.ejs', { 
-					title: 'bitflop.me',
+					title: 'Profile | Bitflop',
 					moment: moment,
 					user: res.locals.user,
 					profile: profile
@@ -646,7 +643,7 @@ module.exports = function (app) {
 	app.get('/about',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('about.ejs', { 
-			title: 'bitflop.me',
+			title: 'About | Bitflop',
 			user: res.locals.user
 		});
 	});
@@ -654,7 +651,7 @@ module.exports = function (app) {
 	app.get('/faq',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('faq.ejs', { 
-			title: 'bitflop.me',
+			title: 'FAQ | Bitflop',
 			user: res.locals.user
 		});
 	});
@@ -662,7 +659,7 @@ module.exports = function (app) {
 	app.get('/roadmap',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('roadmap.ejs', { 
-			title: 'bitflop.me',
+			title: 'Roadmap | Bitflop',
 			user: res.locals.user
 		});
 	});
@@ -670,7 +667,15 @@ module.exports = function (app) {
 	app.get('/terms',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('terms.ejs', { 
-			title: 'bitflop.me',
+			title: 'Terms & Conditions | Bitflop',
+			user: res.locals.user
+		});
+	});
+
+	app.get('/privacy',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
+		// 	Show the errors on the form
+		res.render('privacy.ejs', { 
+			title: 'Privacy | Bitflop',
 			user: res.locals.user
 		});
 	});
@@ -678,9 +683,38 @@ module.exports = function (app) {
 	app.get('/contact',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('contact.ejs', { 
-			title: 'bitflop.me',
+			title: 'Contact | Bitflop',
 			user: res.locals.user
 		});
+	});
+
+
+
+
+
+	app.post('/api/username/:username', function (req, res) {
+
+		req.check('username', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
+		req.sanitize('username');
+
+		var errors = req.validationErrors(true); 
+
+		if (!errors) {
+			// Check if the username is available
+			models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {
+				if (err) throw err;
+
+				if (checkUser) {
+					// the username is available
+					res.json({ available: false });
+				} else {
+					// the username is available
+					res.json({ available: true });
+				}	
+			});
+		} else {
+			res.json({ available: false });
+		}
 	});
 
 	//keep this last!

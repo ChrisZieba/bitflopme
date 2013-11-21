@@ -4,7 +4,7 @@
 <div class="jumbotron sub">
 	<div class="container">
 		<h1>Register</h1>
-		<p>Already a member? <a href="/register"><strong>Login Here.</strong></a></p>
+		<p>Already a member? <a href="/login"><strong>Login Here.</strong></a></p>
 	</div>
 	
 </div>
@@ -14,23 +14,23 @@
 
 
 	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
-
-			<form role="form" method="post" action="/register" class="well">
+		<div ng-controller="RegisterCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3"> 
+			<form role="form" name="registerForm" method="post" action="/register" class="well" novalidate>
 
 				<input type="hidden" name="_csrf" value="<%= token %>"/>
 				
 				<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
 					<label>Choose a Username</label> <span class="text-muted"><small>Alphanumerics Only (between 2 and 15 characters)</small></span>
-					<input type="text" name="registerUsername" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15">
+					<input type="text" name="registerUsername" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-minlength="2" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="registerUsername">
 					<% if (errors.registerUsername) { %>
 						<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
 					<% } %>
+					<div class="alert alert-danger" ng-show="registerForm.registerUsername.$invalid"><p>The username is not available.</p></div>
 				</div>
 				
 				<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
 					<label>Choose a Password</label> <span class="text-muted"><small>at least 5 characters</small></span>
-					<input type="password" name="registerPassword" class="form-control mg-top-bot-5" placeholder="Password " maxlength="55">
+					<input type="password" name="registerPassword" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password " maxlength="55" required ng-minlength="5" ng-maxlength="55">
 					<% if (errors.registerPassword) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
 					<% } %>
@@ -38,7 +38,7 @@
 				
 				<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
 					<label>Confirm Password</label>
-					<input type="password" name="registerPasswordConfirm" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55">
+					<input type="password" name="registerPasswordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55" required ng-minlength="5" ng-maxlength="55">
 					<% if (errors.registerPasswordConfirm) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
 					<% } %>
@@ -54,7 +54,7 @@
 
 				<div class="form-group">
 					<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
-					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register" />
+					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"  ng-disabled="registerForm.$invalid"/>
 				</div>
 			</form>
 

@@ -5,6 +5,10 @@ site.controller('CollapseCtrl', function($rootScope, $scope) {
 	$scope.isCollapsed = true;
 });
 
+site.controller('RegisterCtrl', ['$scope', function($scope) {
+	$scope.submitted = false;
+console.log('as');
+}]);
 
 site.directive('collapse', [function () {
 
@@ -88,3 +92,27 @@ site.factory('ajax', function($http) {
    }
 });
 
+site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout) {
+	var checking = null;
+	return {
+		require: 'ngModel',
+		link: function(scope, ele, attrs, c) {console.log(attrs);
+			scope.$watch(attrs.ngModel, function(newVal) {
+				if (!checking) {
+					checking = $timeout(function() {
+						$http({
+							method: 'POST',
+							url: '/api/username/' + attrs.uniqueUsername,
+							data: {'field': attrs.uniqueUsername}
+						}).success(function(data, status, headers, cfg) {
+							c.$setValidity('unique', data.isUnique);
+							checking = null;
+						}).error(function(data, status, headers, cfg) {
+							checking = null;
+						});
+					}, 500);
+				}
+			});
+		}
+	}
+}]);

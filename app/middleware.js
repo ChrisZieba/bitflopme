@@ -28,7 +28,7 @@ exports.validateGame = function (req, res, next) {
 				});
 			} else if (game.state === 'END') {
 				res.render('game/done.ejs', { 
-					title: 'bitflop.me - Move along, nothin to see here ...',
+					title: 'Private Game | Bitflop',
 					user: res.locals.user
 				});
 			} else {

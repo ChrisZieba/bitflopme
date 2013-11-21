@@ -260,7 +260,9 @@ code {
 
 @media only screen and (max-width: 419px), only screen and (max-device-width: 419px){
 
-
+	#wrap .navbar > .container .navbar-brand {
+		margin-left: 15px;
+	}
 
 	.jumbotron {
 		margin-bottom: 15px;
@@ -351,6 +353,7 @@ code {
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px), only screen and (min-device-width: 768px) and (max-device-width: 991px){
+
 
 	.jumbotron h1 {
 		font-size:32px;
