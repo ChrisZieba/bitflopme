@@ -17,20 +17,27 @@
 		<div ng-controller="RegisterCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3"> 
 			<form role="form" name="registerForm" method="post" action="/register" class="well" novalidate>
 
-				<input type="hidden" name="_csrf" value="<%= token %>"/>
+				<input id="form-csrf" type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
 				
-				<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>">
-					<label>Choose a Username</label> <span class="text-muted"><small>Alphanumerics Only (between 2 and 15 characters)</small></span>
-					<input type="text" name="registerUsername" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-minlength="2" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="registerUsername">
+				<div class="form-group <% if (errors.registerUsername) { %>has-error<% } %>" ng-class="{ 'has-error': registerForm.registerUsername.$dirty && registerForm.registerUsername.$invalid && !registerForm.registerUsername.$focused, 'has-success': registerForm.registerUsername.$dirty && registerForm.registerUsername.$valid && !registerForm.registerUsername.$focused }">
+					<label>Choose a Username</label> <span class="text-muted"><small>Alphanumerics Only</small></span>
+					<input type="text" name="registerUsername" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-required="true" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="registerUsername" ng-focus />
+					
 					<% if (errors.registerUsername) { %>
 						<div class="alert alert-danger"><p><%= errors.registerUsername.msg %></p></div>
 					<% } %>
-					<div class="alert alert-danger" ng-show="registerForm.registerUsername.$invalid"><p>The username is not available.</p></div>
+					
+					<div class="alert alert-danger" ng-cloak ng-show="registerForm.registerUsername.$dirty && registerForm.registerUsername.$invalid && !registerForm.registerUsername.$focused">
+						<div ng-show="registerForm.registerUsername.$error.required">A username is required!</div>
+						<div ng-show="registerForm.registerUsername.$error.maxlength">Can't be more than 15 characters.</div>
+						<div ng-show="registerForm.registerUsername.$error.pattern">Invalid Username! Alphanumerics only.</div>
+						<div ng-show="registerForm.registerUsername.$error.unique && !registerForm.registerUsername.$error.required && !registerForm.registerUsername.$error.pattern">This username is already taken!</div>
+					</div>
 				</div>
 				
 				<div class="form-group <% if (errors.registerPassword) { %>has-error<% } %>">
-					<label>Choose a Password</label> <span class="text-muted"><small>at least 5 characters</small></span>
-					<input type="password" name="registerPassword" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password " maxlength="55" required ng-minlength="5" ng-maxlength="55">
+					<label>Choose a Password</label> <span class="text-muted"><small>at least 6 characters</small></span>
+					<input type="password" name="registerPassword" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password " maxlength="55" required ng-minlength="6" ng-maxlength="55">
 					<% if (errors.registerPassword) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPassword.msg %></p></div>
 					<% } %>
@@ -38,7 +45,7 @@
 				
 				<div class="form-group <% if (errors.registerPasswordConfirm) { %>has-error<% } %>">
 					<label>Confirm Password</label>
-					<input type="password" name="registerPasswordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55" required ng-minlength="5" ng-maxlength="55">
+					<input type="password" name="registerPasswordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55" required ng-minlength="6" ng-maxlength="55">
 					<% if (errors.registerPasswordConfirm) { %>
 						<div class="alert alert-danger"><p><%= errors.registerPasswordConfirm.msg %></p></div>
 					<% } %>
@@ -54,7 +61,7 @@
 
 				<div class="form-group">
 					<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
-					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"  ng-disabled="registerForm.$invalid"/>
+					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register" ng-disabled="registerForm.$dirty && registerForm.$invalid"/>
 				</div>
 			</form>
 

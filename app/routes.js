@@ -272,9 +272,9 @@ module.exports = function (app) {
 
 	app.post('/register', [middleware.getUserGames], function (req, res) {
 
-		req.check('registerUsername', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
-		req.check('registerPassword', 'The password is required and must be at least 5 characters.').notEmpty().len(5,55);
-		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(5,55).equals(req.param('registerPassword'));
+		req.check('registerUsername', 'The username is required and cannot be more than 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
+		req.check('registerPassword', 'The password is required and must be at least 6 characters.').notEmpty().len(6,55);
+		req.check('registerPasswordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('registerPassword'));
 		//req.check('registerTerms', 'You must agree to our terms in order to register.').notEmpty().notNull();
 
 		req.sanitize('registerUsername');
@@ -692,18 +692,17 @@ module.exports = function (app) {
 
 
 
-	app.post('/api/username/:username', function (req, res) {
+	app.post('/api/username/', function (req, res) {
 
-		req.check('username', 'The username is required and must be between 2 and 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(2,15);
-		req.sanitize('username');
+		req.check('registerUsername', 'The username is required.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
+		req.sanitize('registerUsername');
 
 		var errors = req.validationErrors(true); 
 
 		if (!errors) {
 			// Check if the username is available
-			models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {
+			models.Users.findOne({ 'username': req.param('registerUsername') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('registerUsername'))
 				if (err) throw err;
-
 				if (checkUser) {
 					// the username is available
 					res.json({ available: false });

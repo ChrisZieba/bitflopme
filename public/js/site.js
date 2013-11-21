@@ -1,13 +1,12 @@
 var site = angular.module('site', []);
 
-
 site.controller('CollapseCtrl', function($rootScope, $scope) {
 	$scope.isCollapsed = true;
 });
 
 site.controller('RegisterCtrl', ['$scope', function($scope) {
 	$scope.submitted = false;
-console.log('as');
+	$scope.token = null;
 }]);
 
 site.directive('collapse', [function () {
@@ -96,22 +95,52 @@ site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout)
 	var checking = null;
 	return {
 		require: 'ngModel',
-		link: function(scope, ele, attrs, c) {console.log(attrs);
-			scope.$watch(attrs.ngModel, function(newVal) {
-				if (!checking) {
+		link: function(scope, ele, attrs, c) {
+			scope.$watch(attrs.ngModel, function (newVal) {
+
+				// if the value changes before we hit the server, cancel
+				if (checking) {
+					$timeout.cancel(checking);
+					checking = null;
+				} else {
 					checking = $timeout(function() {
 						$http({
 							method: 'POST',
-							url: '/api/username/' + attrs.uniqueUsername,
-							data: {'field': attrs.uniqueUsername}
+							url: '/api/username/',
+							data: {
+								'_csrf': scope.token,
+								'registerUsername': newVal
+							}
 						}).success(function(data, status, headers, cfg) {
-							c.$setValidity('unique', data.isUnique);
+							c.$setValidity('unique', data.available);
 							checking = null;
 						}).error(function(data, status, headers, cfg) {
 							checking = null;
 						});
-					}, 500);
+					}, 200);
 				}
+			});
+		}
+	}
+}]);
+
+site.directive('ngFocus', [function() {
+	var FOCUS_CLASS = "ng-focused";
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function(scope, element, attrs, ctrl) {
+			ctrl.$focused = false;
+			element.bind('focus', function(evt) {
+				element.addClass(FOCUS_CLASS);
+				scope.$apply(function() {
+					ctrl.$focused = true;
+				});
+			}).bind('blur', function(evt) {
+				element.removeClass(FOCUS_CLASS);
+				scope.$apply(function() {
+					ctrl.$focused = false;
+				});
 			});
 		}
 	}
