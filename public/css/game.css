@@ -427,3 +427,16 @@ span.event-time {
 
 .card-sm span.card-5D { background-position: -664px -1505px; }
 .card-xs span.card-7S { background-position: -0px -1621px }
+
+.ico-card {
+	display: inline-block;
+	padding: 0px 2px;
+	background-color: #484747;
+	font-family: 'Monaco', 'Andale Mono', 'Pro Font', sans-serif;
+	font-size: 13px;
+	margin: 0px 3px 0px 0px;
+	moz-border-radius: 3px;
+	webkit-border-radius: 3px;
+	border-radius:3px;
+	color: #bbbbbb;
+}

@@ -38,6 +38,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	font-weight: normal !important;
 }
 
+span.email {
+
+	font-family: monospace, serif;
+	letter-spacing: 1px;
+	font-size: 90%
+}
+
 .buffer { margin:10px 0; }
 
 .center {

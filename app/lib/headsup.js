@@ -378,6 +378,42 @@ function checkForEndOfBettingRound (game) {
 	return endOfBettingRound;
 }
 
+// takes an array of cards ['6H','JH']
+function prettifyCards (cards) {
+
+	var out = [];
+console.log(cards);
+	for (var i = 0; i < cards.length; i+=1) {console.log(cards[i]);
+		out.push('<span class="ico-card ico-card-club">');
+		for (var j = 0; j < cards[i].length; j+=1) {
+			console.log(cards[i].charAt(j));
+			var part = cards[i].charAt(j);
+			switch (part) {
+				case 'T':
+					out.push('10');
+					break;
+				case 'C' :
+					out.push('♣');
+					break;
+				case 'S' :
+					out.push('♠');
+					break;
+				case 'D' :
+					out.push('♦');
+					break;
+				case 'H' :
+					out.push('♥');
+					break;
+				default:
+					out.push(part);
+			}
+		}
+		out.push('</span">');
+	}
+
+	return out.join('');
+}
+
 function nextBettingRound (game) {
 
 	if (game.state === 'RIVER') {
@@ -393,7 +429,7 @@ function nextBettingRound (game) {
 				cards: cards
 			});
 
-			game.AddEvent('Dealer', game.players[j].name + ' has ' + game.players[j].cards.join(','));
+			game.AddEvent('Dealer', game.players[j].name + ' has ' + prettifyCards(game.players[j].cards));
 		}
 
 		checkForWinner(game);
