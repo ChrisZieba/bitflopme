@@ -32,8 +32,7 @@ exports.listen = function (server, sessionStore, app) {
 			'websocket',
 			'xhr-polling',
 			'htmlfile',
-			'jsonp-polling',
-			'flashsocket'
+			'jsonp-polling'
 		]);
 	} else {
 		// send minified client
@@ -54,9 +53,9 @@ exports.listen = function (server, sessionStore, app) {
 			'websocket',
 			'xhr-polling',
 			'htmlfile',
-			'jsonp-polling',
-			'flashsocket'
+			'jsonp-polling'
 		]);     
+		//io.set('flash policy port', 3002);
 	}
 
 	// this is what runs on an oncoming socket request

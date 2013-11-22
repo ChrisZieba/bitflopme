@@ -13,96 +13,114 @@
 
 	<div class="row">
 		<div ng-controller="RegisterCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3"> 
-			<form role="form" name="register" method="post" action="/register" class="well" novalidate>
+			
+			<% if (disabled) { %>
+				<h3>Oops!</h3>
+				<p>You are registering too much. Try again in 5 minutes, if you're actually human.</p>
+			<% } else { %>
+				<form role="form" name="register" method="post" action="/register" class="well" novalidate>
 
-				<input id="form-csrf" type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
-				
-				<div class="form-group <% if (errors.username) { %>has-error<% } %>" ng-class="{ 'has-error': register.username.$dirty && register.username.$invalid && !register.username.$focused, 'has-success': register.username.$dirty && register.username.$valid && !register.username.$focused }">
-					<label>Choose a Username</label>
+					<input id="form-csrf" type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
 					
-					<input type="text" name="username" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-required="true" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="username" ng-focus />
-					
-					<% if (errors.username) { %>
-						<div class="alert alert-danger" ng-cloack ng-hide="register.username.$dirty && register.username.$focused">
-							<span><%= errors.username.msg %></span>
+					<div class="form-group <% if (errors.username) { %>has-error<% } %>" ng-class="{ 'has-error': register.username.$dirty && register.username.$invalid, 'has-success': register.username.$dirty && register.username.$valid }">
+						<label>Choose a Username</label>
+						
+						<input type="text" name="username" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-required="true" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="username" ng-focus />
+						
+						<% if (errors.username) { %>
+							<div class="alert alert-danger" ng-cloack ng-show="register.username.$pristine">
+								<span><%= errors.username.msg %></span>
+							</div>
+						<% } %>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.unique">
+							<span>This username is already taken!</span>
 						</div>
-					<% } %>
 
-					<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.unique">
-						<span>This username is already taken!</span>
+						<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.pattern">
+							<span>Invalid Username! Alphanumerics only.</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.required">
+							<span>A username is required!</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.maxlength">
+							<span>Can't be more than 15 characters.</span>
+						</div>
+
 					</div>
-
-					<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.pattern">
-						<span>Invalid Username! Alphanumerics only.</span>
-					</div>
-
-					<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.required && !register.username.$focused">
-						<span>A username is required!</span>
-					</div>
-
-					<div class="alert alert-danger" ng-cloak ng-show="register.username.$dirty && register.username.$invalid && register.username.$error.maxlength && !register.username.$focused">
-						<span>Can't be more than 15 characters.</span>
-					</div>
-
-				</div>
-				
-				<div class="form-group <% if (errors.password) { %>has-error<% } %>">
-					<label>Choose a Password</label>
-					<input type="password" name="password" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password " maxlength="55" required ng-minlength="6" ng-maxlength="55">
 					
-					<% if (errors.password) { %>
-						<div class="alert alert-danger"><p><%= errors.password.msg %></p></div>
-					<% } %>
-				</div>
-				
-				<div class="form-group <% if (errors.passwordConfirm) { %>has-error<% } %>">
-					<label>Confirm Password</label>
-					<input type="password" name="passwordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm your password" maxlength="55" required ng-minlength="6" ng-maxlength="55">
-					<% if (errors.passwordConfirm) { %>
-						<div class="alert alert-danger"><p><%= errors.passwordConfirm.msg %></p></div>
-					<% } %>
-				</div>
-				
-				<div class="form-group <% if (errors.email) { %>has-error<% } %>">
-					<label>Optional Email</label>
-					<input type="text" name="email" class="form-control mg-top-bot-5" placeholder="Optional Email">
-					<% if (errors.email) { %>
-						<div class="alert alert-danger"><p><%= errors.email.msg %></p></div>
-					<% } %>
-				</div>
+					<div class="form-group <% if (errors.password) { %>has-error<% } %>" ng-class="{ 'has-error': register.password.$dirty && register.password.$invalid, 'has-success': register.password.$dirty && register.password.$valid }">
+						<label>Choose a Password</label>
+						<input type="password" name="password" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password" maxlength="55" required ng-required="true" ng-minlength="6" ng-maxlength="55" ng-model="password" ng-focus />
 
-				<div class="form-group">
-					<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
-					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"/>
-				</div>
-			</form>
+						<% if (errors.password) { %>
+							<div class="alert alert-danger" ng-cloack ng-show="register.password.$pristine">
+								<span><%= errors.password.msg %></span>
+							</div>
+						<% } %>
 
+						<div class="alert alert-danger" ng-cloak ng-show="register.password.$dirty && register.password.$invalid && register.password.$error.required">
+							<span>A password is required.</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.password.$dirty && register.password.$invalid && register.password.$error.minlength">
+							<span>At least 6 characters.</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.password.$dirty && register.password.$invalid && register.password.$error.maxlength">
+							<span>Can't be more than 55 characters.</span>
+						</div>
+
+					</div>
+					
+					<div class="form-group <% if (errors.passwordConfirm) { %>has-error<% } %>" ng-class="{ 'has-error': register.passwordConfirm.$dirty && register.passwordConfirm.$invalid, 'has-success': register.passwordConfirm.$dirty && register.passwordConfirm.$valid }">
+						<label>Confirm Password</label>
+						<input type="password" name="passwordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm Password" maxlength="55" required ng-required="true" pw-confirm="password" ng-model="passwordConfirm" ng-focus />
+						
+						<% if (errors.passwordConfirm) { %>
+							<div class="alert alert-danger" ng-cloack ng-show="register.passwordConfirm.$pristine">
+								<span><%= errors.passwordConfirm.msg %></span>
+							</div>
+						<% } %>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.passwordConfirm.$dirty && register.passwordConfirm.$invalid && register.passwordConfirm.$error.required">
+							<span>This field is required.</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.passwordConfirm.$dirty && register.passwordConfirm.$invalid && register.passwordConfirm.$error.confirm">
+							<span>Passwords don't match.</span>
+						</div>
+
+					</div>
+					
+					<div class="form-group <% if (errors.email) { %>has-error<% } %>" ng-class="{ 'has-error': register.email.$dirty && register.email.$invalid, 'has-success': register.email.$dirty && register.email.$valid }">
+						<label>Optional Email</label>
+						<input type="email" name="email" class="form-control mg-top-bot-5" placeholder="Optional Email" ng-model="email" ng-focus>
+						<% if (errors.email) { %>
+							<div class="alert alert-danger" ng-cloack ng-show="register.email.$pristine">
+								<span><%= errors.email.msg %></span>
+							</div>
+						<% } %>
+
+						<div class="alert alert-danger" ng-cloak ng-show="register.email.$dirty && register.email.$invalid">
+							<span>Not a valid email.</span>
+						</div>
+
+					</div>
+
+					<div class="form-group">
+						<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
+						<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"/>
+					</div>
+				</form>
+			<% } %>
 
 		</div>
 
 
 	</div>
-
-	<!--<div class="row">
-		<div class="col-md-12">  
-			<h3>Why Do I Need to Register?</h3>
-			<p>BitFlop.me needs a unique username when you enter the website so we can retrieve any stored games, your player points, and any custom game data you may have entered. Otherwise you would have to enter this information each time you visited BitFlop.me. We need a password to use with your username so only you can view data that you have entered. <strong>A username and a password is the only information that is required to use BitFlop.me</strong>.</p>
-
-			<div class="row">
-				<div class="col-sm-6">  
-
-					<h4>No Email Required</h4>
-
-					<p>To register for BitFlop.me, all you need is a unique username and a password. If you do choose to enter your email, we will only use it for password recovery.</p>
-				</div>
-				<div class="col-sm-6">  
-
-					<h4>Privacy Philosophy</h4>
-					<p>We limit data collected about you and your use of the platform, and we never disclose it for any other reason unless required by law. Please read our <a href="/privacy">Privacy Policy</a> if you would like more information.</p>
-				</div>
-			</div>
-		</div>
-	</div>-->
 </div>
 
 <% include partials/footer.ejs %>

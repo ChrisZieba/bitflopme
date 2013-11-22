@@ -94,15 +94,15 @@ site.factory('ajax', function($http) {
 site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout) {
 	return {
 		require: 'ngModel',
-		link: function(scope, ele, attrs, c) {
+		link: function(scope, ele, attrs, ctrl) {
 			scope.$watch(attrs.ngModel, function (val) {
 
 				// reset the validity if empty string
 				if (!val) {
-					c.$setValidity('unique', true);
+					ctrl.$setValidity('unique', true);
 					return;
 				} 
-				
+
 				$http({
 					method: 'POST',
 					url: '/api/username/',
@@ -111,12 +111,12 @@ site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout)
 						'username': val
 					}
 				}).success(function(data, status, headers, cfg) {
-					c.$setValidity('unique', true);
+					ctrl.$setValidity('unique', true);
 				}).error(function(data, status, headers, cfg) {
 					if (data.pattern) {
-						c.$setValidity('pattern', false);
+						ctrl.$setValidity('pattern', false);
 					} else if (data.taken) {
-						c.$setValidity('unique', false);
+						ctrl.$setValidity('unique', false);
 					}
 				});
 
@@ -145,4 +145,26 @@ site.directive('ngFocus', [function() {
 			});
 		}
 	}
+}]);
+
+site.directive('pwConfirm', [function () {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function (scope, elem , attrs, ctrl) {
+			var checker = function () {
+				// get the value of the first password
+				var password = scope.$eval(attrs.ngModel); 
+				// get the value of the other password  
+				var passwordConfirm = scope.$eval(attrs.pwConfirm);
+				return password == passwordConfirm;
+			};
+
+			scope.$watch(checker, function (confirm) {
+				// set the form control to valid if both 
+				// passwords are the same, else invalid
+				ctrl.$setValidity("confirm", confirm);
+			});
+		}
+	};
 }]);

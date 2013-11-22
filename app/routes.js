@@ -38,6 +38,7 @@ module.exports = function (app) {
 			res.render('register.ejs', { 
 				title: 'Register | Bitflop',
 				user: res.locals.user,
+				disabled: false,
 				errors: {}
 			});
 		}
@@ -141,7 +142,6 @@ module.exports = function (app) {
 								}
 							};
 
-							req.session.ip = req.ip;
 							res.redirect(req.session.refererURL || '/');	
 						} else {
 							res.render('login.ejs', { 
@@ -274,6 +274,9 @@ module.exports = function (app) {
 
 	app.post('/register', [middleware.getUserGames], function (req, res) {
 
+		// prevent automated registration
+		var disabled = true;
+
 		req.check('username', 'The username is required and cannot be more than 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
 		req.check('password', 'The password is required and must be at least 6 characters.').notEmpty().len(6,55);
 		req.check('passwordConfirm', 'You must confirm your password.').notEmpty().len(6,55).equals(req.param('password'));
@@ -300,6 +303,7 @@ module.exports = function (app) {
 					res.render('register.ejs', { 
 						title: 'Register | Bitflop',
 						user: res.locals.user,
+						disabled: disabled,
 						errors: {
 							'username': {
 								'param': 'username',
@@ -345,9 +349,7 @@ module.exports = function (app) {
 										
 									};
 
-									// This gets set in Varnish
-									req.session.ip = req.headers['X-Forwarded-For'] || req.connection.remoteAddress;
-									console.log(req.session.ip);
+									console.log(req.session)
 									res.redirect(req.session.refererURL || '/account');	
 								});	
 							});
@@ -362,6 +364,7 @@ module.exports = function (app) {
 			res.render('register.ejs', { 
 				title: 'Register | Bitflop',
 				user: res.locals.user,
+				disabled: disabled,
 				errors: errors
 			});
 		}
