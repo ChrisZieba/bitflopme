@@ -9,6 +9,34 @@ site.controller('RegisterCtrl', ['$scope', function($scope) {
 	$scope.token = null;
 }]);
 
+site.controller('NewGameCtrl', ['$scope', function($scope) {
+	$scope.submitted = false;
+	$scope.token = null;
+
+	$scope.setDefault = function () {
+		$scope.smallBlind = 5;
+		$scope.newgame.smallBlind.$pristine = false;
+		$scope.newgame.smallBlind.$dirty = true;
+		$scope.newgame.smallBlind.$setValidity("required", true);
+		$scope.newgame.smallBlind.$setValidity("pattern", true);
+		$scope.newgame.smallBlind.$setValidity("range", true);
+		$scope.newgame.smallBlind.$setValidity("compare", true);
+
+		$scope.bigBlind = 10;
+		$scope.newgame.bigBlind.$pristine = false;
+		$scope.newgame.bigBlind.$dirty = true;
+		$scope.newgame.bigBlind.$setValidity("required", true);
+		$scope.newgame.bigBlind.$setValidity("pattern", true);
+		$scope.newgame.bigBlind.$setValidity("range", true);
+		$scope.newgame.bigBlind.$setValidity("compare", true);
+
+		$scope.chipStack = 500;
+		$scope.newgame.chipStack.$pristine = false;
+		$scope.newgame.chipStack.$dirty = true;
+	};
+
+}]);
+
 site.directive('collapse', [function () {
 
 	return {
@@ -79,18 +107,6 @@ site.directive('dropdownToggle', ['$document', function ($document) {
 	};
 }]);
 
-site.factory('ajax', function($http) {
-   return {
-		getActiveGames: function (userID) {
-			 //return the promise directly.
-			 return $http.get('/games').then(function (result) {
-					//resolve the promise as the data
-				return result.data;
-			});
-		}
-   }
-});
-
 site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout) {
 	return {
 		require: 'ngModel',
@@ -126,19 +142,16 @@ site.directive('uniqueUsername', ['$http', '$timeout', function($http, $timeout)
 }]);
 
 site.directive('ngFocus', [function() {
-	var FOCUS_CLASS = "ng-focused";
 	return {
 		restrict: 'A',
 		require: 'ngModel',
 		link: function(scope, element, attrs, ctrl) {
 			ctrl.$focused = false;
 			element.bind('focus', function(evt) {
-				element.addClass(FOCUS_CLASS);
 				scope.$apply(function() {
 					ctrl.$focused = true;
 				});
 			}).bind('blur', function(evt) {
-				element.removeClass(FOCUS_CLASS);
 				scope.$apply(function() {
 					ctrl.$focused = false;
 				});
@@ -164,6 +177,60 @@ site.directive('pwConfirm', [function () {
 				// set the form control to valid if both 
 				// passwords are the same, else invalid
 				ctrl.$setValidity("confirm", confirm);
+			});
+		}
+	};
+}]);
+
+
+site.directive('smallBlind', [function () {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function (scope, elem , attrs, ctrl) {
+
+			scope.$watch(attrs.ngModel, function (smallBlind) {
+
+				smallBlind = parseInt(smallBlind,10);
+				
+				if (isNaN(smallBlind)) return;
+
+
+				ctrl.$setValidity("range", (smallBlind > 0 && smallBlind <= 1000));	
+				scope.bigBlind = smallBlind * 2;
+
+				return;
+			});
+		}
+	};
+}]);
+
+site.directive('chipStack', [function () {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function (scope, elem , attrs, ctrl) {
+
+			scope.$watch(attrs.ngModel, function (chipStack) {
+				chipStack = parseInt(chipStack,10);
+				var bigBlind = parseInt(scope.$eval(attrs.chipStack),10);
+				var nanCS = isNaN(chipStack);
+				var nanBB = isNaN(bigBlind);
+
+				// do nothing if its not an integer...the pattern will fail
+				if (nanCS || nanBB) {
+					ctrl.$setValidity("range", true);
+					return;
+				}
+
+				// if the range fails, return without setting the big blind
+				if (chipStack < 5 * bigBlind || chipStack > 100 * bigBlind) {
+					ctrl.$setValidity("range", false);
+				} else {
+					ctrl.$setValidity("range", true);
+				}
+
+				return;
 			});
 		}
 	};

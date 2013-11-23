@@ -20,10 +20,10 @@
 			<% } else { %>
 				<form role="form" name="register" method="post" action="/register" class="well" novalidate>
 
-					<input id="form-csrf" type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
+					<input type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
 					
 					<div class="form-group <% if (errors.username) { %>has-error<% } %>" ng-class="{ 'has-error': register.username.$dirty && register.username.$invalid, 'has-success': register.username.$dirty && register.username.$valid }">
-						<label>Choose a Username</label>
+						<label class="control-label">Choose a Username</label>
 						
 						<input type="text" name="username" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Username" maxlength="15" required ng-required="true" ng-maxlength="15" ng-pattern="/^[a-zA-Z0-9\_]+$/" unique-username ng-model="username" ng-focus />
 						
@@ -52,7 +52,7 @@
 					</div>
 					
 					<div class="form-group <% if (errors.password) { %>has-error<% } %>" ng-class="{ 'has-error': register.password.$dirty && register.password.$invalid, 'has-success': register.password.$dirty && register.password.$valid }">
-						<label>Choose a Password</label>
+						<label class="control-label">Choose a Password</label>
 						<input type="password" name="password" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Password" maxlength="55" required ng-required="true" ng-minlength="6" ng-maxlength="55" ng-model="password" ng-focus />
 
 						<% if (errors.password) { %>
@@ -76,7 +76,7 @@
 					</div>
 					
 					<div class="form-group <% if (errors.passwordConfirm) { %>has-error<% } %>" ng-class="{ 'has-error': register.passwordConfirm.$dirty && register.passwordConfirm.$invalid, 'has-success': register.passwordConfirm.$dirty && register.passwordConfirm.$valid }">
-						<label>Confirm Password</label>
+						<label class="control-label">Confirm Password</label>
 						<input type="password" name="passwordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm Password" maxlength="55" required ng-required="true" pw-confirm="password" ng-model="passwordConfirm" ng-focus />
 						
 						<% if (errors.passwordConfirm) { %>
@@ -96,7 +96,7 @@
 					</div>
 					
 					<div class="form-group <% if (errors.email) { %>has-error<% } %>" ng-class="{ 'has-error': register.email.$dirty && register.email.$invalid, 'has-success': register.email.$dirty && register.email.$valid }">
-						<label>Optional Email</label>
+						<label class="control-label">Optional Email</label>
 						<input type="email" name="email" class="form-control mg-top-bot-5" placeholder="Optional Email" ng-model="email" ng-focus>
 						<% if (errors.email) { %>
 							<div class="alert alert-danger" ng-cloack ng-show="register.email.$pristine">

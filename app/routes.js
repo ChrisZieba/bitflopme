@@ -275,7 +275,7 @@ module.exports = function (app) {
 	app.post('/register', [middleware.getUserGames], function (req, res) {
 
 		// prevent automated registration
-		var disabled = true;
+		var disabled = false;
 
 		req.check('username', 'The username is required and cannot be more than 15 alphanumeric characters.').is(/^[a-zA-Z0-9\_]+$/i).notEmpty().len(1,15);
 		req.check('password', 'The password is required and must be at least 6 characters.').notEmpty().len(6,55);

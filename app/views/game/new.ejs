@@ -11,63 +11,107 @@
 	
 
 	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
-			<form name="game" role="form" method="post" action="/game/new" class="well">
-				<input type="hidden" name="_csrf" value="<%= token %>"/>
-
-				<div class='form-group <% if (errors.smallBlind) { %>has-error<% } %>'>
-					
-					<label class="control-label">Small Blind</label> <span class="text-muted"><small>(Numbers Only - Max is 1000)</small></span>
-					<input class="form-control mg-top-bot-5" name="smallBlind" size="30" type="text" placeholder="Small Blind e.g. 15" required />
-					<% if (errors.smallBlind) { %>
-						<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
-					<% } %>
+		<div ng-controller="NewGameCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+			
+			<div class="row">
+				<div class="col-md-12">
+					 <p><button type="button" class="btn btn-link" ng-click="setDefault();"><span class="glyphicon glyphicon-thumbs-up"></span> Set Default Values</button></p>
 				</div>
 
-				<div class='form-group <% if (errors.bigBlind) { %>has-error<% } %>'>
-					<label class="control-label">Big Blind</label> <span class="text-muted"><small>(Must be twice the BB)</small></span>
-					<input class="form-control mg-top-bot-5" name="bigBlind" size="30" type="text" placeholder="Big Blind e.g. 30" required />
-					<% if (errors.bigBlind) { %>
-						<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
-					<% } %>
+			</div>
+
+			<form name="newgame" role="form" method="post" action="/game/new" class="well" novalidate>
+				<input type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
+				<div class="row">
+					<div class="form-group col-md-6 <% if (errors.smallBlind) { %>has-error<% } %>">
+						
+						<label class="control-label">Small Blind</label> <span class="text-muted"><small>Big Blind </small></span>
+						<input class="form-control mg-top-bot-5" name="smallBlind" type="text" placeholder="e.g. 5" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="smallBlind" small-blind ng-focus />
+						
+						<% if (errors.smallBlind) { %>
+							<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
+						<% } %>
+
+
+						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.required">
+							<span>The small blind is required!</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.pattern">
+							<span>Illegal Value! Only numbers are allowed.</span>
+						</div>
+
+						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.range && !newgame.smallBlind.$error.required">
+							<span>The small blind must be between 1 and 1000.</span>
+						</div>
+
+					</div>
+
+					<div class="form-group col-md-6 <% if (errors.bigBlind) { %>has-error<% } %>">
+						
+						<label class="control-label">Big Blind</label> <span class="text-muted"><small>Big Blind </small></span>
+						<input class="form-control mg-top-bot-5" name="bigBlind" type="text" placeholder="e.g. 5" readonly="readonly" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="bigBlind"  />
+						
+						<% if (errors.bigBlind) { %>
+							<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
+						<% } %>
+
+					</div>
 				</div>
+
 
 				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>'>
-					<label class="control-label">Starting Chips</label> <span class="text-muted"><small>(At most 100 BB's)</small></span>
-					<input class="form-control mg-top-bot-5" name="chipStack" size="30" type="text" placeholder="Chip Stack e.g. 1000" required/>
+					<label class="control-label">Starting Chips</label>
+					<input class="form-control mg-top-bot-5" name="chipStack" type="text" placeholder="e.g. 500"  maxlength="7" required ng-required="true" ng-maxlength="7" ng-pattern="/^[0-9]+$/" ng-model="chipStack" chip-stack="bigBlind" ng-focus />
+					
 					<% if (errors.chipStack) { %>
 						<div class="alert alert-danger"><p><%= errors.chipStack.msg %></p></div>
 					<% } %>
-				</div>
 
-				<div class='form-group <% if (errors.blindLevel) { %>has-error<% } %>'>
-					
-					<label class="control-label">Blind Level</label> <span class="text-muted"><small>(Coming Soon)</small></span>
+					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.required">
+						<span>The chip amount is required.</span>
+					</div>
 
-					<select class="form-control mg-top-bot-5" name="blindLevel">
-						<option value="0">None</option>
-					</select>
+					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.pattern">
+						<span>The chip amount must be a whole number!</span>
+					</div>
 
-					<% if (errors.blindLevel) { %>
-						<div class="alert alert-danger"><p><%= errors.blindLevel.msg %></p></div>
-					<% } %>
-
-				</div>
-
-				<div class='form-group <% if (errors.tableTimer) { %>has-error<% } %>'>
-					
-					<label class="control-label">Timer</label> <span class="text-muted"><small>(Coming Soon)</small></span>
-
-					<select class="form-control mg-top-bot-5" name="tableTimer">
-						<option value="0">None</option>
-					</select>
-
-					<% if (errors.tableTimer) { %>
-						<div class="alert alert-danger"><p><%= errors.tableTimer.msg %></p></div>
-					<% } %>
+					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.range">
+						<span>The chip amount must be between {{ 5 * bigBlind }} (5 BB's) and {{ 100 * bigBlind }} (100 BB's).</span>
+					</div>
 
 				</div>
 
+				<div class="row">
+					<div class='form-group col-md-6 <% if (errors.blindLevel) { %>has-error<% } %>'>
+						
+						<label class="control-label">Blind Level</label> <span class="text-muted"><small>(Coming Soon)</small></span>
+
+						<select class="form-control mg-top-bot-5" name="blindLevel">
+							<option value="0">None</option>
+						</select>
+
+						<% if (errors.blindLevel) { %>
+							<div class="alert alert-danger"><p><%= errors.blindLevel.msg %></p></div>
+						<% } %>
+
+
+					</div>
+
+					<div class='form-group col-md-6 <% if (errors.tableTimer) { %>has-error<% } %>'>
+						
+						<label class="control-label">Timer</label> <span class="text-muted"><small>(Coming Soon)</small></span>
+
+						<select class="form-control mg-top-bot-5" name="tableTimer">
+							<option value="0">None</option>
+						</select>
+
+						<% if (errors.tableTimer) { %>
+							<div class="alert alert-danger"><p><%= errors.tableTimer.msg %></p></div>
+						<% } %>
+
+					</div>
+				</div>
 
 				<div class="form-group">
 
