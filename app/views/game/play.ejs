@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html>
 	<head>
 		<title><%= title %></title>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -22,7 +22,7 @@
 		<% if (settings.env === 'development') { %>
 			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
 			<link href="/css/game.css" rel="stylesheet" media="screen" />
-			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
+			<link href="/css/vendor/angular-slider.css" rel="stylesheet" media="screen" />
 
 			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
 			<script src="/js/vendor/angular.js"></script>
@@ -33,25 +33,25 @@
 			
 
 		<% } else { %>
-			<link href="/css/vendor/bootstrap.css" rel="stylesheet" media="screen" />
-			<link href="/css/game.css" rel="stylesheet" media="screen" />
-			<link href="/css//vendor/angular-slider.css" rel="stylesheet" media="screen" />
+			<link href="/css/vendor/bootstrap.min.css" rel="stylesheet" media="screen" />
+			<link href="/css/game.min.css" rel="stylesheet" media="screen" />
+			<link href="/css/vendor/angular-slider.min.css" rel="stylesheet" media="screen" />
 
 			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
 
-			<script src="/js/vendor/angular.js"></script>
-			<script src="/js/vendor/adapter.js"></script>
-			<script src="/js/vendor/angular-slider.js"></script>
+			<script src="/js/vendor/angular.min.js"></script>
+			<script src="/js/vendor/adapter.min.js"></script>
+			<script src="/js/vendor/angular-slider.min.js"></script>
 			<script src="/socket.io/socket.io.js"></script>
-			<script src="/js/app.js"></script>
+			<script src="/js/app.min.js"></script>
 			
 		<% } %>
 	</head>
 
 
-	<body ng-controller="GameCtrl">
+	<body ng-app="app">
 
-		<div id="wrapper">
+		<div ng-controller="GameCtrl" id="wrapper">
 
 		  <!-- Sidebar -->
 		  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -237,15 +237,15 @@
 						-->
 							<div class="row">
 
-								<div ng-switch="game.opponent.name" class="col-md-12 opp-player-co">
-									<div ng-switch-when="null">
+								<div ng-switch="game.opponent.name" class="col-md-12">
+									<div ng-switch-when="null" style="position:relative; width:100%;">
 										<!--<span class="player-name">Waiting for opponent ...</span>-->
 										<span>&nbsp;</span> 
 									</div>
 
-									<div ng-switch-default>
+									<div ng-switch-default style="position:relative; width:100%;">
 										<% if (!join) { %>
-											<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls></video>
+											<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls preload="none"></video>
 											<div class="opp-player-name">
 												<span class="player-name">{{ game.opponent.name }}</span>
 												<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.opponent.id">D</span>
@@ -277,10 +277,10 @@
 
 						<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 player">
 							<div class="row" ng-cloak ng-show="game.player.name != null">
-								<div class="col-md-12">
+								<div class="col-md-12" >
 
 									<% if (!join) { %>
-										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video autoplay poster="/img/webcam.png" controls></video>
+										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video autoplay poster="/img/webcam.png" controls preload="none"></video>
 										<div class="opp-player-name">
 											<span class="player-name">{{ game.player.name }}</span>
 											<span class="dealer-button" ng-cloak ng-show="game.action.dealer == game.player.id">D</span>

@@ -114,16 +114,19 @@ app.directive('localVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 
+			scope.peer.local.element = element;
+
 			if (getUserMedia !== null) {
 				var localVideo = element[0];
 
 				// check if the video is visible
 				// the video becomes available when a player sits
 				if (localVideo) {
+					// weitd bug in firefox sets the height of the video container UNLESS it has controls on page load
+					element.removeAttr('controls');
 
 					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
-						scope.peer.local.element = element;
 						scope.peer.connection.addStream(stream);
 
 						localVideo.src = URL.createObjectURL(stream);
@@ -144,11 +147,11 @@ app.directive('localVideo', ['socket', function (socket) {
 						alert('There was an error connecting your webcam. Make sure it is not being used by any other applications.');
 						return;
 					});
+
+
 				}
 			}
 
-			// weitd bug in firefox sets the height of the video container UNLESS it has controls on page load
-			element.removeAttr('controls');
 		}
 	};
 }]);
@@ -158,11 +161,19 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		priority: 1,
 		restrict: 'A',
 		link: function (scope, element, attrs) {
-			if (getUserMedia !== null) {
-				scope.peer.remote.element = element;
-			}
 
-			element.removeAttr('controls');
+			scope.peer.remote.element = element;
+
+			if (getUserMedia !== null) {
+				var remoteVideo = element[0];
+
+				// check if the video is visible
+				// the video becomes available when a player sits
+				if (remoteVideo) {
+
+					element.removeAttr('controls');
+				}
+			}
 
 		}
 	};
@@ -375,6 +386,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.room.observers = data.room.observers;
 
 		if (data.player.id !== null) {
+
 			$scope.game.ready = data.start;
 
 			if ($scope.game.player.id === -1) {
