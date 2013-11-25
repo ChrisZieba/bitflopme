@@ -221,8 +221,7 @@ exports.listen = function (server, sessionStore, app) {
 					// check to make sure the game has started (PLAYING)
 					// check that a player actually left the table
 
-					console.log('RRRRDDDDDYY' + ready);
-					console.log(io.sockets.manager.rooms);
+
 					if (!ready && game.state === 'PLAYING' && player.id !== null) {
 						for (var i = 0; i < Games[room].game.players.length; i++) {
 
@@ -442,7 +441,7 @@ exports.listen = function (server, sessionStore, app) {
 
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
-		socket.on('peer:ready', function (data, callback) {console.log('\n\n\n\n\n----------PEER:INIT\n\n\n\n\n\n\n')
+		socket.on('peer:ready', function (data, callback) {
 			//	Get the game data from the database
 			models.Games.findOne({ id: data.room}, function (err, game) {
 				if (err) throw new Error(501, err);
@@ -469,7 +468,7 @@ exports.listen = function (server, sessionStore, app) {
 					});
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
-					console.log('\n\n\n\n\n\n\n\n\n\n\n 557 peers' +JSON.stringify(Games[data.room].room.peers,null,4))
+
 					if (ready) {
 						socket.broadcast.to(data.room).emit('peer:init', { 
 							uuid: Date.now()
@@ -566,7 +565,7 @@ exports.listen = function (server, sessionStore, app) {
 						// This will either update to the next betting round, finish the redline round (player folds) 
 						// Only call progress if the round is NOT just starting (ie. After a new round)
 						if (!isRoundStarting && !isGameOver) {
-							console.log('567');
+
 							Games[data.room].game.Progress();
 
 							isRoundOver = Games[data.room].game.checkForEndOfRound();
@@ -574,7 +573,6 @@ exports.listen = function (server, sessionStore, app) {
 							isShowdown = Games[data.room].game.checkForShowdown();
 						}
 
-						console.log('569');
 						var rounds = game.rounds;
 						//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
 						var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
@@ -603,15 +601,15 @@ exports.listen = function (server, sessionStore, app) {
 							} else if (isRoundOver) {
 
 								if (gameState === 'SHOWDOWN') {
-									console.log('1\n\n');
+
 									Games[data.room].game.NewRound();
 									setTimeout(function () {Action();}, 5000);
 								} else if (gameState === 'RIVER') {
-									console.log('2\n\n');
+
 									setTimeout(function () {Action();}, 5000);
 
 								} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
-									console.log('3\n\n');
+
 									setTimeout(function () { Action(); }, 1000);
 								}
 							} else if (isGameOver) {
@@ -635,7 +633,6 @@ exports.listen = function (server, sessionStore, app) {
 
 		// you can't send any data back with the disconnect
 		socket.on('disconnect', function (data, callback) {
-	console.log('\n\n\n\n\n\n\n\n\n\n\n 550' +JSON.stringify(data,null,4))
 			socket.get('scope', function(err, scope) {
 				if (err) throw err;
 				if (!scope) return;

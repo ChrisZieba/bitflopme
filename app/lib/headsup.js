@@ -220,7 +220,7 @@ Game.prototype.NewRound = function() {
 		}
 
 
-Log('before we adjust the blinds', this);
+//Log('before we adjust the blinds', this);
 		// force small blind
 		// check if the small blind is forced allin
 		this.players[smallBlind].blind = 'small';
@@ -280,7 +280,7 @@ Log('before we adjust the blinds', this);
 			this.players[bigBlind].bets = this.bigBlind;
 			this.AddEvent(this.players[bigBlind].name, this.players[bigBlind].name + ' posts big blind of ' + this.bigBlind);
 		}
-	Log('after we adjust the blinds', this);	
+	//Log('after we adjust the blinds', this);	
 
 	} else {
 
@@ -318,14 +318,12 @@ Game.prototype.getRoundData = function () {
 Game.prototype.Progress = function () {
 //Log('Beginning of progress',this);
 
-	console.log('667');
 	var numberOfPlayersInRoundFolded = getNumberOfPlayersInRoundFolded(this);
 	var numberOfPlayersInRoundActed = getNumberOfPlayersInRoundActed(this);
 	var numberOfPlayersInRoundAllIn = getNumberOfPlayersInRoundAllIn(this);
 	var isRoundOver = checkForEndOfBettingRound(this);
 	
 	if (isRoundOver) {
-		console.log('ggh');
 		moveBetsToPot(this);
 
 		// if theres only person left with cards the chips are given to the player who is still in the hand
@@ -341,17 +339,15 @@ Game.prototype.Progress = function () {
 		// player decides to fold a small blind in heads up, or if they decide to fold under the gun
 		//
 		if (numberOfPlayersInRoundFolded === 1) {
-			console.log('ppo');
 			moveBetsToPot(this);
 			finishRedlineRound(this);
 		} else {
-			console.log('jhy');
 			// it is the next players turn to act so update accordingly
 			updateTurn(this);
 		}
 	}
 
-Log('End of progress',this);
+//Log('End of progress',this);
 
 };
 
@@ -536,7 +532,7 @@ Player.prototype.Options = function (roundOver) {
 			// a player must raise at least twice the size of the current bet plus the amount to call, 
 			// or all thier chips if they cant cover that
 			var raiseAmount = Math.min(callAmount*2, this.chips);
-Log('canraise',this.game);
+//Log('canraise',this.game);
 
 
 			options['RAISE'] = {
@@ -688,7 +684,7 @@ Game.prototype.adjustBet = function (id, diff) {
 
 
 Player.prototype.Raise = function (bet) {
-Log('raise', this.game);
+//Log('raise', this.game);
 	// check to see if the raise is all the players chips
 	if (this.chips === bet) {
 		this.bets += this.chips;
@@ -711,7 +707,7 @@ Log('raise', this.game);
 
 Player.prototype.Call = function() {
 	var maxBet = getMaxBet(this.game.players);
-Log('call', this.game);
+//Log('call', this.game);
 
 	// move the bets the player has already put put back into their stack
 	if (this.bets >= 0) {
@@ -736,7 +732,7 @@ Log('call', this.game);
 	}
 	this.action = 'call';
 	this.acted = true;
-Log('call', this.game);
+//Log('call', this.game);
 	this.game.AddEvent(this.name, this.name + ' calls');
 
 
@@ -786,7 +782,7 @@ function getPlayerCount (game) {
 // dealer is the player index who currently has the button
 function updateTurn (game, dealer) {
 
-	console.log('\n\n\n--UPDATETURN--\n\n\n')
+	//console.log('\n\n\n--UPDATETURN--\n\n\n')
 	var playerCount = getPlayerCount(game);
 
 	// if the round is over, no player has a turn left
@@ -814,7 +810,7 @@ function updateTurn (game, dealer) {
 // then player 2 calls, a flop comes down, and player 1 bets and player 2 folds, that is a round
 function initRound (game) {
 
-	console.log('init nrw round------');
+	//console.log('init nrw round------');
 		game.state = 'DEAL';
 		game.pot = 0;
 		game.deck.splice(0, game.deck.length);
@@ -843,7 +839,6 @@ function initRound (game) {
 
 // A redline round is one that ends without a showdown
 function finishRedlineRound (game) {
-console.log('finsih redline round')
 	// Give the remaining player the chips in the pot
 	for (var i = 0; i < game.players.length; i += 1) {
 		if (game.players[i].out === false) {
@@ -859,7 +854,6 @@ console.log('finsih redline round')
 }
 
 function initBettingRound (game) {
-	console.log('init betting round')
 	for (var i = 0; i < game.players.length; i += 1) {
 		if (game.players[i].out === false) {
 			game.players[i].bets = 0;
@@ -2578,14 +2572,9 @@ function rankKickers (ranks, noOfCards) {
 	var card = '';
 
 
-console.log(ranks);
-console.log(noOfCards);
-
 	// this ranks all the cards given
 	for (var i = 0; i < ranks.length; i += 1) {
 		rank = ranks.substr(i, 1);
-		console.log('rank:' + rank);
-		console.log('ranks:' + ranks);
 
 		if (rank === 'A') {
 			value = 0.2048;
@@ -2648,8 +2637,6 @@ console.log(noOfCards);
 
 	}
 
-	console.log(JSON.stringify(myRanks,null,4));
-
 	myRanks.sort(function (a, b) {
 		return b.value - a.value;
 	});
@@ -2688,7 +2675,6 @@ function checkForWinner (game) {
 	var part = 0;
 	var prize = 0;
 	var roundEnd = true;
-Log('checkforwinnter-before', game);
 
 	for (var i = 0; i < game.players.length; i += 1) {
 
@@ -2741,13 +2727,13 @@ Log('checkforwinnter-before', game);
 
 	for (var i = 0; i < winners.length; i += 1) {
 		// split the pot if necessary
-		console.log(((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
-		console.log('--------WHAT THE FUCK----------');
+		//console.log(((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
+		//console.log('--------WHAT THE FUCK----------');
 		game.players[winners[i]].chips += ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length));
 		game.AddEvent('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
-		console.log('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
+		//console.log('Dealer', game.players[winners[i]].name + ' wins ' + ((i === 0) ? Math.round(prize / winners.length) : Math.floor(prize / winners.length)));
 	}
-Log('checkforwinnter-after', game);
+
 
 }
 
@@ -2783,7 +2769,6 @@ function getOtherPlayerID (game, current) {
 		// if the id given is 0, return 1. If the id given is 1 return 0.
 		id = (current === 0) ? 1 : 0;
 	}
-console.log(id);
 	return id;
 }
 
