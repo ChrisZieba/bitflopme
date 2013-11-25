@@ -1,7 +1,30 @@
+html {
+	min-width: 435px;
+}
+
 body {
   margin-top: 50px;
   background-color: #181818;
   color: #999;
+}
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }
 
 #wrapper {
@@ -20,6 +43,14 @@ body {
 .navbar-inverse {
 	border-width: 0;
 }
+
+.navbar-header {
+	min-height: 50px;
+}
+
+	.dropdown-menu .divider {
+		background-color: #333333;
+	}
 
 /* Edit Below to Customize Widths > 768px */
 @media (min-width:768px) {
@@ -42,10 +73,11 @@ body {
 	width: 225px;
 	position: fixed;
 	top: 50px;
+	bottom:0;
 	height: 100%;
 	border-radius: 0;
 	border: none;
-	background-color: #222222;
+	background-color: #1e1e1e;
 	overflow-y: auto;
   }
 
@@ -75,11 +107,27 @@ body {
 	background-color: #080808;
   }
 
+	.side-nav .events {
+		padding:10px 0 0 0;
+		margin:0;
+		list-style: none;
 
-	.side-nav>li {
-		padding:5px 15px;
+		overflow-x:hidden;
+		overflow-y: scroll;
 		width:225px;
-		font-size: 13px;
+		position:absolute;
+		top:1px;
+		bottom:52px;
+	}
+
+	.side-nav>.events>li {
+		padding:7px 15px;
+		width:225px;
+		font-size: 14px;
+	}
+
+	.side-nav>.events>li.game-settings {
+		padding: 15px 15px 8px 15px;
 	}
 
   .messages-dropdown .dropdown-menu {
@@ -106,23 +154,6 @@ body {
 
 
 
-::-webkit-scrollbar {
-    width: 12px;
-}
- 
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    border-radius: 10px;
-}
- 
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-}
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
-}
 
 
 .notify-player {

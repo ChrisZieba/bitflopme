@@ -185,6 +185,103 @@ exports.listen = function (server, sessionStore, app) {
 
 		};
 
+		// Games is available to this function
+		var disconnect = function (room, user, player) {
+			models.Games.findOne({ id: room }, function (err, game) {
+				if (err) throw new Error(501, err);
+				if (!game) throw new Error(505, 'Game could not be found');
+
+				if (!Games.hasOwnProperty(room)) {
+					Games[room] = {};
+					Games[room].room = {
+						id: room,
+						players: [],
+						observers: []
+					};
+					Games[room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+				};
+
+				Games[room].game.AddEvent('Dealer', user.name + ' has left the table');
+
+				// remove the user from the room
+				if (player.id !== null) {
+					Games[room].room.players = helpers.removeUserFromRoom(user.id, Games[room].room.players);
+					Games[room].room.peers = helpers.removeUserFromRoom(user.id, Games[room].room.peers);
+				} else {
+					Games[room].room.observers = helpers.removeUserFromRoom(user.id, Games[room].room.observers);
+				}
+
+				var ready = helpers.isGameReady(room, io.sockets.manager.rooms, game.players);
+
+				game.events = Games[room].game.events;
+				game.save(function (err) {
+
+					if (err) throw err;
+					// if a player left then the table the game cannot continue
+					// check to make sure the game has started (PLAYING)
+					// check that a player actually left the table
+
+					console.log('RRRRDDDDDYY' + ready);
+					console.log(io.sockets.manager.rooms);
+					if (!ready && game.state === 'PLAYING' && player.id !== null) {
+						for (var i = 0; i < Games[room].game.players.length; i++) {
+
+							io.sockets.in(room + ':' + Games[room].game.players[i].id).emit('game:leave', { 
+								uuid: Date.now(), 
+								room: {
+									id: room,
+									players: Games[room].room.players,
+									observers: Games[room].room.observers
+								},
+								events: Games[room].game.events,
+								action: {
+									dealer: null,
+									turn: null,
+									smallBlind: null,
+									bigBlind: null,
+									pot: 0,
+									state: null,
+									board: [],
+									winner: Games[room].game.getWinner()
+								},
+								player: {
+									id: Games[room].game.players[(player.id === 0) ? 1 : 0].id,
+									name:Games[room].game.players[(player.id === 0) ? 1 : 0].name,
+									cards: [],
+									chips: 0,
+									options: Games[room].game.players[(player.id === 0) ? 1 : 0].Options(true)
+								},
+								opponent: {
+									id: null,
+									name: null,
+									cards: [],
+									chips: 0,
+									options: null
+								}
+							});
+						}
+
+
+					} else {
+						io.sockets.in(room).emit('game:leave', { 
+							uuid: Date.now(), 
+							user: {
+								name: user.name
+							},
+							events: Games[room].game.events,
+							room: {
+								id: room,
+								players: Games[room].room.players,
+								observers: Games[room].room.observers
+							}
+						});
+					}
+
+
+				});
+			});
+		};
+
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
 		socket.on('join', function(data, callback) {
@@ -197,6 +294,13 @@ exports.listen = function (server, sessionStore, app) {
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
+
+					// a user must be logged in to play so check if they are authenticated
+					if (!session.user.authenticated) {
+						// disconnect the player from the table
+
+						return;
+					}
 
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
 
@@ -224,6 +328,7 @@ exports.listen = function (server, sessionStore, app) {
 					// Every connected client gets access to the mainroom
 					socket.join(data.room); 
 
+
 					//	A player joins a special room just for that player	
 					if (playerID !== null) {
 						socket.join(data.room + ':' + playerID);
@@ -233,8 +338,6 @@ exports.listen = function (server, sessionStore, app) {
 							id: session.user.id,
 							name:session.user.name
 						});
-
-						Games[data.room].game.AddEvent('Dealer', session.user.name + ' is ready to play');
 					} else {
 						// this room is for non-players only
 						socket.join(data.room + '::');
@@ -244,8 +347,9 @@ exports.listen = function (server, sessionStore, app) {
 							id: session.user.id,
 							name:session.user.name
 						});
-						Games[data.room].game.AddEvent('Dealer', '<strong>' + session.user.name + '</strong> has joined the table');
 					}
+
+					Games[data.room].game.AddEvent('Dealer', session.user.name + ' has joined the table');
 
 					// Are both players at the table and ready to play?
 					// wait until the socket connection is added to its room to check
@@ -284,7 +388,7 @@ exports.listen = function (server, sessionStore, app) {
 					});
 
 
-					//	Are both players sitting at the table?
+					//	Are both players sitting at the table, and signed in?
 					if (start) {
 
 						var rounds = game.rounds;
@@ -389,11 +493,36 @@ exports.listen = function (server, sessionStore, app) {
 				//	then join the main room and room.player2 	
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
+
 					if (!session) throw new Error(504, 'Could not make connection to session');
+
+					// a user must be logged in to play so check if they are authenticated
+					if (!session.user.authenticated) {
+						socket.get('scope', function(err, scope) {
+							if (err) throw err;
+							if (!scope) return;
+
+							io.sockets.in(data.room + ':' + scope.player.id).emit('game:disconnect', { 
+								uuid: Date.now()
+							});
+
+							//socket.leave(data.room);
+							//socket.leave(data.room + ':' + scope.player.id);
+							//disconnect(scope.room, scope.user, scope.player);
+							return;
+						});
+
+						return;
+					}
 
 					//	This is null if the socket is not a player
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
 					var ready = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
+
+
+
+					//	Are both players sitting at the table?
+					if (!ready) return;
 
 					// Check if the game object is in memory
 					if (!Games.hasOwnProperty(data.room)) {
@@ -406,99 +535,96 @@ exports.listen = function (server, sessionStore, app) {
 						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
 					}
 
-					//	Are both players sitting at the table?
-					if (ready) {
-						switch (data.action.name) {
-							case 'BET':
-								Games[data.room].game.players[playerID].Bet(parseInt(data.action.amount,10));
-								break;
-							case 'CALL':
-								Games[data.room].game.players[playerID].Call();
-								break;
-							case 'CHECK':
-								Games[data.room].game.players[playerID].Check();
-								break;
-							case 'RAISE':
-								Games[data.room].game.players[playerID].Raise(parseInt(data.action.amount));
-								break;
-							case 'FOLD':
-								Games[data.room].game.players[playerID].Fold();
-								break;
-							default:
-								break;
+					switch (data.action.name) {
+						case 'BET':
+							Games[data.room].game.players[playerID].Bet(parseInt(data.action.amount,10));
+							break;
+						case 'CALL':
+							Games[data.room].game.players[playerID].Call();
+							break;
+						case 'CHECK':
+							Games[data.room].game.players[playerID].Check();
+							break;
+						case 'RAISE':
+							Games[data.room].game.players[playerID].Raise(parseInt(data.action.amount));
+							break;
+						case 'FOLD':
+							Games[data.room].game.players[playerID].Fold();
+							break;
+						default:
+							break;
+					}
+
+					var Action = function () {
+						// this gets called once before we progress the game, and gain after
+						var isRoundOver = Games[data.room].game.checkForEndOfRound();
+						var isRedlineRound = Games[data.room].game.checkForRedlineRound();
+						var isGameOver = Games[data.room].game.checkForEndOfGame();
+						var isRoundStarting =  Games[data.room].game.checkForStartOfRound();
+						var isShowdown = Games[data.room].game.checkForShowdown();
+
+						// This will either update to the next betting round, finish the redline round (player folds) 
+						// Only call progress if the round is NOT just starting (ie. After a new round)
+						if (!isRoundStarting && !isGameOver) {
+							console.log('567');
+							Games[data.room].game.Progress();
+
+							isRoundOver = Games[data.room].game.checkForEndOfRound();
+							isGameOver = Games[data.room].game.checkForEndOfGame();
+							isShowdown = Games[data.room].game.checkForShowdown();
 						}
 
+						console.log('569');
+						var rounds = game.rounds;
+						//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
+						var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
 
-						var Action = function () {
+						// Add a new round to the history 
+						rounds.push(round);
 
-							// this gets called once before we progress the game, and gain after
-							var isRoundOver = Games[data.room].game.checkForEndOfRound();
-							var isRedlineRound = Games[data.room].game.checkForRedlineRound();
-							var isGameOver = Games[data.room].game.checkForEndOfGame();
-							var isRoundStarting =  Games[data.room].game.checkForStartOfRound();
-							var isShowdown = Games[data.room].game.checkForShowdown();
+						// 	Update the database
+						game.events = Games[data.room].game.events;
+						game.rounds = rounds;
+						game.state = (isGameOver) ? 'END' : 'PLAYING'; 
+						game.save(function (err) {
+							if (err) throw err;
 
-							// This will either update to the next betting round, finish the redline round (player folds) 
-							// Only call progress if the round is NOT just starting (ie. After a new round)
-							if (!isRoundStarting && !isGameOver) {
-								console.log('567');
-								Games[data.room].game.Progress();
-
-								isRoundOver = Games[data.room].game.checkForEndOfRound();
-								isGameOver = Games[data.room].game.checkForEndOfGame();
-								isShowdown = Games[data.room].game.checkForShowdown();
-							}
-
-							console.log('569');
-							var rounds = game.rounds;
-							//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
-							var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
-
-							// Add a new round to the history 
-							rounds.push(round);
-
-							// 	Update the database
-							game.events = Games[data.room].game.events;
-							game.rounds = rounds;
-							game.state = (isGameOver) ? 'END' : 'PLAYING'; 
-							game.save(function (err) {
-								if (err) throw err;
-
-								var gameState = Games[data.room].game.getState();
-								var roundData = Games[data.room].game.getRoundData();
+							var gameState = Games[data.room].game.getState();
+							var roundData = Games[data.room].game.getRoundData();
 
 
-								// send out the data to the player
-								sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
+							// send out the data to the player
+							sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
 
-								// If a player folded we need to start a new round and send the new cards with Action()
-								if (isRedlineRound) {
+							// If a player folded we need to start a new round and send the new cards with Action()
+							if (isRedlineRound) {
+								Games[data.room].game.NewRound();
+								setTimeout(function () {Action();}, 2000);
+							} else if (isRoundOver) {
+
+								if (gameState === 'SHOWDOWN') {
+									console.log('1\n\n');
 									Games[data.room].game.NewRound();
-									setTimeout(function () {Action();}, 2000);
-								} else if (isRoundOver) {
+									setTimeout(function () {Action();}, 5000);
+								} else if (gameState === 'RIVER') {
+									console.log('2\n\n');
+									setTimeout(function () {Action();}, 5000);
 
-									if (gameState === 'SHOWDOWN') {
-										console.log('1\n\n');
-										Games[data.room].game.NewRound();
-										setTimeout(function () {Action();}, 5000);
-									} else if (gameState === 'RIVER') {
-										console.log('2\n\n');
-										setTimeout(function () {Action();}, 5000);
-
-									} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
-										console.log('3\n\n');
-										setTimeout(function () { Action(); }, 1000);
-									}
-								} else if (isGameOver) {
-									setTimeout(function () {
-										// once the table ends you cannot go back to it
-										endGame(Games[data.room], data.room);
-									}, 15000);
+								} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
+									console.log('3\n\n');
+									setTimeout(function () { Action(); }, 1000);
 								}
-							});
-						};
-						setTimeout(function () {Action();}, 1000);
-					}
+							} else if (isGameOver) {
+								setTimeout(function () {
+									// once the table ends you cannot go back to it
+									endGame(Games[data.room], data.room);
+								}, 15000);
+							}
+						});
+					};
+
+					setTimeout(function () {Action();}, 1000);
+
 				});
 
 
@@ -506,110 +632,112 @@ exports.listen = function (server, sessionStore, app) {
 			});
 		});
 
+
 		// you can't send any data back with the disconnect
 		socket.on('disconnect', function (data, callback) {
 	console.log('\n\n\n\n\n\n\n\n\n\n\n 550' +JSON.stringify(data,null,4))
 			socket.get('scope', function(err, scope) {
 				if (err) throw err;
+				if (!scope) return;
 
-				if (scope) {
-					models.Games.findOne({ id: scope.room }, function (err, game) {
-						if (err) throw new Error(501, err);
-						
-						if (game) {
+				disconnect(scope.room, scope.user, scope.player);
 
-							if (!Games.hasOwnProperty(scope.room)) {
-								Games[scope.room] = {};
-								Games[scope.room].room = {
-									id: scope.room,
-									players: [],
-									observers: []
-								};
-								Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
-							};
-
-							Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
-
-							// remove the user from the room
-							if (scope.player.id !== null) {
-								Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
-								Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.peers);
-							} else {
-								Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
-							}
-
-	//console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
-							var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
-
-							game.events = Games[scope.room].game.events;
-							game.save(function (err) {
-
-								if (err) throw err;
-
-								// if a player left then the table the game cannot continue
-								// check to make sure the game has started (PLAYING)
-								// check that a player actually left the table
-								if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
-	console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4));
-
-									for (var i = 0; i < Games[scope.room].game.players.length; i++) {
-										console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
-										io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
-											uuid: Date.now(), 
-											room: {
-												id: scope.room,
-												players: Games[scope.room].room.players,
-												observers: Games[scope.room].room.observers
-											},
-											events: Games[scope.room].game.events,
-											action: {
-												dealer: null,
-												turn: null,
-												smallBlind: null,
-												bigBlind: null,
-												pot: 0,
-												state: null,
-												board: [],
-												winner: Games[scope.room].game.getWinner()
-											},
-											player: {
-												id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
-												name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
-												cards: [],
-												chips: 0,
-												options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
-											},
-											opponent: {
-												id: null,
-												name: null,
-												cards: [],
-												chips: 0,
-												options: null
-											}
-										});
-									}
+// 				models.Games.findOne({ id: scope.room }, function (err, game) {
+// 					if (err) throw new Error(501, err);
+// 					if (!game) throw new Error(505, 'Game could not be found');
 
 
-								} else {
-									io.sockets.in(scope.room).emit('game:leave', { 
-										uuid: Date.now(), 
-										user: {
-											name: scope.user.name
-										},
-										events: Games[scope.room].game.events,
-										room: {
-											id: scope.room,
-											players: Games[scope.room].room.players,
-											observers: Games[scope.room].room.observers
-										}
-									});
-								}
+
+// 					if (!Games.hasOwnProperty(scope.room)) {
+// 						Games[scope.room] = {};
+// 						Games[scope.room].room = {
+// 							id: scope.room,
+// 							players: [],
+// 							observers: []
+// 						};
+// 						Games[scope.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+// 					};
+
+// 					Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
+
+// 					// remove the user from the room
+// 					if (scope.player.id !== null) {
+// 						Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
+// 						Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.peers);
+// 					} else {
+// 						Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
+// 					}
+
+// //console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
+// 					var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
+
+// 					game.events = Games[scope.room].game.events;
+// 					game.save(function (err) {
+
+// 						if (err) throw err;
+
+// 						// if a player left then the table the game cannot continue
+// 						// check to make sure the game has started (PLAYING)
+// 						// check that a player actually left the table
+// 						if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
+// console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4));
+
+// 							for (var i = 0; i < Games[scope.room].game.players.length; i++) {
+// 								console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
+// 								io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
+// 									uuid: Date.now(), 
+// 									room: {
+// 										id: scope.room,
+// 										players: Games[scope.room].room.players,
+// 										observers: Games[scope.room].room.observers
+// 									},
+// 									events: Games[scope.room].game.events,
+// 									action: {
+// 										dealer: null,
+// 										turn: null,
+// 										smallBlind: null,
+// 										bigBlind: null,
+// 										pot: 0,
+// 										state: null,
+// 										board: [],
+// 										winner: Games[scope.room].game.getWinner()
+// 									},
+// 									player: {
+// 										id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
+// 										name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
+// 										cards: [],
+// 										chips: 0,
+// 										options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
+// 									},
+// 									opponent: {
+// 										id: null,
+// 										name: null,
+// 										cards: [],
+// 										chips: 0,
+// 										options: null
+// 									}
+// 								});
+// 							}
 
 
-							});
-						}
-					});
-				}
+// 						} else {
+// 							io.sockets.in(scope.room).emit('game:leave', { 
+// 								uuid: Date.now(), 
+// 								user: {
+// 									name: scope.user.name
+// 								},
+// 								events: Games[scope.room].game.events,
+// 								room: {
+// 									id: scope.room,
+// 									players: Games[scope.room].room.players,
+// 									observers: Games[scope.room].room.observers
+// 								}
+// 							});
+// 						}
+
+
+// 					});
+// 				});
 	
 			});
 		});

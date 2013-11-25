@@ -18,7 +18,7 @@
 				<h3>Oops!</h3>
 				<p>You are registering too much. Try again in 5 minutes, if you're actually human.</p>
 			<% } else { %>
-				<form role="form" name="register" method="post" action="/register" class="well" novalidate>
+				<form role="form" name="register" method="post" action="/register" class="well" novalidate >
 
 					<input type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
 					
@@ -80,7 +80,7 @@
 						<input type="password" name="passwordConfirm" autocomplete="off" class="form-control mg-top-bot-5" placeholder="Confirm Password" maxlength="55" required ng-required="true" pw-confirm="password" ng-model="passwordConfirm" ng-focus />
 						
 						<% if (errors.passwordConfirm) { %>
-							<div class="alert alert-danger" ng-cloack ng-show="register.passwordConfirm.$pristine">
+							<div class="alert alert-danger" ng-cloak ng-show="register.passwordConfirm.$pristine">
 								<span><%= errors.passwordConfirm.msg %></span>
 							</div>
 						<% } %>
@@ -89,7 +89,7 @@
 							<span>This field is required.</span>
 						</div>
 
-						<div class="alert alert-danger" ng-cloak ng-show="register.passwordConfirm.$dirty && register.passwordConfirm.$invalid && register.passwordConfirm.$error.confirm">
+						<div class="alert alert-danger" ng-cloak ng-show="register.passwordConfirm.$dirty && register.passwordConfirm.$invalid && register.passwordConfirm.$error.confirm && !register.passwordConfirm.$error.required">
 							<span>Passwords don't match.</span>
 						</div>
 
@@ -110,10 +110,10 @@
 
 					</div>
 
-					<div class="form-group">
-						<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
-						<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register"/>
-					</div>
+
+					<p class="text-muted text-center"><small>By completing this form, you confirm your agreement to our <a href="/terms">Terms of Use</a>.</small></p>
+					<input type="submit" class="btn btn-block btn-lg btn-success mg-top-bot-5" value="Register" ng-disabled="register.$invalid" />
+
 				</form>
 			<% } %>
 

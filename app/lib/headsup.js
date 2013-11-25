@@ -382,12 +382,13 @@ function checkForEndOfBettingRound (game) {
 function prettifyCards (cards) {
 
 	var out = [];
-console.log(cards);
-	for (var i = 0; i < cards.length; i+=1) {console.log(cards[i]);
-		out.push('<span class="ico-card ico-card-club">');
+
+	for (var i = 0; i < cards.length; i+=1) {
+		out.push('<span class=\"ico-card ico-card-club\">');
 		for (var j = 0; j < cards[i].length; j+=1) {
-			console.log(cards[i].charAt(j));
+			
 			var part = cards[i].charAt(j);
+
 			switch (part) {
 				case 'T':
 					out.push('10');
@@ -408,9 +409,8 @@ console.log(cards);
 					out.push(part);
 			}
 		}
-		out.push('</span">');
+		out.push('</span>');
 	}
-
 	return out.join('');
 }
 
@@ -419,7 +419,7 @@ function nextBettingRound (game) {
 	if (game.state === 'RIVER') {
 		game.state = 'SHOWDOWN';
 		game.AddEvent('Dealer', '** Showdown **');
-		game.AddEvent('Dealer', 'Board is ' + game.board.join(','));
+		game.AddEvent('Dealer', 'Board is ' +  prettifyCards(game.board));
 
 		//Evaluate each hand
 		for (var j = 0; j < game.players.length; j += 1) {
@@ -1064,152 +1064,152 @@ function rankHandInt (hand) {
 	if (rank === 0) {
 		if (cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1 && cards.indexOf('KC') > -1) {
 			rank = 301;
-			message = 'a King High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['K']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1 && cards.indexOf('KD') > -1) {
 			rank = 301;
-			message = 'a King High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['K']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1 && cards.indexOf('KH') > -1) {
 			rank = 301;
-			message = 'a King High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['K']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1 && cards.indexOf('KS') > -1) {
 			rank = 301;
-			message = 'a King High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['K']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1 && cards.indexOf('QC') > -1) {
 			rank = 300;
-			message = 'a Queen High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['Q']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1 && cards.indexOf('QD') > -1) {
 			rank = 300;
-			message = 'a Queen High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['Q']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1 && cards.indexOf('QH') > -1) {
 			rank = 300;
-			message = 'a Queen High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['Q']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1 && cards.indexOf('QS') > -1) {
 			rank = 300;
-			message = 'a Queen High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['Q']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1 && cards.indexOf('JC') > -1) {
 			rank = 299;
-			message = 'a Jack High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['J']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1 && cards.indexOf('JD') > -1) {
 			rank = 299;
-			message = 'a Jack High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['J']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1 && cards.indexOf('JH') > -1) {
 			rank = 299;
-			message = 'a Jack High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['J']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1 && cards.indexOf('JS') > -1) {
 			rank = 299;
-			message = 'a Jack High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['J']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1 && cards.indexOf('TC') > -1) {
 			rank = 298;
-			message = 'a 10 High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['T']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1 && cards.indexOf('TD') > -1) {
 			rank = 298;
-			message = 'a 10 High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['T']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1 && cards.indexOf('TH') > -1) {
 			rank = 298;
-			message = 'a 10 High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['T']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1 && cards.indexOf('TS') > -1) {
 			rank = 298;
-			message = 'a 10 High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['T']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1 && cards.indexOf('9C') > -1) {
 			rank = 297;
-			message = 'a 9 High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['9']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1 && cards.indexOf('9D') > -1) {
 			rank = 297;
-			message = 'a 9 High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['9']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1 && cards.indexOf('9H') > -1) {
 			rank = 297;
-			message = 'a 9 High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['9']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1 && cards.indexOf('9S') > -1) {
 			rank = 297;
-			message = 'a 9 High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['9']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1 && cards.indexOf('8C') > -1) {
 			rank = 296;
-			message = 'a n8 High Straight Flush (Clubs)';
+			message = 'an ' + prettifyCards(['8']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1 && cards.indexOf('8D') > -1) {
 			rank = 296;
-			message = 'an 8 High Straight Flush (Diamonds)';
+			message = 'an ' + prettifyCards(['8']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1 && cards.indexOf('8H') > -1) {
 			rank = 296;
-			message = 'an 8 High Straight Flush (Hearts)';
+			message = 'an ' + prettifyCards(['8']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1 && cards.indexOf('8S') > -1) {
 			rank = 296;
-			message = 'an 8 High Straight Flush (Spades)';
+			message = 'an ' + prettifyCards(['8']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1 && cards.indexOf('7C') > -1) {
 			rank = 295;
-			message = 'a 7 High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['7']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1 && cards.indexOf('7D') > -1) {
 			rank = 295;
-			message = 'a 7 High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['7']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1 && cards.indexOf('7H') > -1) {
 			rank = 295;
-			message = 'a 7 High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['7']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1 && cards.indexOf('7S') > -1) {
 			rank = 295;
-			message = 'a 7 High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['7']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1 && cards.indexOf('6C') > -1) {
 			rank = 294;
-			message = 'a 6 High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['6']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1 && cards.indexOf('6D') > -1) {
 			rank = 294;
-			message = 'a 6 High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['6']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 		if (cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1 && cards.indexOf('6H') > -1) {
 			rank = 294;
-			message = 'a 6 High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['6']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1 && cards.indexOf('6S') > -1) {
 			rank = 294;
-			message = 'a 6 High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['6']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('AC') > -1 && cards.indexOf('2C') > -1 && cards.indexOf('3C') > -1 && cards.indexOf('4C') > -1 && cards.indexOf('5C') > -1) {
 			rank = 293;
-			message = 'a 5 High Straight Flush (Clubs)';
+			message = 'a ' + prettifyCards(['5']) + ' High Straight Flush (' + prettifyCards(['♣']) + ')';
 		}
 		if (cards.indexOf('AS') > -1 && cards.indexOf('2S') > -1 && cards.indexOf('3S') > -1 && cards.indexOf('4S') > -1 && cards.indexOf('5S') > -1) {
 			rank = 293;
-			message = 'a 5 High Straight Flush (Spades)';
+			message = 'a ' + prettifyCards(['5']) + ' High Straight Flush (' + prettifyCards(['♠']) + ')';
 		}
 		if (cards.indexOf('AH') > -1 && cards.indexOf('2H') > -1 && cards.indexOf('3H') > -1 && cards.indexOf('4H') > -1 && cards.indexOf('5H') > -1) {
 			rank = 293;
-			message = 'a 5 High Straight Flush (Hearts)';
+			message = 'a ' + prettifyCards(['5']) + ' High Straight Flush (' + prettifyCards(['♥']) + ')';
 		}
 		if (cards.indexOf('AD') > -1 && cards.indexOf('2D') > -1 && cards.indexOf('3D') > -1 && cards.indexOf('4D') > -1 && cards.indexOf('5D') > -1) {
 			rank = 293;
-			message = 'a 5 High Straight Flush (Diamonds)';
+			message = 'a ' + prettifyCards(['5']) + ' High Straight Flush (' + prettifyCards(['♦']) + ')';
 		}
 	}
 
 // rank\s+?=\s+?(\d+)\s+\+\s+?(.+?);\s+?message\s+?=\s+?(.+?);
-// kickers = ($2);rank = ($1) + kickers.value;message = ($3) + kickers.cards.message + ' kicker';
+// kickers = ($2);rank = ($1) + kickers.value;message = ($3) + prettifyCards(kickers.cards.raw) + ' kicker';
 
 
 	// Four of a kind
@@ -1217,67 +1217,67 @@ function rankHandInt (hand) {
 		if (ranks.indexOf('AAAA') > -1) {
 			kickers = rankKickers(ranks.replace('AAAA', ''), 1);
 			rank = 292 + kickers.value;
-			message = 'Four of a Kind (Quad Aces) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['A']) + ' \'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KKKK') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('KKKK', ''), 1);
 			rank = 291 + kickers.value;
-			message = 'Four of a Kind (Quad Kings) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['K']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQQQ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('QQQQ', ''), 1);
 			rank = 290 + kickers.value;
-			message = 'Four of a Kind (Quad Queens) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['Q']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJJJ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('JJJJ', ''), 1);
 			rank = 289 + kickers.value;
-			message = 'Four of a Kind (Quad Jacks) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['J']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TTTT') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('TTTT', ''), 1);
 			rank = 288 + kickers.value;
-			message = 'Four of a Kind (Quad 10\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['T']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('9999') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('9999', ''), 1);
 			rank = 287 + kickers.value;
-			message = 'Four of a Kind (Quad 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('8888') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('8888', ''), 1);
 			rank = 286 + kickers.value;
-			message = 'Four of a Kind (Quad 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('7777') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('7777', ''), 1);
 			rank = 285 + kickers.value;
-			message = 'Four of a Kind (Quad 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('6666') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('6666', ''), 1);
 			rank = 284 + kickers.value;
-			message = 'Four of a Kind (Quad 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('5555') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('5555', ''), 1);
 			rank = 283 + kickers.value;
-			message = 'Four of a Kind (Quad 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('4444') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('4444', ''), 1);
 			rank = 282 + kickers.value;
-			message = 'Four of a Kind (Quad 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('3333') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('3333', ''), 1);
 			rank = 281 + kickers.value;
-			message = 'Four of a Kind (Quad 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('2222') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('2222', ''), 1);
 			rank = 280 + kickers.value;
-			message = 'Four of a Kind (Quad 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Four of a Kind (Quad ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 
 	}
@@ -1286,627 +1286,627 @@ function rankHandInt (hand) {
 	if (rank === 0) {
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('KK') > -1) {
 			rank = 279;
-			message = 'a Full House (Aces over Kings)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 278;
-			message = 'a Full House (Aces over Queens)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 277;
-			message = 'a Full House (Aces over Jacks)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 276;
-			message = 'a Full House (Aces over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 275;
-			message = 'a Full House (Aces over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 274;
-			message = 'a Full House (Aces over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 273;
-			message = 'a Full House (Aces over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 272;
-			message = 'a Full House (Aces over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 271;
-			message = 'a Full House (Aces over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 270;
-			message = 'a Full House (Aces over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 269;
-			message = 'a Full House (Aces over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('AAA') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 268;
-			message = 'a Full House (Aces over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['A']) + ' \'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 267;
-			message = 'a Full House (Kings over Aces)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['A']) + ' \'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 266;
-			message = 'a Full House (Kings over Queens)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 265;
-			message = 'a Full House (Kings over Jacks)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 264;
-			message = 'a Full House (Kings over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 263;
-			message = 'a Full House (Kings over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 262;
-			message = 'a Full House (Kings over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 261;
-			message = 'a Full House (Kings over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 260;
-			message = 'a Full House (Kings over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 259;
-			message = 'a Full House (Kings over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 258;
-			message = 'a Full House (Kings over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 257;
-			message = 'a Full House (Kings over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('KKK') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 256;
-			message = 'a Full House (Kings over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['K']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 255;
-			message = 'a Full House (Queens over Aces)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['A']) + ' \'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 254;
-			message = 'a Full House (Queens over Kings)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 253;
-			message = 'a Full House (Queens over Jacks)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 252;
-			message = 'a Full House (Queens over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 251;
-			message = 'a Full House (Queens over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 250;
-			message = 'a Full House (Queens over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 249;
-			message = 'a Full House (Queens over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 248;
-			message = 'a Full House (Queens over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 247;
-			message = 'a Full House (Queens over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 246;
-			message = 'a Full House (Queens over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 245;
-			message = 'a Full House (Queens over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('QQQ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 244;
-			message = 'a Full House (Queens over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['Q']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 243;
-			message = 'a Full House (Jacks over Aces)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 242;
-			message = 'a Full House (Jacks over Kings)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 241;
-			message = 'a Full House (Jacks over Queens)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 240;
-			message = 'a Full House (Jacks over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 239;
-			message = 'a Full House (Jacks over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 238;
-			message = 'a Full House (Jacks over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 237;
-			message = 'a Full House (Jacks over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 236;
-			message = 'a Full House (Jacks over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 235;
-			message = 'a Full House (Jacks over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 234;
-			message = 'a Full House (Jacks over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 233;
-			message = 'a Full House (Jacks over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('JJJ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 232;
-			message = 'a Full House (Jacks over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['J']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 231;
-			message = 'a Full House (10\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 230;
-			message = 'a Full House (10\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 229;
-			message = 'a Full House (10\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 228;
-			message = 'a Full House (10\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 227;
-			message = 'a Full House (10\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 226;
-			message = 'a Full House (10\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 225;
-			message = 'a Full House (10\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 224;
-			message = 'a Full House (10\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 223;
-			message = 'a Full House (10\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 222;
-			message = 'a Full House (10\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 221;
-			message = 'a Full House (10\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('TTT') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 220;
-			message = 'a Full House (10\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['T']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 219;
-			message = 'a Full House (9\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 218;
-			message = 'a Full House (9\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 217;
-			message = 'a Full House (9\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 216;
-			message = 'a Full House (9\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 215;
-			message = 'a Full House (9\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 214;
-			message = 'a Full House (9\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 213;
-			message = 'a Full House (9\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 212;
-			message = 'a Full House (9\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 211;
-			message = 'a Full House (9\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 210;
-			message = 'a Full House (9\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 209;
-			message = 'a Full House (9\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('999') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 208;
-			message = 'a Full House (9\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['9']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 207;
-			message = 'a Full House (8\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 206;
-			message = 'a Full House (8\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 205;
-			message = 'a Full House (8\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 204;
-			message = 'a Full House (8\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 203;
-			message = 'a Full House (8\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 202;
-			message = 'a Full House (8\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 201;
-			message = 'a Full House (8\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 200;
-			message = 'a Full House (8\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 199;
-			message = 'a Full House (8\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 198;
-			message = 'a Full House (8\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 197;
-			message = 'a Full House (8\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('888') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 196;
-			message = 'a Full House (8\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['8']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 195;
-			message = 'a Full House (7\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 194;
-			message = 'a Full House (7\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 193;
-			message = 'a Full House (7\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 192;
-			message = 'a Full House (7\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 191;
-			message = 'a Full House (7\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 190;
-			message = 'a Full House (7\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 189;
-			message = 'a Full House (7\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 188;
-			message = 'a Full House (7\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 187;
-			message = 'a Full House (7\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 186;
-			message = 'a Full House (7\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 185;
-			message = 'a Full House (7\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('777') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 184;
-			message = 'a Full House (7\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['7']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 183;
-			message = 'a Full House (6\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 182;
-			message = 'a Full House (6\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 181;
-			message = 'a Full House (6\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 180;
-			message = 'a Full House (6\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 179;
-			message = 'a Full House (6\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 178;
-			message = 'a Full House (6\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 177;
-			message = 'a Full House (6\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 176;
-			message = 'a Full House (6\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 175;
-			message = 'a Full House (6\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 174;
-			message = 'a Full House (6\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 173;
-			message = 'a Full House (6\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('666') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 172;
-			message = 'a Full House (6\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['6']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 171;
-			message = 'a Full House (5\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 170;
-			message = 'a Full House (5\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 169;
-			message = 'a Full House (5\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 168;
-			message = 'a Full House (5\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 167;
-			message = 'a Full House (5\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 166;
-			message = 'a Full House (5\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 165;
-			message = 'a Full House (5\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 164;
-			message = 'a Full House (5\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 163;
-			message = 'a Full House (5\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 162;
-			message = 'a Full House (5\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 161;
-			message = 'a Full House (5\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('555') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 160;
-			message = 'a Full House (5\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['5']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 159;
-			message = 'a Full House (4\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 158;
-			message = 'a Full House (4\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 157;
-			message = 'a Full House (4\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 156;
-			message = 'a Full House (4\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 155;
-			message = 'a Full House (4\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 154;
-			message = 'a Full House (4\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 153;
-			message = 'a Full House (4\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 152;
-			message = 'a Full House (4\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 151;
-			message = 'a Full House (4\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 150;
-			message = 'a Full House (4\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 149;
-			message = 'a Full House (4\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 		if (ranks.indexOf('444') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 148;
-			message = 'a Full House (4\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['4']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 147;
-			message = 'a Full House (3\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 146;
-			message = 'a Full House (3\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 145;
-			message = 'a Full House (3\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 144;
-			message = 'a Full House (3\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 143;
-			message = 'a Full House (3\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 142;
-			message = 'a Full House (3\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 141;
-			message = 'a Full House (3\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 140;
-			message = 'a Full House (3\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 139;
-			message = 'a Full House (3\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 138;
-			message = 'a Full House (3\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 137;
-			message = 'a Full House (3\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('333') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
 			rank = 136;
-			message = 'a Full House (3\'s over 2\'s)';
+			message = 'a Full House (' + prettifyCards(['3']) + '\'s over ' + prettifyCards(['2']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('AA') > -1 && rank === 0) {
 			rank = 135;
-			message = 'a Full House (2\'s over Aces)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['A']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('KK') > -1 && rank === 0) {
 			rank = 134;
-			message = 'a Full House (2\'s over Kings)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['K']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
 			rank = 133;
-			message = 'a Full House (2\'s over Queens)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['Q']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
 			rank = 132;
-			message = 'a Full House (2\'s over Jacks)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['J']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
 			rank = 131;
-			message = 'a Full House (2\'s over 10\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['T']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
 			rank = 130;
-			message = 'a Full House (2\'s over 9\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['9']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
 			rank = 129;
-			message = 'a Full House (2\'s over 8\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['8']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
 			rank = 128;
-			message = 'a Full House (2\'s over 7\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['7']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
 			rank = 127;
-			message = 'a Full House (2\'s over 6\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['6']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
 			rank = 126;
-			message = 'a Full House (2\'s over 5\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['5']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
 			rank = 125;
-			message = 'a Full House (2\'s over 4\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['4']) + '\'s)';
 		}
 		if (ranks.indexOf('222') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
 			rank = 124;
-			message = 'a Full House (2\'s over 3\'s)';
+			message = 'a Full House (' + prettifyCards(['2']) + '\'s over ' + prettifyCards(['3']) + '\'s)';
 		}
 
 	}
@@ -1916,25 +1916,25 @@ function rankHandInt (hand) {
 		if (suits.indexOf('CCCCC') > -1) {
 			kickers = rankKickers(ranks, 5);
 			rank = 123 + kickers.value;
-			message = 'a Club Flush [' + kickers.cards.message + ']';
+			message = 'a ' + prettifyCards(kickers.cards.raw) + ' High Flush (' + prettifyCards(['♣']) + ')';
 		}
 
 		if (suits.indexOf('DDDDD') > -1) {
 			kickers = rankKickers(ranks, 5);
 			rank = 123 + kickers.value;
-			message = 'a Diamond Flush [' + kickers.cards.message + ']';
+			message = 'a ' + prettifyCards(kickers.cards.raw) + ' High Flush (' + prettifyCards(['♦']) + ')';
 		}
 
 		if (suits.indexOf('HHHHH') > -1) {
 			kickers = rankKickers(ranks, 5);
 			rank = 123 + kickers.value;
-			message = 'a Heart Flush [' + kickers.cards.message + ']';
+			message = 'a ' + prettifyCards(kickers.cards.raw) + ' High Flush (' + prettifyCards(['♥']) + ')';
 		}
 
 		if (suits.indexOf('SSSSS') > -1) {
 			kickers = rankKickers(ranks, 5);
 			rank = 123 + kickers.value;
-			message = 'a Spade Flush [' + kickers.cards.message + ']';
+			message = 'a ' + prettifyCards(kickers.cards.raw) + ' High Flush (' + prettifyCards(['♠']) + ')';
 		}
 
 	}
@@ -1947,39 +1947,39 @@ function rankHandInt (hand) {
 		}
 		if (cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && cards.indexOf('K') > -1 && rank === 0) {
 			rank = 121;
-			message = 'a King High Straight';
+			message = 'a ' + prettifyCards(['K']) + ' High Straight';
 		}
 		if (cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && cards.indexOf('Q') > -1 && rank === 0) {
 			rank = 120;
-			message = 'a Queen High Straight';
+			message = 'a ' + prettifyCards(['Q']) + ' High Straight';
 		}
 		if (cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && cards.indexOf('J') > -1 && rank === 0) {
 			rank = 119;
-			message = 'a Jack High Straight';
+			message = 'a ' + prettifyCards(['J']) + ' High Straight';
 		}
 		if (cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && cards.indexOf('T') > -1 && rank === 0) {
 			rank = 118;
-			message = 'a 10 High Straight';
+			message = 'a ' + prettifyCards(['T']) + ' High Straight';
 		}
 		if (cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && cards.indexOf('9') > -1 && rank === 0) {
 			rank = 117;
-			message = 'a 9 High Straight';
+			message = 'a ' + prettifyCards(['9']) + ' High Straight';
 		}
 		if (cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && cards.indexOf('8') > -1 && rank === 0) {
 			rank = 116;
-			message = 'an 8 High Straight';
+			message = 'a ' + prettifyCards(['8']) + ' High Straight';
 		}
 		if (cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && cards.indexOf('7') > -1 && rank === 0) {
 			rank = 115;
-			message = 'a 7 High Straight';
+			message = 'a ' + prettifyCards(['7']) + ' High Straight';
 		}
 		if (cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && cards.indexOf('6') > -1 && rank === 0) {
 			rank = 114;
-			message = 'a 6 High Straight';
+			message = 'a ' + prettifyCards(['6']) + ' High Straight';
 		}
 		if (cards.indexOf('A') > -1 && cards.indexOf('2') > -1 && cards.indexOf('3') > -1 && cards.indexOf('4') > -1 && cards.indexOf('5') > -1 && rank === 0) {
 			rank = 113;
-			message = 'a 5 High Straight';
+			message = 'a ' + prettifyCards(['5']) + ' High Straight';
 		}
 	}
 
@@ -1988,461 +1988,461 @@ function rankHandInt (hand) {
 		if (ranks.indexOf('AAA') > -1) {
 			kickers = rankKickers(ranks.replace('AAA', ''), 2);
 			rank = 112 + kickers.value;
-			message = 'Three of a Kind (trip Aces) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['A']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KKK') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('KKK', ''), 2);
 			rank = 111 + kickers.value;
-			message = 'Three of a Kind (trip Kings) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['K']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQQ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('QQQ', ''), 2);
 			rank = 110 + kickers.value;
-			message = 'Three of a Kind (trip Queens) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['Q']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJJ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('JJJ', ''), 2);
 			rank = 109 + kickers.value;
-			message = 'Three of a Kind (trip Jacks) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['J']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TTT') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('TTT', ''), 2);
 			rank = 108 + kickers.value;
-			message = 'Three of a Kind (trip 0\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip 0\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('999') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('999', ''), 2);
 			rank = 107 + kickers.value;
-			message = 'Three of a Kind (trip 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('888') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('888', ''), 2);
 			rank = 106 + kickers.value;
-			message = 'Three of a Kind (trip 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('777') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('777', ''), 2);
 			rank = 105 + kickers.value;
-			message = 'Three of a Kind (trip 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('666') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('666', ''), 2);
 			rank = 104 + kickers.value;
-			message = 'Three of a Kind (trip 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('555') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('555', ''), 2);
 			rank = 103 + kickers.value;
-			message = 'Three of a Kind (trip 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('444') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('444', ''), 2);
 			rank = 102 + kickers.value;
-			message = 'Three of a Kind (trip 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('333') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('333', ''), 2);
 			rank = 101 + kickers.value;
-			message = 'Three of a Kind (trip 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('222') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('222', ''), 2);
 			rank = 100 + kickers.value;
-			message = 'Three of a Kind (trip 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Three of a Kind (trip ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 	}
 
 	// Two pair
 	if (rank === 0) {
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('KK') > -1) {
-			kickers = rankKickers(ranks.replace('KK', ''), 1);
+			kickers = rankKickers(ranks.replace('KK', '').replace('AA', ''), 1);
 			rank = 99 + kickers.value;
-			message = 'Two Pair (Aces and Kings) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['K']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('QQ', ''), 1);
+			kickers = rankKickers(ranks.replace('QQ', '').replace('AA', ''), 1);
 			rank = 98 + kickers.value;
-			message = 'Two Pair (Aces and Queens) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['Q']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('JJ', ''), 1);
+			kickers = rankKickers(ranks.replace('JJ', '').replace('AA', ''), 1);
 			rank = 97 + kickers.value;
-			message = 'Two Pair (Aces and Jacks) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['J']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('TT', ''), 1);
+			kickers = rankKickers(ranks.replace('TT', '').replace('AA', ''), 1);
 			rank = 96 + kickers.value;
-			message = 'Two Pair (Aces and 10\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['T']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('99', ''), 1);
+			kickers = rankKickers(ranks.replace('99', '').replace('AA', ''), 1);
 			rank = 95 + kickers.value;
-			message = 'Two Pair (Aces and 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('AA', ''), 1);
 			rank = 94 + kickers.value;
-			message = 'Two Pair (Aces and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('AA', ''), 1);
 			rank = 93 + kickers.value;
-			message = 'Two Pair (Aces and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('AA', ''), 1);
 			rank = 92 + kickers.value;
-			message = 'Two Pair (Aces and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('AA', ''), 1);
 			rank = 91 + kickers.value;
-			message = 'Two Pair (Aces and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('AA', ''), 1);
 			rank = 90 + kickers.value;
-			message = 'Two Pair (Aces and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('AA', ''), 1);
 			rank = 89 + kickers.value;
-			message = 'Two Pair (Aces and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('AA') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('AA', ''), 1);
 			rank = 88 + kickers.value;
-			message = 'Two Pair (Aces and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['A']) + ' \'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('QQ') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('QQ', ''), 1);
+			kickers = rankKickers(ranks.replace('QQ', '').replace('KK', ''), 1);
 			rank = 87 + kickers.value;
-			message = 'Two Pair (Kings and Queens) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['Q']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('JJ', ''), 1);
+			kickers = rankKickers(ranks.replace('JJ', '').replace('KK', ''), 1);
 			rank = 86 + kickers.value;
-			message = 'Two Pair (Kings and Jacks) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['J']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('TT', ''), 1);
+			kickers = rankKickers(ranks.replace('TT', '').replace('KK', ''), 1);
 			rank = 85 + kickers.value;
-			message = 'Two Pair (Kings and 10\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['T']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('99', ''), 1);
+			kickers = rankKickers(ranks.replace('99', '').replace('KK', ''), 1);
 			rank = 84 + kickers.value;
-			message = 'Two Pair (Kings and 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('KK', ''), 1);
 			rank = 83 + kickers.value;
-			message = 'Two Pair (Kings and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('KK', ''), 1);
 			rank = 82 + kickers.value;
-			message = 'Two Pair (Kings and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('KK', ''), 1);
 			rank = 81 + kickers.value;
-			message = 'Two Pair (Kings and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('KK', ''), 1);
 			rank = 80 + kickers.value;
-			message = 'Two Pair (Kings and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('KK', ''), 1);
 			rank = 79 + kickers.value;
-			message = 'Two Pair (Kings and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('KK', ''), 1);
 			rank = 78 + kickers.value;
-			message = 'Two Pair (Kings and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('KK', ''), 1);
 			rank = 77 + kickers.value;
-			message = 'Two Pair (Kings and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['K']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('JJ') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('JJ', ''), 1);
+			kickers = rankKickers(ranks.replace('JJ', '').replace('QQ', ''), 1);
 			rank = 76 + kickers.value;
-			message = 'Two Pair (Queens and Jacks) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['J']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('TT', ''), 1);
+			kickers = rankKickers(ranks.replace('TT', '').replace('QQ', ''), 1);
 			rank = 75 + kickers.value;
-			message = 'Two Pair (Queens and 10\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['T']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('99', ''), 1);
+			kickers = rankKickers(ranks.replace('99', '').replace('QQ', ''), 1);
 			rank = 74 + kickers.value;
-			message = 'Two Pair (Queens and 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('QQ', ''), 1);
 			rank = 73 + kickers.value;
-			message = 'Two Pair (Queens and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('QQ', ''), 1);
 			rank = 72 + kickers.value;
-			message = 'Two Pair (Queens and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('QQ', ''), 1);
 			rank = 71 + kickers.value;
-			message = 'Two Pair (Queens and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('QQ', ''), 1);
 			rank = 70 + kickers.value;
-			message = 'Two Pair (Queens and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('QQ', ''), 1);
 			rank = 69 + kickers.value;
-			message = 'Two Pair (Queens and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('QQ', ''), 1);
 			rank = 68 + kickers.value;
-			message = 'Two Pair (Queens and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('QQ', ''), 1);
 			rank = 67 + kickers.value;
-			message = 'Two Pair (Queens and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['Q']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('TT') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('TT', ''), 1);
+			kickers = rankKickers(ranks.replace('TT', '').replace('JJ', ''), 1);
 			rank = 66 + kickers.value;
-			message = 'Two Pair (Jacks and 10\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['T']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('99', ''), 1);
+			kickers = rankKickers(ranks.replace('99', '').replace('JJ', ''), 1);
 			rank = 65 + kickers.value;
-			message = 'Two Pair (Jacks and 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('JJ', ''), 1);
 			rank = 64 + kickers.value;
-			message = 'Two Pair (Jacks and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('JJ', ''), 1);
 			rank = 63 + kickers.value;
-			message = 'Two Pair (Jacks and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('JJ', ''), 1);
 			rank = 62 + kickers.value;
-			message = 'Two Pair (Jacks and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('JJ', ''), 1);
 			rank = 61 + kickers.value;
-			message = 'Two Pair (Jacks and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('JJ', ''), 1);
 			rank = 60 + kickers.value;
-			message = 'Two Pair (Jacks and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('JJ', ''), 1);
 			rank = 59 + kickers.value;
-			message = 'Two Pair (Jacks and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('JJ', ''), 1);
 			rank = 58 + kickers.value;
-			message = 'Two Pair (Jacks and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['J']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('99') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('99', ''), 1);
+			kickers = rankKickers(ranks.replace('99', '').replace('TT', ''), 1);
 			rank = 57 + kickers.value;
-			message = 'Two Pair (10\'s and 9\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['9']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('TT', ''), 1);
 			rank = 56 + kickers.value;
-			message = 'Two Pair (10\'s and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('TT', ''), 1);
 			rank = 55 + kickers.value;
-			message = 'Two Pair (10\'s and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('TT', ''), 1);
 			rank = 54 + kickers.value;
-			message = 'Two Pair (10\'s and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('TT', ''), 1);
 			rank = 53 + kickers.value;
-			message = 'Two Pair (10\'s and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('TT', ''), 1);
 			rank = 52 + kickers.value;
-			message = 'Two Pair (10\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('TT', ''), 1);
 			rank = 51 + kickers.value;
-			message = 'Two Pair (10\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('TT', ''), 1);
 			rank = 50 + kickers.value;
-			message = 'Two Pair (10\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['T']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('88') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('88', ''), 1);
+			kickers = rankKickers(ranks.replace('88', '').replace('99', ''), 1);
 			rank = 49 + kickers.value;
-			message = 'Two Pair (9\'s and 8\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['8']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('99', ''), 1);
 			rank = 48 + kickers.value;
-			message = 'Two Pair (9\'s and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('99', ''), 1);
 			rank = 47 + kickers.value;
-			message = 'Two Pair (9\'s and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('99', ''), 1);
 			rank = 46 + kickers.value;
-			message = 'Two Pair (9\'s and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('99', ''), 1);
 			rank = 45 + kickers.value;
-			message = 'Two Pair (9\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('99', ''), 1);
 			rank = 44 + kickers.value;
-			message = 'Two Pair (9\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('99', ''), 1);
 			rank = 43 + kickers.value;
-			message = 'Two Pair (9\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['9']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('77') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('77', ''), 1);
+			kickers = rankKickers(ranks.replace('77', '').replace('88', ''), 1);
 			rank = 42 + kickers.value;
-			message = 'Two Pair (8\'s and 7\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['7']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('88', ''), 1);
 			rank = 41 + kickers.value;
-			message = 'Two Pair (8\'s and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('88', ''), 1);
 			rank = 40 + kickers.value;
-			message = 'Two Pair (8\'s and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('88', ''), 1);
 			rank = 39 + kickers.value;
-			message = 'Two Pair (8\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('88', ''), 1);
 			rank = 38 + kickers.value;
-			message = 'Two Pair (8\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('88', ''), 1);
 			rank = 37 + kickers.value;
-			message = 'Two Pair (8\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['8']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && ranks.indexOf('66') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('66', ''), 1);
+			kickers = rankKickers(ranks.replace('66', '').replace('77', ''), 1);
 			rank = 36 + kickers.value;
-			message = 'Two Pair (7\'s and 6\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['7']) + '\'s and ' + prettifyCards(['6']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('77', ''), 1);
 			rank = 35 + kickers.value;
-			message = 'Two Pair (7\'s and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['7']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('77', ''), 1);
 			rank = 34 + kickers.value;
-			message = 'Two Pair (7\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['7']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('77', ''), 1);
 			rank = 33 + kickers.value;
-			message = 'Two Pair (7\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['7']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('77', ''), 1);
 			rank = 32 + kickers.value;
-			message = 'Two Pair (7\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['7']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('66') > -1 && ranks.indexOf('55') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('55', ''), 1);
+			kickers = rankKickers(ranks.replace('55', '').replace('66', ''), 1);
 			rank = 31 + kickers.value;
-			message = 'Two Pair (6\'s and 5\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['6']) + '\'s and ' + prettifyCards(['5']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('66') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('66', ''), 1);
 			rank = 30 + kickers.value;
-			message = 'Two Pair (6\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['6']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('66') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('66', ''), 1);
 			rank = 29 + kickers.value;
-			message = 'Two Pair (6\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['6']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('66') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('66', ''), 1);
 			rank = 28 + kickers.value;
-			message = 'Two Pair (6\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['6']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('55') > -1 && ranks.indexOf('44') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('44', ''), 1);
+			kickers = rankKickers(ranks.replace('44', '').replace('55', ''), 1);
 			rank = 27 + kickers.value;
-			message = 'Two Pair (5\'s and 4\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['5']) + '\'s and ' + prettifyCards(['4']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('55') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('55', ''), 1);
 			rank = 26 + kickers.value;
-			message = 'Two Pair (5\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['5']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('55') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('55', ''), 1);
 			rank = 25 + kickers.value;
-			message = 'Two Pair (5\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['5']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('44') > -1 && ranks.indexOf('33') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('33', ''), 1);
+			kickers = rankKickers(ranks.replace('33', '').replace('44', ''), 1);
 			rank = 24 + kickers.value;
-			message = 'Two Pair (4\'s and 3\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['4']) + '\'s and ' + prettifyCards(['3']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('44') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('44', ''), 1);
 			rank = 23 + kickers.value;
-			message = 'Two Pair (4\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['4']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('33') > -1 && ranks.indexOf('22') > -1 && rank === 0) {
-			kickers = rankKickers(ranks.replace('22', ''), 1);
+			kickers = rankKickers(ranks.replace('22', '').replace('33', ''), 1);
 			rank = 22 + kickers.value;
-			message = 'Two Pair (3\'s and 2\'s) w/ ' + kickers.cards.message + ' kicker';
+			message = 'Two Pair (' + prettifyCards(['3']) + '\'s and ' + prettifyCards(['2']) + '\'s) w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 	}
 
@@ -2451,67 +2451,67 @@ function rankHandInt (hand) {
 		if (ranks.indexOf('AA') > -1) {
 			kickers = rankKickers(ranks.replace('AA', ''), 3);
 			rank = 21 + kickers.value;
-			message = 'a Pair of Aces w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['A']) + ' \'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('KK') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('KK', ''), 3);
 			rank = 20 + kickers.value;
-			message = 'a Pair of Kings w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['K']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('QQ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('QQ', ''), 3);
 			rank = 19 + kickers.value;
-			message = 'a Pair of Queens w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['Q']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('JJ') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('JJ', ''), 3);
 			rank = 18 + kickers.value;
-			message = 'a Pair of Jacks w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['J']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('TT') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('TT', ''), 3);
 			rank = 17 + kickers.value;
-			message = 'a Pair of 10\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['T']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('99') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('99', ''), 3);
 			rank = 16 + kickers.value;
-			message = 'a Pair of 9\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['9']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('88') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('88', ''), 3);
 			rank = 15 + kickers.value;
-			message = 'a Pair of 8\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['8']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('77') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('77', ''), 3);
 			rank = 14 + kickers.value;
-			message = 'a Pair of 7\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['7']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('66') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('66', ''), 3);
 			rank = 13 + kickers.value;
-			message = 'a Pair of 6\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['6']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('55') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('55', ''), 3);
 			rank = 12 + kickers.value;
-			message = 'a Pair of 5\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['5']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('44') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('44', ''), 3);
 			rank = 11 + kickers.value;
-			message = 'a Pair of 4\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['4']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('33') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('33', ''), 3);
 			rank = 10 + kickers.value;
-			message = 'a Pair of 3\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['3']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('22') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('22', ''), 3);
 			rank = 9 + kickers.value;
-			message = 'a Pair of 2\'s w/ ' + kickers.cards.message + ' kicker';
+			message = 'a Pair of ' + prettifyCards(['2']) + '\'s w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 	}
 
@@ -2520,42 +2520,42 @@ function rankHandInt (hand) {
 		if (ranks.indexOf('A') > -1) {
 			kickers = rankKickers(ranks.replace('A', ''), 4);
 			rank = 8 + kickers.value;
-			message = 'Ace high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['A']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('K') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('K', ''), 4);
 			rank = 7 + kickers.value;
-			message = 'King high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['K']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('Q') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('Q', ''), 4);
 			rank = 6 + kickers.value;
-			message = 'Queen high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['Q']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('J') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('J', ''), 4);
 			rank = 5 + kickers.value;
-			message = 'Jack high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['J']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('T') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('T', ''), 4);
 			rank = 4 + kickers.value;
-			message = '10 high) w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['T']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}	
 		if (ranks.indexOf('9') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('9', ''), 4);
 			rank = 3 + kickers.value;
-			message = '9 high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['9']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('8') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('8', ''), 4);
 			rank = 2 + kickers.value;
-			message = '8 high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['8']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 		if (ranks.indexOf('7') > -1 && rank === 0) {
 			kickers = rankKickers(ranks.replace('7', ''), 4);
 			rank = 1 + kickers.value;
-			message = '7 high w/ ' + kickers.cards.message + ' kicker';
+			message = prettifyCards(['7']) + ' high w/ ' + prettifyCards(kickers.cards.raw) + ' kicker';
 		}
 	}
 
@@ -2695,7 +2695,7 @@ Log('checkforwinnter-before', game);
 		// only check players who are still in the game (chips!==0)
 		if (game.players[i].out === false) {
 
-			game.AddEvent('Dealer', '<span class="text-danger">' + game.players[i].name + ' has <strong>' + game.players[i].hand.message + '</strong></span>');
+			game.AddEvent('Dealer', game.players[i].name + ' has ' + game.players[i].hand.message + '</span>');
 
 			// if the rank is equal to the previous hand, its a tie
 			if (game.players[i].hand.rank === maxRank && game.players[i].folded === false) {

@@ -10,7 +10,7 @@ exports.Counters = db.model('Counters', new Schema({
 
 exports.Games = db.model('Games', new Schema({
     id : { type: Number, required: true },
-    created: { type: Date, required: false, default: Date.now },
+    created: { type: Date, required: true, default: Date.now },
     creator : { type: Schema.Types.Mixed, required: true },
     // POSSIBLE STATES ['NEW','PLAYING','END']
     state: { type: String, required: true, default: 'NEW' },
@@ -28,7 +28,7 @@ exports.Users = db.model('Users', new Schema({
     password : { type: String, required: true },
     email : { type: String, required: false },
     settings : { type: Schema.Types.Mixed, required: true },
-    created: { type: Date, default: Date.now },
+    created: { type: Date, required: true, default: Date.now },
     last_login: { type: Date, default: Date.now },
     reset_date: { type: Date, required: false },
     reset_token :  { type: String, required: false }

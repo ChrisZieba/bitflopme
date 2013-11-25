@@ -506,17 +506,17 @@ module.exports = function (app) {
 				join: false
 			});
 		} else {
-			// non player accessing the table
+			// the table is full
 			if (game.players.length === 2) {
 				res.render('game/full.ejs', { 
-					title: 'Game ' + game.id + ' | Bitflop',
+					title: 'Private Table | Bitflop',
 					user: user,
 					room: room
 				});
 			} else {
 				// Show the game to a non player who can join if they want
 				res.render('game/play.ejs', { 
-					title: 'Game ' + game.id + ' | Bitflop',
+					title: 'Waiting for Players ... | Bitflop',
 					user: user,
 					room: room,
 					join: true

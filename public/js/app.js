@@ -123,12 +123,18 @@ app.directive('localVideo', ['socket', function (socket) {
 
 					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
-						scope.peer.local.element = localVideo;
+						scope.peer.local.element = element;
 						scope.peer.connection.addStream(stream);
 
 						localVideo.src = URL.createObjectURL(stream);
 						localVideo.play();
-						
+
+						// add the vide/audio dropdowns
+						scope.media.available = true;
+						scope.media.video = true;
+						scope.media.audio = true;
+
+						scope.$apply();
 						// on a page refresh this gets called before the server sends back that the game is ready
 						console.log('emit peer ready')
 						socket.emit('peer:ready', { 
@@ -153,7 +159,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 			if (getUserMedia !== null) {
-				scope.peer.remote.element = element[0];
+				scope.peer.remote.element = element;
 			}
 
 			element.removeAttr('controls');
@@ -241,6 +247,12 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	};
 
+	$scope.media = {
+		available: false,
+		audio: false,
+		video: true
+	};
+
 	$scope.peer = {
 		connection: pc || null,
 		candidates: [],
@@ -289,13 +301,27 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		parseAmount: function (amount) {
 			return (amount === null || typeof amount === 'undefined') ? 0 : parseInt(amount, 10);
 		},
-		killVideoStream: function () {
+		toggleVideoStream: function () {
 			if ($scope.peer.local.stream) {
-				$scope.peer.local.stream.stop();
-			}
+				if ($scope.media.video) {
+					$scope.peer.local.stream.getVideoTracks()[0]. enabled = false;
+					$scope.media.video = false;
+				} else {
+					$scope.peer.local.stream.getVideoTracks()[0]. enabled = true;
+					$scope.media.video = true;
+				}
+			} 
 		},
-		startVideoStream: function () {
-			$scope.peer.local.stream.play();
+		toggleAudioStream: function () {
+			if ($scope.peer.local.stream) {
+				if ($scope.media.audio) {
+					$scope.peer.local.stream.getAudioTracks()[0]. enabled = false;
+					$scope.media.audio = false;
+				} else {
+					$scope.peer.local.stream.getAudioTracks()[0]. enabled = true;
+					$scope.media.audio = true;
+				}
+			} 
 		}
 	};
 
@@ -409,6 +435,14 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if (data.player) $scope.game.player = data.player;
 
 		if (data.opponent) $scope.game.opponent = data.opponent;
+
+	});
+
+	socket.on('game:disconnect', function (data) {
+		console.log('game:disconnect');
+		console.log(data);
+
+		window.location.reload();
 
 	});
 

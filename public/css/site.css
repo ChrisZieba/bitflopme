@@ -11,6 +11,20 @@ body {
 
 
 
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
@@ -65,8 +79,8 @@ span.email {
 .jumbotron {
 
 	background: #222222;
-	padding-top: 45px;
-	padding-bottom: 15px;
+	padding-top: 50px;
+	padding-bottom: 25px;
 	padding-left:0px;
 	padding-right: 0px;
 	border-bottom: 1px solid #dddedf;
@@ -92,7 +106,11 @@ span.email {
     border: 0 none;
     height: auto;
     max-width: 100%;
+    margin-bottom: 30px;
     vertical-align: middle;
+-webkit-box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
+box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
 }
 
 
@@ -271,8 +289,14 @@ code {
 		margin-left: 15px;
 	}
 
+	.dropdown-menu .divider {
+		background-color: #333333;
+	}
+
+
 	.jumbotron {
 		margin-bottom: 15px;
+		padding-top:20px;
 		text-align: center;
 	}
 
@@ -285,7 +309,7 @@ code {
 	}
 
 	.sub h1 {
-		padding-top: 46px;
+		padding-top: 30px;
 	}
 
 	.btn-xs {
@@ -334,6 +358,9 @@ code {
 		margin-left: 15px;
 	}
 
+	.dropdown-menu .divider {
+		background-color: #333333;
+	}
 
 	.jumbotron {
 		margin-bottom: 15px;
@@ -354,6 +381,10 @@ code {
 	.jumbotron {
 		margin-bottom: 15px;
 		text-align: center;
+	}
+
+	.dropdown-menu .divider {
+		background-color: #333333;
 	}
 
 

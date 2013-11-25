@@ -13,25 +13,24 @@
 	<div class="row">
 		<div ng-controller="NewGameCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
 			
-			<div class="row">
+			<!--<div class="row">
 				<div class="col-md-12">
 					 <p><button type="button" class="btn btn-link" ng-click="setDefault();"><span class="glyphicon glyphicon-thumbs-up"></span> Set Default Values</button></p>
 				</div>
 
-			</div>
+			</div>-->
 
 			<form name="newgame" role="form" method="post" action="/game/new" class="well" novalidate>
 				<input type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>
 				<div class="row">
-					<div class="form-group col-md-6 <% if (errors.smallBlind) { %>has-error<% } %>">
+					<div class="form-group col-md-6 <% if (errors.smallBlind) { %>has-error<% } %>" ng-class="{ 'has-error': newgame.smallBlind.$dirty && newgame.smallBlind.$invalid, 'has-success': newgame.smallBlind.$dirty && newgame.smallBlind.$valid }">
 						
-						<label class="control-label">Small Blind</label> <span class="text-muted"><small>Big Blind </small></span>
-						<input class="form-control mg-top-bot-5" name="smallBlind" type="text" placeholder="e.g. 5" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="smallBlind" small-blind ng-focus />
+						<label class="control-label">Small Blind</label>
+						<input class="form-control mg-top-bot-5" name="smallBlind" type="text" placeholder="5" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="smallBlind" small-blind ng-focus />
 						
 						<% if (errors.smallBlind) { %>
-							<div class="alert alert-danger"><p><%= errors.smallBlind.msg %></p></div>
+							<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$pristine"><p><%= errors.smallBlind.msg %></p></div>
 						<% } %>
-
 
 						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.required">
 							<span>The small blind is required!</span>
@@ -47,25 +46,25 @@
 
 					</div>
 
-					<div class="form-group col-md-6 <% if (errors.bigBlind) { %>has-error<% } %>">
+					<div class="form-group col-md-6 <% if (errors.bigBlind) { %>has-error<% } %>" ng-class="{ 'has-error': newgame.smallBlind.$dirty && newgame.smallBlind.$invalid, 'has-success': newgame.smallBlind.$dirty && newgame.smallBlind.$valid }">
 						
-						<label class="control-label">Big Blind</label> <span class="text-muted"><small>Big Blind </small></span>
-						<input class="form-control mg-top-bot-5" name="bigBlind" type="text" placeholder="e.g. 5" readonly="readonly" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="bigBlind"  />
+						<label class="control-label">Big Blind</label>
+						<input class="form-control mg-top-bot-5" name="bigBlind" type="text" placeholder="10" readonly="readonly" maxlength="4" required ng-required="true" ng-maxlength="4" ng-pattern="/^[0-9]+$/" ng-model="bigBlind"  />
 						
 						<% if (errors.bigBlind) { %>
-							<div class="alert alert-danger"><p><%= errors.bigBlind.msg %></p></div>
+							<div class="alert alert-danger" ng-cloak ng-show="newgame.bigBlind.$pristine"><p><%= errors.bigBlind.msg %></p></div>
 						<% } %>
 
 					</div>
 				</div>
 
 
-				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>'>
-					<label class="control-label">Starting Chips</label>
-					<input class="form-control mg-top-bot-5" name="chipStack" type="text" placeholder="e.g. 500"  maxlength="7" required ng-required="true" ng-maxlength="7" ng-pattern="/^[0-9]+$/" ng-model="chipStack" chip-stack="bigBlind" ng-focus />
+				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>' ng-class="{ 'has-error': newgame.chipStack.$dirty && newgame.chipStack.$invalid, 'has-success': newgame.chipStack.$dirty && newgame.chipStack.$valid }">
+					<label class="control-label">Starting Chips</label> <span class="text-muted" ng-cloak ng-show="newgame.chipStack.$valid && BBCount != null">{{ BBCount }} BB's</span>
+					<input class="form-control mg-top-bot-5" name="chipStack" type="text" placeholder="500"  maxlength="7" required ng-required="true" ng-maxlength="7" ng-pattern="/^[0-9]+$/" ng-model="chipStack" chip-stack="bigBlind" ng-focus />
 					
 					<% if (errors.chipStack) { %>
-						<div class="alert alert-danger"><p><%= errors.chipStack.msg %></p></div>
+						<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$pristine"><p><%= errors.chipStack.msg %></p></div>
 					<% } %>
 
 					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.required">
@@ -76,7 +75,7 @@
 						<span>The chip amount must be a whole number!</span>
 					</div>
 
-					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.range">
+					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.range && !newgame.chipStack.$error.required">
 						<span>The chip amount must be between {{ 5 * bigBlind }} (5 BB's) and {{ 100 * bigBlind }} (100 BB's).</span>
 					</div>
 
@@ -113,11 +112,11 @@
 					</div>
 				</div>
 
-				<div class="form-group">
 
-					<input type="submit" class="btn btn-lg btn-block btn-primary" value="Create New Game" />
 
-				</div>
+					<input type="submit" class="btn btn-lg btn-block btn-primary mg-top-bot-5" value="Create New Game" ng-disabled="newgame.$invalid" />
+
+
 
 			</form>
 		</div>

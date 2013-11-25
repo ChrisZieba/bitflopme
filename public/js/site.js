@@ -4,6 +4,7 @@ site.controller('CollapseCtrl', function($rootScope, $scope) {
 	$scope.isCollapsed = true;
 });
 
+// register form
 site.controller('RegisterCtrl', ['$scope', function($scope) {
 	$scope.submitted = false;
 	$scope.token = null;
@@ -12,28 +13,29 @@ site.controller('RegisterCtrl', ['$scope', function($scope) {
 site.controller('NewGameCtrl', ['$scope', function($scope) {
 	$scope.submitted = false;
 	$scope.token = null;
+	$scope.BBCount = null;
 
-	$scope.setDefault = function () {
-		$scope.smallBlind = 5;
-		$scope.newgame.smallBlind.$pristine = false;
-		$scope.newgame.smallBlind.$dirty = true;
-		$scope.newgame.smallBlind.$setValidity("required", true);
-		$scope.newgame.smallBlind.$setValidity("pattern", true);
-		$scope.newgame.smallBlind.$setValidity("range", true);
-		$scope.newgame.smallBlind.$setValidity("compare", true);
+	// $scope.setDefault = function () {
+	// 	$scope.smallBlind = 5;
+	// 	$scope.newgame.smallBlind.$pristine = false;
+	// 	$scope.newgame.smallBlind.$dirty = true;
+	// 	$scope.newgame.smallBlind.$setValidity("required", true);
+	// 	$scope.newgame.smallBlind.$setValidity("pattern", true);
+	// 	$scope.newgame.smallBlind.$setValidity("range", true);
+	// 	$scope.newgame.smallBlind.$setValidity("compare", true);
 
-		$scope.bigBlind = 10;
-		$scope.newgame.bigBlind.$pristine = false;
-		$scope.newgame.bigBlind.$dirty = true;
-		$scope.newgame.bigBlind.$setValidity("required", true);
-		$scope.newgame.bigBlind.$setValidity("pattern", true);
-		$scope.newgame.bigBlind.$setValidity("range", true);
-		$scope.newgame.bigBlind.$setValidity("compare", true);
+	// 	$scope.bigBlind = 10;
+	// 	$scope.newgame.bigBlind.$pristine = false;
+	// 	$scope.newgame.bigBlind.$dirty = true;
+	// 	$scope.newgame.bigBlind.$setValidity("required", true);
+	// 	$scope.newgame.bigBlind.$setValidity("pattern", true);
+	// 	$scope.newgame.bigBlind.$setValidity("range", true);
+	// 	$scope.newgame.bigBlind.$setValidity("compare", true);
 
-		$scope.chipStack = 500;
-		$scope.newgame.chipStack.$pristine = false;
-		$scope.newgame.chipStack.$dirty = true;
-	};
+	// 	$scope.chipStack = 500;
+	// 	$scope.newgame.chipStack.$pristine = false;
+	// 	$scope.newgame.chipStack.$dirty = true;
+	// };
 
 }]);
 
@@ -195,9 +197,22 @@ site.directive('smallBlind', [function () {
 				
 				if (isNaN(smallBlind)) return;
 
-
-				ctrl.$setValidity("range", (smallBlind > 0 && smallBlind <= 1000));	
+				var inRange = (smallBlind > 0 && smallBlind <= 1000);
+				var chipStack = scope.chipStack;
+				ctrl.$setValidity("range", inRange);
 				scope.bigBlind = smallBlind * 2;
+
+				// check if the chipstack has been entered
+				if (scope.newgame.chipStack.$dirty) {
+					if (chipStack < 5 *scope.bigBlind || chipStack > 100 * scope.bigBlind) {
+						scope.newgame.chipStack.$setValidity("range", false);
+						scope.BBCount = null;
+					} else {
+						scope.newgame.chipStack.$setValidity("range", true);
+						scope.BBCount = Math.round(chipStack / scope.bigBlind);
+					}
+
+				}
 
 				return;
 			});
@@ -226,8 +241,10 @@ site.directive('chipStack', [function () {
 				// if the range fails, return without setting the big blind
 				if (chipStack < 5 * bigBlind || chipStack > 100 * bigBlind) {
 					ctrl.$setValidity("range", false);
+					scope.BBCount = null;
 				} else {
 					ctrl.$setValidity("range", true);
+					scope.BBCount = Math.round(chipStack / bigBlind);
 				}
 
 				return;
