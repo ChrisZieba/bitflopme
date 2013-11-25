@@ -500,7 +500,7 @@ module.exports = function (app) {
 		// if a player is accessing the table
 		if (helpers.getPlayerID(user.id, game.players) !== null) {
 			res.render('game/play.ejs', { 
-				title: 'Game ' + game.id + ' | Bitflop',
+				title: 'Game ▶ | Bitflop',
 				user: user,
 				room: room,
 				join: false
