@@ -5,15 +5,16 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+				mangle: false
 			},
 			build: {
 				files: {
 					'public/js/app.min.js': 'public/js/app.js',
 					'public/js/site.min.js': 'public/js/site.js',
-					//'public/js/vendor/angular.min.js': 'public/js/vendor/angular.js',
-					//'public/js/vendor/angular-slider.min.js': 'public/js/vendor/angular-slider.js',
-					//'public/js/vendor/adapter.min.js': 'public/js/vendor/adapter.js'
+					'public/js/vendor/angular.min.js': 'public/js/vendor/angular.js',
+					'public/js/vendor/angular-slider.min.js': 'public/js/vendor/angular-slider.js',
+					'public/js/vendor/adapter.min.js': 'public/js/vendor/adapter.js'
 				}
 			},
 		},
