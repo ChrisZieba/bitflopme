@@ -187,7 +187,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
 	$scope.isCollapsed = true;
-console.log(typeof RTCPeerConnection);
+console.log(RTCPeerConnection);
 	// this will get set in adapter.js
 	if (typeof RTCPeerConnection === 'function') {
 
