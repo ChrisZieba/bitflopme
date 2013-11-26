@@ -127,7 +127,10 @@ app.directive('localVideo', ['socket', function (socket) {
 
 					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
-						scope.peer.connection.addStream(stream);
+
+						if (RTCPeerConnection !== null) {
+							scope.peer.connection.addStream(stream);
+						}
 
 						localVideo.src = URL.createObjectURL(stream);
 						localVideo.play();
@@ -139,10 +142,12 @@ app.directive('localVideo', ['socket', function (socket) {
 
 						scope.$apply();
 						// on a page refresh this gets called before the server sends back that the game is ready
-						console.log('emit peer ready')
-						socket.emit('peer:ready', { 
-							room: GLOBAL.ROOM
-						});
+						if (RTCPeerConnection !== null) {
+							socket.emit('peer:ready', { 
+								room: GLOBAL.ROOM
+							});
+						}
+
 					}, function (error) {
 						alert('There was an error connecting your webcam. Make sure it is not being used by any other applications.');
 						return;
@@ -182,7 +187,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
 	$scope.isCollapsed = true;
-
+console.log(RTCPeerConnection);
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
 

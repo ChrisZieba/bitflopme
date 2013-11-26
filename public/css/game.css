@@ -74,12 +74,13 @@ body {
 	left: 225px;
 	width: 225px;
 	position: fixed;
-	top: 52px;
+	top: 53px;
 	bottom:0;
 	height: 100%;
 	border-radius: 0;
 	border: none;
 	background-color: #1e1e1e;
+	overflow-x: hidden;
 	overflow-y: auto;
   }
 
@@ -170,7 +171,7 @@ body {
 	border-style: solid;
 	border-color: #bce8f1;
 	text-align: center;
-	margin: 0 4px 10px 4px;
+	margin: 15px 4px 10px 4px;
 }
 
 .notify-label {
