@@ -128,7 +128,7 @@ app.directive('localVideo', ['socket', function (socket) {
 					getUserMedia({video: true, audio: true}, function (stream) {
 						scope.peer.local.stream = stream;
 
-						if (typeof RTCPeerConnection === 'function') {
+						if (RTCPeerConnection !== null) {
 							scope.peer.connection.addStream(stream);
 						}
 
@@ -142,7 +142,7 @@ app.directive('localVideo', ['socket', function (socket) {
 
 						scope.$apply();
 						// on a page refresh this gets called before the server sends back that the game is ready
-						if (typeof RTCPeerConnection === 'function') {
+						if (RTCPeerConnection !== null) {
 							socket.emit('peer:ready', { 
 								room: GLOBAL.ROOM
 							});
@@ -189,7 +189,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	$scope.isCollapsed = true;
 console.log(RTCPeerConnection);
 	// this will get set in adapter.js
-	if (typeof RTCPeerConnection === 'function') {
+	if (RTCPeerConnection !== null) {
 
 		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
 
@@ -242,7 +242,7 @@ console.log(RTCPeerConnection);
 	// this gets called when both players are ready and have their webcams on
 	$scope.initPeerConnection = function () {
 
-		if (typeof RTCPeerConnection === 'function') {
+		if (RTCPeerConnection !== null) {
 			// Only when both players are in the room can we start broadcasting the streams
 			// this will be initiated by the second player who joins
 			$scope.peer.connection.createOffer(function (desc) {
@@ -464,7 +464,7 @@ console.log(RTCPeerConnection);
 	});
 
 	socket.on('peer:init', function (data) {
-		if (typeof RTCPeerConnection === 'function') {
+		if (RTCPeerConnection !== null) {
 			console.log('peer:init');
 			$scope.initPeerConnection()
 		}
@@ -472,7 +472,7 @@ console.log(RTCPeerConnection);
 
 	socket.on('peer:receive_candidate', function (data) {
 		
-		if (typeof RTCPeerConnection === 'function') {
+		if (RTCPeerConnection !== null) {
 			console.log('peer:candidate has been received');
 			$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 		}
@@ -482,7 +482,7 @@ console.log(RTCPeerConnection);
 
 	socket.on('peer:receive_offer', function (data) {
 
-		if (typeof RTCPeerConnection === 'function') {
+		if (RTCPeerConnection !== null) {
 			console.log('peer:offer has been received');
 
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
@@ -499,7 +499,7 @@ console.log(RTCPeerConnection);
 	});
 
 	socket.on('peer:receive_answer', function (data) {
-		if (typeof RTCPeerConnection === 'function') {
+		if (RTCPeerConnection !== null) {
 			console.log('peer:answer has been received');
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 		}
