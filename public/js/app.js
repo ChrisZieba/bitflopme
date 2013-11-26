@@ -147,7 +147,7 @@ app.directive('localVideo', ['socket', function (socket) {
 								room: GLOBAL.ROOM
 							});
 						}
-						
+
 					}, function (error) {
 						alert('There was an error connecting your webcam. Make sure it is not being used by any other applications.');
 						return;
@@ -187,7 +187,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
 	$scope.isCollapsed = true;
-
+console.log(typeof RTCPeerConnection);
 	// this will get set in adapter.js
 	if (typeof RTCPeerConnection === 'function') {
 
