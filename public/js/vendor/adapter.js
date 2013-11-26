@@ -52,8 +52,6 @@ if (navigator.mozGetUserMedia) {
   // The RTCPeerConnection object.
   RTCPeerConnection = mozRTCPeerConnection;
 
-  console.log(mozRTCPeerConnection);
-
   // The RTCSessionDescription object.
   RTCSessionDescription = mozRTCSessionDescription;
 
