@@ -709,13 +709,12 @@ module.exports = function (app) {
 		var errors = req.validationErrors(true); 
 
 		if (errors) {
-			console.log('errors' + JSON.stringify(errors,null,4))
 			res.json(403, { pattern: true });
 			return;
 		}
 
 		// Check if the username is available
-		models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {console.log(checkUser + ', input: ' + req.param('username'))
+		models.Users.findOne({ 'username': req.param('username') }, function (err, checkUser) {
 			if (err) throw err;
 			if (checkUser) {
 				// the username is not available
