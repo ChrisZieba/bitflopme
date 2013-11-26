@@ -114,7 +114,7 @@ app.directive('localVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 
-			scope.peer.local.element = element;
+			scope.peer.local.element = element[0];
 
 			if (getUserMedia !== null) {
 				var localVideo = element[0];
@@ -167,7 +167,7 @@ app.directive('remoteVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 
-			scope.peer.remote.element = element;
+			scope.peer.remote.element = element[0];
 
 			if (getUserMedia !== null) {
 				var remoteVideo = element[0];
