@@ -62,13 +62,13 @@ if (navigator.mozGetUserMedia) {
 
   // Attach a media stream to an element.
   attachMediaStream = function(element, stream) {
-	console.log("Attaching media stream");
+	//console.log("Attaching media stream");
 	element.mozSrcObject = stream;
 	element.play();
   };
 
   reattachMediaStream = function(to, from) {
-	console.log("Reattaching media stream");
+	//console.log("Reattaching media stream");
 	to.mozSrcObject = from.mozSrcObject;
 	to.play();
   };
@@ -82,7 +82,7 @@ if (navigator.mozGetUserMedia) {
 	return [];
   };
 } else if (navigator.webkitGetUserMedia) {
-  console.log("This appears to be Chrome");
+  //console.log("This appears to be Chrome");
 
   webrtcDetectedBrowser = "chrome";
   webrtcDetectedVersion =
@@ -127,7 +127,7 @@ if (navigator.mozGetUserMedia) {
 	} else if (typeof element.src !== 'undefined') {
 	  element.src = URL.createObjectURL(stream);
 	} else {
-	  console.log('Error attaching stream to element.');
+	  //console.log('Error attaching stream to element.');
 	}
   };
 
@@ -156,7 +156,7 @@ if (navigator.mozGetUserMedia) {
 	};
   }
 } else {
-  console.log("Browser does not appear to be WebRTC-capable");
+  //console.log("Browser does not appear to be WebRTC-capable");
 }
 
 
@@ -176,7 +176,7 @@ function trace(text) {
 	if (text[text.length - 1] == '\n') {
 		text = text.substring(0, text.length - 1);
 	}
-	console.log((performance.now() / 1000).toFixed(3) + ": " + text);
+	//console.log((performance.now() / 1000).toFixed(3) + ": " + text);
 }
 
 if (navigator.mozGetUserMedia) {
@@ -212,13 +212,13 @@ if (navigator.mozGetUserMedia) {
 
 	// Attach a media stream to an element.
 	attachMediaStream = function(element, stream) {
-		console.log("Attaching media stream");
+		//console.log("Attaching media stream");
 		element.mozSrcObject = stream;
 		element.play();
 	};
 
 	reattachMediaStream = function(to, from) {
-		console.log("Reattaching media stream");
+		//console.log("Reattaching media stream");
 		to.mozSrcObject = from.mozSrcObject;
 		to.play();
 	};
@@ -270,7 +270,7 @@ if (navigator.mozGetUserMedia) {
 		} else if (typeof element.src !== 'undefined') {
 			element.src = URL.createObjectURL(stream);
 		} else {
-			console.log('Error attaching stream to element.');
+			//console.log('Error attaching stream to element.');
 		}
 	};
 
@@ -299,5 +299,5 @@ if (navigator.mozGetUserMedia) {
 		};
 	}
 } else {
-	console.log("Browser does not appear to be WebRTC-capable");
+	//console.log("Browser does not appear to be WebRTC-capable");
 }

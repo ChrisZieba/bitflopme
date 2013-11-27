@@ -225,7 +225,7 @@ module.exports = function (app) {
 			models.Users.findOne({ 'username': req.param('username') }, 'id email', function (err, profile) {
 				if (err) throw err;
 
-				if (!profile) {console.log(errors);
+				if (!profile) {
 					res.render('account/password.ejs', { 
 						title: 'Account Password | Bitflop',
 						moment: moment,
@@ -349,7 +349,6 @@ module.exports = function (app) {
 										
 									};
 
-									console.log(req.session)
 									res.redirect(req.session.refererURL || '/account');	
 								});	
 							});

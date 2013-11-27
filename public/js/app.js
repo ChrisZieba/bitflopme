@@ -187,7 +187,6 @@ app.directive('remoteVideo', ['socket', function (socket) {
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
 	$scope.isCollapsed = true;
-console.log(RTCPeerConnection);
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
 
@@ -205,13 +204,9 @@ console.log(RTCPeerConnection);
 		};
 
 		pc.onaddstream = function (event) {
-			console.log('onaddstream called')
 			if ($scope.peer.remote.element) {
-				console.log(event);
 				$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
 				$scope.peer.remote.element.play();
-				console.log($scope.peer.remote.element);
-				console.log('remote video should ow be playing')
 			}
 		};
 	}
@@ -248,7 +243,6 @@ console.log(RTCPeerConnection);
 			$scope.peer.connection.createOffer(function (desc) {
 
 				$scope.peer.connection.setLocalDescription(desc);
-				console.log('send offer');
 				socket.emit('peer:send_offer', { 
 					room: GLOBAL.ROOM,
 					sdp: desc 
@@ -383,8 +377,6 @@ console.log(RTCPeerConnection);
 
 
 	socket.on('game:join', function (data) {
-		console.log('game:join');
-		console.log(data);
 
 		$scope.game.events = data.events;
 		$scope.room.players = data.room.players;
@@ -400,27 +392,11 @@ console.log(RTCPeerConnection);
 			} 
 		}
 
-		//console.log('is the game ready:'+scope.game.ready)
-		// Only when both players are in the room can we start broadcasting the streams
-		// this will be initiated by the second player who joins
-		//console.log('isgameready2' + $scope.game.ready)
-		//if ($scope.game.ready) {
-
-			// make sure only one player intializez the peer connection, in this case it will be the creator of the game
-			//if ($scope.game.player.id === 0) {
-				
-				//$scope.initPeerConnection();
-			//}
-			
-		//}
-
 
 	});
 
 
 	socket.on('game:data', function (data) {
-		console.log('game:data');
-		console.log(data);
 
 		$scope.game.events = data.events;
 		$scope.game.action = data.action;
@@ -430,8 +406,6 @@ console.log(RTCPeerConnection);
 	});
 
 	socket.on('game:end', function (data) {
-		console.log('game:end');
-		console.log(data);
 
 		$scope.game.action = data.action;
 		$scope.game.player = data.player;
@@ -444,7 +418,6 @@ console.log(RTCPeerConnection);
 		$scope.game.history = data.history;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;
-		console.log('game:leave' + JSON.stringify(data.room));
 
 
 		if (data.action) $scope.game.action = data.action;
@@ -456,8 +429,6 @@ console.log(RTCPeerConnection);
 	});
 
 	socket.on('game:disconnect', function (data) {
-		console.log('game:disconnect');
-		console.log(data);
 
 		window.location.reload();
 
@@ -465,7 +436,6 @@ console.log(RTCPeerConnection);
 
 	socket.on('peer:init', function (data) {
 		if (RTCPeerConnection !== null) {
-			console.log('peer:init');
 			$scope.initPeerConnection()
 		}
 	});
@@ -473,7 +443,6 @@ console.log(RTCPeerConnection);
 	socket.on('peer:receive_candidate', function (data) {
 		
 		if (RTCPeerConnection !== null) {
-			console.log('peer:candidate has been received');
 			$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 		}
 
@@ -483,7 +452,6 @@ console.log(RTCPeerConnection);
 	socket.on('peer:receive_offer', function (data) {
 
 		if (RTCPeerConnection !== null) {
-			console.log('peer:offer has been received');
 
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 			$scope.peer.connection.createAnswer(function (desc) {
@@ -500,7 +468,6 @@ console.log(RTCPeerConnection);
 
 	socket.on('peer:receive_answer', function (data) {
 		if (RTCPeerConnection !== null) {
-			console.log('peer:answer has been received');
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 		}
 	});
