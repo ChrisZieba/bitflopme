@@ -14,7 +14,8 @@ module.exports = function(grunt) {
 					'public/js/site.min.js': 'public/js/site.js',
 					'public/js/vendor/angular.min.js': 'public/js/vendor/angular.js',
 					'public/js/vendor/angular-slider.min.js': 'public/js/vendor/angular-slider.js',
-					'public/js/vendor/adapter.min.js': 'public/js/vendor/adapter.js'
+					'public/js/vendor/adapter.min.js': 'public/js/vendor/adapter.js',
+					'public/js/vendor/json2.min.js': 'public/js/vendor/json2.js'
 				}
 			},
 		},
