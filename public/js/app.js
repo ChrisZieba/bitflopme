@@ -521,7 +521,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	socket.on('peer:receive_candidate', function (data) {
 		
 		if (RTCPeerConnection !== null) {
-			console.log('pushed ice candidate')
+			console.log('pushed ice candidate');
 			// dont add ice candiadtes until the answer is created
 			//$scope.peer.candidates.push(data.candidate);
 			
@@ -541,7 +541,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
 
 			// Make sure any ice candidates have not been added yet!
-			console.log('4. candiadtes in receive offer:'+ JSON.stringify($scope.peer.candidates,null,4));
+			//console.log('4. candiadtes in receive offer:'+ JSON.stringify($scope.peer.candidates,null,4));
 
 			createAnswer();
 
