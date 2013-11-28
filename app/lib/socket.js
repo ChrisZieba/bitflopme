@@ -471,15 +471,17 @@ exports.listen = function (server, sessionStore, app) {
 					});
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
-					var playerID = helpers.getPlayerID(session.user.id, game.players);
+					//var playerID = helpers.getPlayerID(session.user.id, game.players);
 
 					console.log ('\nis camera ready?' + ready);
 					console.log ('peers:' + JSON.stringify(Games[data.room].room.peers));
 
 					if (ready) {
 						console.log(JSON.stringify(io.sockets.manager.rooms,null,4));
-						console.log(data.room);
-						io.sockets.in(data.room + ':' + playerID).emit('peer:init', { 
+						console.log('data.room' + data.room);
+						console.log('playerID' + playerID);
+
+						io.sockets.socket(socket.id).emit('peer:init', { 
 							uuid: Date.now()
 						});
 					}
