@@ -478,8 +478,9 @@ exports.listen = function (server, sessionStore, app) {
 
 					if (ready) {
 						console.log(JSON.stringify(io.sockets.manager.rooms,null,4));
-						console.log('data.room' + data.room);
+						console.log('data.room:' + data.room);
 						console.log('playerID' + playerID);
+						console.log('socket.id:' + socket.id);
 
 						io.sockets.socket(socket.id).emit('peer:init', { 
 							uuid: Date.now()
