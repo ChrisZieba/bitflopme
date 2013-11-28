@@ -449,7 +449,8 @@ exports.listen = function (server, sessionStore, app) {
 			models.Games.findOne({ id: data.room}, function (err, game) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(502, 'Could not make connection to game');
-
+				if (!socket.handshake.sessionID) throw new Error(503, 'Could not make session connection');
+				
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');

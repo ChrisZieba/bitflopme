@@ -222,7 +222,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 			console.log('6. answer has been sent to other player');
 			console.log('7. add ice candidates');
-			addIceCandidates();
+			//addIceCandidates();
 
 		});
 
@@ -271,7 +271,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
-		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
+		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}, { optional: {DtlsSrtpKeyAgreement: true}});
 		pc.onicecandidate = onIceCandidate;
 		pc.onaddstream = onAddStream;
 	}
@@ -523,9 +523,9 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if (RTCPeerConnection !== null) {
 			console.log('pushed ice candidate')
 			// dont add ice candiadtes until the answer is created
-			$scope.peer.candidates.push(data.candidate);
+			//$scope.peer.candidates.push(data.candidate);
 			
-			//$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
+			$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 		}
 
 	});
@@ -559,7 +559,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			console.log('8. received answer!')
 
 			console.log('9. addIceCandidates')
-			addIceCandidates();
+			//addIceCandidates();
 
 			
 		}
