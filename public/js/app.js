@@ -114,6 +114,10 @@ app.directive('localVideo', ['socket', function (socket) {
 		restrict: 'A',
 		link: function (scope, element, attrs) {
 
+
+
+
+
 			scope.peer.local.element = element[0];
 
 			if (getUserMedia !== null) {
@@ -186,29 +190,90 @@ app.directive('remoteVideo', ['socket', function (socket) {
 
 app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
 
+	var CANDIDATE_RETRY = 0;
+
+	function waitUntilRemoteStreamStartsFlowing () {
+
+		console.log($scope.peer.remote.element.readyState);//0
+		console.log(HTMLMediaElement.HAVE_CURRENT_DATA);//2
+		console.log($scope.peer.remote.element.paused);//true
+		console.log($scope.peer.remote.element.currentTime);//0
+
+		// (! (0 <= 2 || true || 0 <= 0) )
+		if (!($scope.peer.remote.element.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || $scope.peer.remote.element.paused || $scope.peer.remote.element.currentTime <= 0)) {
+			$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
+		} else {
+			setTimeout(waitUntilRemoteStreamStartsFlowing, 100000);
+		}
+	}
+
+	function createAnswer () {
+
+		console.log('5. creating answer to be sent');
+
+		
+		$scope.peer.connection.createAnswer(function (desc) {
+			$scope.peer.connection.setLocalDescription(desc);
+
+			socket.emit('peer:send_answer', { 
+				room: GLOBAL.ROOM,
+				sdp: desc 
+			});	
+
+			console.log('6. answer has been sent to other player');
+			console.log('7. add ice candidates');
+			addIceCandidates();
+
+		});
+
+
+
+	}
+
+	function addIceCandidates () {
+		
+		console.log('TRYING to add ice candidates');
+
+		if ($scope.peer.candidates.length !== 0) {
+			CANDIDATE_RETRY = 0;
+			for (var i = 0; i < $scope.peer.candidates.length; i+=1) {
+				$scope.peer.connection.addIceCandidate(new RTCIceCandidate($scope.peer.candidates[i]));
+				console.log('ice candidate was added!')
+			}
+		} else if (CANDIDATE_RETRY < 10) {
+			CANDIDATE_RETRY+=1;
+			setTimeout(addIceCandidates,250);
+		}
+	}
+
+	function onIceCandidate (event) {
+		if (!event.candidate) return;
+
+		console.log('ice candidate created and sent out')
+
+		socket.emit('peer:send_candidate', { 
+			room: GLOBAL.ROOM,
+			candidate: event.candidate 
+		});
+	}
+
+	function onAddStream (event) {
+		if (!event) return;
+		if (!$scope.peer.remote.element) return;
+
+		console.log('10. onAddStream has been called')
+		$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
+		//waitUntilRemoteStreamStartsFlowing();
+	}
+
+
 	$scope.isCollapsed = true;
+
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
-
 		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
-
-		pc.onicecandidate = function (event) {
-			if (event.candidate) {
-
-				socket.emit('peer:send_candidate', { 
-					room: GLOBAL.ROOM,
-					candidate: event.candidate 
-				});
-				
-			}
-		};
-
-		pc.onaddstream = function (event) {
-			if ($scope.peer.remote.element) {
-				$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
-				$scope.peer.remote.element.play();
-			}
-		};
+		pc.onicecandidate = onIceCandidate;
+		pc.onaddstream = onAddStream;
 	}
 
 
@@ -237,11 +302,22 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	// this gets called when both players are ready and have their webcams on
 	$scope.initPeerConnection = function () {
 
+		console.log('1. init peer connection');
+
 		if (RTCPeerConnection !== null) {
+
+			// reset the peer connection when a page gets reloaded
+
+				//$scope.peer.connection = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]});
+				//$scope.peer.connection.onicecandidate = onIceCandidate;
+				//$scope.peer.connection.onaddstream = onAddStream;
+
+
 			// Only when both players are in the room can we start broadcasting the streams
 			// this will be initiated by the second player who joins
 			$scope.peer.connection.createOffer(function (desc) {
 
+				console.log('2. local description has been set');
 				$scope.peer.connection.setLocalDescription(desc);
 				socket.emit('peer:send_offer', { 
 					room: GLOBAL.ROOM,
@@ -389,6 +465,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			if ($scope.game.player.id === -1) {
 				$scope.game.player.id = data.player.id;
 				$scope.game.player.name = data.user.name;
+
+				//angular.element(document.querySelector('#local-video')).removeAttr('controls');
 			} 
 		}
 
@@ -443,32 +521,47 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 	socket.on('peer:receive_candidate', function (data) {
 		
 		if (RTCPeerConnection !== null) {
-			$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
+			console.log('pushed ice candidate')
+			// dont add ice candiadtes until the answer is created
+			$scope.peer.candidates.push(data.candidate);
+			
+			//$scope.peer.connection.addIceCandidate(new RTCIceCandidate(data.candidate));
 		}
 
 	});
 
-
+	// This will get recieved by the player who was at the table first, 
+	// since it was the last player to sit at the table who created the offer
 	socket.on('peer:receive_offer', function (data) {
+
+		console.log('3. offer has been received');
 
 		if (RTCPeerConnection !== null) {
 
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-			$scope.peer.connection.createAnswer(function (desc) {
-				$scope.peer.connection.setLocalDescription(desc);
 
-				socket.emit('peer:send_answer', { 
-					room: GLOBAL.ROOM,
-					sdp: desc 
-				});	
-			});
+			// Make sure any ice candidates have not been added yet!
+			console.log('4. candiadtes in receive offer:'+ JSON.stringify($scope.peer.candidates,null,4));
+
+			createAnswer();
+
+
 
 		}
 	});
 
 	socket.on('peer:receive_answer', function (data) {
 		if (RTCPeerConnection !== null) {
+
 			$scope.peer.connection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+
+
+			console.log('8. received answer!')
+
+			console.log('9. addIceCandidates')
+			addIceCandidates();
+
+			
 		}
 	});
 

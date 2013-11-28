@@ -1,5 +1,5 @@
 html {
-	min-width: 435px;
+	min-width: 370px;
 }
 
 body {
@@ -52,6 +52,35 @@ body {
 
 .dropdown-menu .divider {
 	background-color: #333333;
+}
+
+.table {
+	text-align:center;
+ 	padding:5px 0;
+ 	margin-top:10px;
+ 	margin-bottom:10px;
+ 	width: inherit;
+}
+
+.table .board {
+	text-align: left;
+	margin-top:5px;
+}
+
+.card {
+	background-color: #FFFFFF;
+	margin:1px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	overflow: hidden;
+	width: 50px;
+	height: 90px;
+	display: inline-block;
+	box-shadow: 0 1px 4px #002C00;
+	-ie-box-shadow: 0 1px 4px #002c00;
+	-moz-box-shadow: 0 1px 4px #002c00;
+	-webkit-box-shadow: 0 1px 4px #002C00;
 }
 
 /* Edit Below to Customize Widths > 768px */
@@ -145,6 +174,24 @@ body {
 		background-color: #e5e5e5;
 	}
 
+	.table {
+		text-align: center;
+		min-height:200px;
+	 	border-color: #111111;
+	 	border-style: solid;
+	 	border-width: 15px;
+	 	border-radius: 90px;
+	 	padding:20px 25px 5px 25px;
+	 	margin-top:10px;
+	 	width: 410px;
+	 	margin-left: auto;
+	 	margin-right: auto;
+	}
+
+	.table .board {
+		text-align: left;
+		margin-top:10px;
+	}
 }
 
 
@@ -193,28 +240,6 @@ body {
 
 .notify-label-success {
 	background-color: #376e37;
-}
-
-
-
-
-.table {
-	text-align: center;
-	min-height:200px;
- 	border-color: #111111;
- 	border-style: solid;
- 	border-width: 15px;
- 	border-radius: 90px;
- 	padding:20px 25px 5px 25px;
- 	margin-top:10px;
- 	width: 410px;
- 	margin-left: auto;
- 	margin-right: auto;
-}
-
-.table .board {
-	text-align: left;
-	margin-top:10px;
 }
 
 .opp-player-options .btn {

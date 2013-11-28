@@ -44,7 +44,7 @@ exports.listen = function (server, sessionStore, app) {
 		// 24h time out
 		io.set('close timeout', 60*60*24);
 		// reduce logging
-		io.set('log level', 3);
+		io.set('log level', 2);
 		// ssl support
 		io.set('match origin protocol', true);
 		io.set('sync disconnect on unload', true);
@@ -203,6 +203,7 @@ exports.listen = function (server, sessionStore, app) {
 
 				Games[room].game.AddEvent('Dealer', user.name + ' has left the table');
 
+
 				// remove the user from the room
 				if (player.id !== null) {
 					Games[room].room.players = helpers.removeUserFromRoom(user.id, Games[room].room.players);
@@ -210,6 +211,8 @@ exports.listen = function (server, sessionStore, app) {
 				} else {
 					Games[room].room.observers = helpers.removeUserFromRoom(user.id, Games[room].room.observers);
 				}
+
+				console.log('peers in room on disconnect' + JSON.stringify(Games[room].room.peers, null,4));
 
 				var ready = helpers.isGameReady(room, io.sockets.manager.rooms, game.players);
 
@@ -468,9 +471,14 @@ exports.listen = function (server, sessionStore, app) {
 					});
 
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
+					var playerID = helpers.getPlayerID(session.user.id, game.players);
+
+					console.log ('\nis camera ready?' + ready);
+					console.log ('peers:' + JSON.stringify(Games[data.room].room.peers));
 
 					if (ready) {
-						socket.broadcast.to(data.room).emit('peer:init', { 
+
+						io.sockets.in(data.room + ':' + playerID).emit('peer:init', { 
 							uuid: Date.now()
 						});
 					}
@@ -638,123 +646,27 @@ exports.listen = function (server, sessionStore, app) {
 				if (!scope) return;
 
 				disconnect(scope.room, scope.user, scope.player);
-
-// 				models.Games.findOne({ id: scope.room }, function (err, game) {
-// 					if (err) throw new Error(501, err);
-// 					if (!game) throw new Error(505, 'Game could not be found');
-
-
-
-// 					if (!Games.hasOwnProperty(scope.room)) {
-// 						Games[scope.room] = {};
-// 						Games[scope.room].room = {
-// 							id: scope.room,
-// 							players: [],
-// 							observers: []
-// 						};
-// 						Games[scope.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
-// 					};
-
-// 					Games[scope.room].game.AddEvent('Dealer', scope.user.name + ' has left the table');
-
-// 					// remove the user from the room
-// 					if (scope.player.id !== null) {
-// 						Games[scope.room].room.players = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.players);
-// 						Games[scope.room].room.peers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.peers);
-// 					} else {
-// 						Games[scope.room].room.observers = helpers.removeUserFromRoom(scope.user.id, Games[scope.room].room.observers);
-// 					}
-
-// //console.log('\n\n\n\n\n\n\n\n\n\n\n ' +JSON.stringify(Games[scope.room].room,null,4))
-// 					var ready = helpers.isGameReady(scope.room, io.sockets.manager.rooms, game.players);
-
-// 					game.events = Games[scope.room].game.events;
-// 					game.save(function (err) {
-
-// 						if (err) throw err;
-
-// 						// if a player left then the table the game cannot continue
-// 						// check to make sure the game has started (PLAYING)
-// 						// check that a player actually left the table
-// 						if (!ready && game.state === 'PLAYING' && scope.player.id !== null) {
-// console.log('\n\n\n\n\n\n\n\n\n\n\n 555' +JSON.stringify(Games[scope.room].room,null,4));
-
-// 							for (var i = 0; i < Games[scope.room].game.players.length; i++) {
-// 								console.log('\n\n\n\n\n\n\n\n\n\n\n 566' +JSON.stringify(Games[scope.room].room.players,null,4))
-// 								io.sockets.in(scope.room + ':' + Games[scope.room].game.players[i].id).emit('game:leave', { 
-// 									uuid: Date.now(), 
-// 									room: {
-// 										id: scope.room,
-// 										players: Games[scope.room].room.players,
-// 										observers: Games[scope.room].room.observers
-// 									},
-// 									events: Games[scope.room].game.events,
-// 									action: {
-// 										dealer: null,
-// 										turn: null,
-// 										smallBlind: null,
-// 										bigBlind: null,
-// 										pot: 0,
-// 										state: null,
-// 										board: [],
-// 										winner: Games[scope.room].game.getWinner()
-// 									},
-// 									player: {
-// 										id: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].id,
-// 										name:Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].name,
-// 										cards: [],
-// 										chips: 0,
-// 										options: Games[scope.room].game.players[(scope.player.id === 0) ? 1 : 0].Options(true)
-// 									},
-// 									opponent: {
-// 										id: null,
-// 										name: null,
-// 										cards: [],
-// 										chips: 0,
-// 										options: null
-// 									}
-// 								});
-// 							}
-
-
-// 						} else {
-// 							io.sockets.in(scope.room).emit('game:leave', { 
-// 								uuid: Date.now(), 
-// 								user: {
-// 									name: scope.user.name
-// 								},
-// 								events: Games[scope.room].game.events,
-// 								room: {
-// 									id: scope.room,
-// 									players: Games[scope.room].room.players,
-// 									observers: Games[scope.room].room.observers
-// 								}
-// 							});
-// 						}
-
-
-// 					});
-// 				});
 	
 			});
 		});
 
 		socket.on('peer:send_offer', function (data, callback) {
-			console.log('peer:receive_offer');
+			console.log('\npeer:receive_offer\n');
+			// broadcast to other player, but not the orginiaton socket connection
 			socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 				sdp: data.sdp,
 			});
 		});
 
 		socket.on('peer:send_candidate', function (data, callback) {
-			console.log('peer:receive_candidate');
+			console.log('\npeer:receive_candidate\n');
 			socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
 				candidate: data.candidate
 			});
 		});
 
 		socket.on('peer:send_answer', function (data, callback) {
-			console.log('peer:receive_answer');
+			console.log('\npeer:receive_answer\n');
 			socket.broadcast.to(data.room).emit('peer:receive_answer', { 
     			sdp: data.sdp
 			});
