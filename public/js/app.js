@@ -271,7 +271,7 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	// this will get set in adapter.js
 	if (RTCPeerConnection !== null) {
-		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}, { optional: {DtlsSrtpKeyAgreement: true}});
+		var pc = new RTCPeerConnection({"iceServers": [{"url": "stun:stun.l.google.com:19302"}], optional: {DtlsSrtpKeyAgreement: true}});
 		pc.onicecandidate = onIceCandidate;
 		pc.onaddstream = onAddStream;
 	}
