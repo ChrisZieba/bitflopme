@@ -477,7 +477,8 @@ exports.listen = function (server, sessionStore, app) {
 					console.log ('peers:' + JSON.stringify(Games[data.room].room.peers));
 
 					if (ready) {
-
+						console.log(JSON.stringify(io.sockets.manager.rooms,null,4));
+						console.log(data.room);
 						io.sockets.in(data.room + ':' + playerID).emit('peer:init', { 
 							uuid: Date.now()
 						});
