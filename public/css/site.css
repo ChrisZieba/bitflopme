@@ -108,9 +108,9 @@ span.email {
     max-width: 100%;
     margin-bottom: 30px;
     vertical-align: middle;
--webkit-box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
--moz-box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
-box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
+	box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
 }
 
 
@@ -270,6 +270,9 @@ code {
 	margin-bottom: 0;
 }
 
+.step-icon {
+	font-size: 24px;
+}
 
 
 
