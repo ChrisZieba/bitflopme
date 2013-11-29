@@ -1,6 +1,5 @@
 "use strict";
 
-
 exports.development = {
 	base_location: "/home/zieba/Projects/node/bitflopme/",
 	base_url:'http://bitflopme.local:3001',

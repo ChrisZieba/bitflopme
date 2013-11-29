@@ -3,7 +3,8 @@
 var 
 	express = require('express'),
 	app = module.exports = express(),
-	config = require('./config');
+	config = require('./config'),
+	pkg = require('./package.json');
 
 // set the development variables
 app.configure('development', function () {
@@ -75,6 +76,12 @@ app.configure(function () {
 			}
 		}
 
+		next();
+	});
+
+	// make the pkg contents available in views
+	app.use(function(req, res, next) {
+		res.locals.pkg = pkg;
 		next();
 	});
 
