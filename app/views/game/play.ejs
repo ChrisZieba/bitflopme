@@ -22,7 +22,7 @@
 
 		<% } else { %>
 			<link href="/css/vendor/bootstrap.min.css" rel="stylesheet" media="screen" />
-			<link href="/css/build/game.<% pkg.version %>.min.css" rel="stylesheet" media="screen" />
+			<link href="/css/game.<%= pkg.version %>.min.css" rel="stylesheet" media="screen" />
 
 			<script>var GLOBAL = { URL: '<%= settings.base_url %>', ROOM: '<%= room.id %>'};</script>
 			<script src="/socket.io/socket.io.js"></script>
