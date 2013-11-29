@@ -12,13 +12,6 @@
 
 	<div class="row">
 		<div ng-controller="NewGameCtrl" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-			
-			<!--<div class="row">
-				<div class="col-md-12">
-					 <p><button type="button" class="btn btn-link" ng-click="setDefault();"><span class="glyphicon glyphicon-thumbs-up"></span> Set Default Values</button></p>
-				</div>
-
-			</div>-->
 
 			<form name="newgame" role="form" method="post" action="/game/new" class="well" novalidate>
 				<input type="hidden" name="_csrf" value="<%= token %>" ng-init="token = '<%= token %>'"/>

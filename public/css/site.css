@@ -155,10 +155,6 @@ box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
 	margin:0;
 }
 
-#footer ul li.logo {
-	color:#999999;
-	padding-right:10px;
-}
 
 #footer ul li {
 	font-size:90%;
@@ -169,11 +165,6 @@ box-shadow: 2px 5px 8px 0px rgba(0,0,0,0.75);
 
 #footer ul > li > a {
 	padding: 0 10px 0 10px;
-}
-
-#footer .navbar-brand {
-	font-size:95%;
-	padding:15px 15px;
 }
 
 /* Custom page CSS

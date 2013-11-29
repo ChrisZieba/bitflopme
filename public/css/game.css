@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  margin-top: 50px;
+  margin-top: 60px;
   background-color: #181818;
   color: #999;
 }
@@ -218,7 +218,7 @@ body {
 	border-style: solid;
 	border-color: #bce8f1;
 	text-align: center;
-	margin: 15px 4px 10px 4px;
+	margin: 0px 4px 15px 4px;
 }
 
 .notify-label {

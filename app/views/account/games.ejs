@@ -54,9 +54,9 @@
 										<% if (games.active[i].state === 'PLAYING') { %>
 
 											<% if (games.active[i].creator.id === user.id) { %>
-												<a href="/user/<%= games.active[i].players[1].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[1].name %></a>
+												<a href="/user/<%= games.active[i].players[1].name %>"><i class="fa fa-user"></i> <%= games.active[i].players[1].name %></a>
 											<% } else { %>
-												<a href="/user/<%= games.active[i].players[0].name %>"><span class="glyphicon glyphicon-user"></span> <%= games.active[i].players[0].name %></a>
+												<a href="/user/<%= games.active[i].players[0].name %>"><i class="fa fa-user"></i> <%= games.active[i].players[0].name %></a>
 											<% } %>
 
 										<% } else { %>
@@ -84,7 +84,7 @@
 										<% } %>
 									</td>
 									<td>
-										<a href="/game/play/<%= games.active[i].id %>" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-new-window"></span></a>
+										<a href="/game/play/<%= games.active[i].id %>" class="btn btn-primary btn-md btn-block"><i class="fa fa-share-square"></i></a>
 									</td>
 								</tr>
 							<% } %>

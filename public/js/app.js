@@ -179,9 +179,34 @@ app.directive('remoteVideo', ['socket', function (socket) {
 				// check if the video is visible
 				// the video becomes available when a player sits
 				if (remoteVideo) {
-
 					element.removeAttr('controls');
 				}
+
+				// watch to see if the player disconnects remove the stream
+				scope.$watch('game.opponent.name', function (name) {
+
+					if (!name) {
+						//element.removeAttr('src');
+
+
+						if (scope.peer.remote.stream) {
+
+							element.attr('src', '/img/webcam.png');
+
+							if (scope.peer.connection && scope.peer.connection.removeStream) {
+								scope.peer.connection.removeStream(scope.peer.remote.stream);
+							}
+
+
+							if (scope.peer.remote.stream.stop) {
+								scope.peer.remote.stream.stop();
+							}
+						}
+
+
+					}
+
+				});
 			}
 
 		}
@@ -261,7 +286,8 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if (!event) return;
 		if (!$scope.peer.remote.element) return;
 
-		console.log('10. onAddStream has been called')
+		console.log('10. onAddStream has been called');
+		$scope.peer.remote.stream = event.stream;
 		$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
 		//waitUntilRemoteStreamStartsFlowing();
 	}

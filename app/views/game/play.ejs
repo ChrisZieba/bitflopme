@@ -5,6 +5,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 		<meta charset="utf-8"/>
 
+		<meta name="robots" content="nofollow" />
         <noscript><meta http-equiv="refresh" content="0; URL=bitflop.me"/></noscript>
 
 		<!--[if lte IE 8]>
@@ -13,24 +14,7 @@
 
 
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="Bitflop is fun new way to play poker against your opponents using a webcam." />
-  		<meta name="keywords" content="bitflop, bitflopme, poker, telepoker, video poker, video holdem, texas holdem poker, webcam poker, webrtc poker, video conference poker, bitcoin poker, virtual poker" />
-
-		<meta property="og:site_name" content="Bitflop" />
-		<meta property="og:title" content="Bitflop - Play Online Poker Against your Opponents using a Webcam" />
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://bitflop.me" />
-		<meta property="og:image" content="https://bitflop.me/img/bitflop.png" />
-		<meta property="fb:page_id" content="http://www.facebook.com/bitflop" />
-
-		<meta name="twitter:card" content="summary">
-		<meta name="twitter:site" content="@bitflopme">
-		<meta name="twitter:title" content="Bitflop - Play Online Poker Against your Opponents using a Webcam">
-		<meta name="twitter:description" content="Bitflop is fun new way to play poker against your opponents using a webcam.">
-		<meta name="twitter:creator" content="@ChrisZieba">
-		<meta name="twitter:image:src" content="https://bitflop.me/img/bitflop.png">
-		<meta name="twitter:domain" content="https://bitflop.me">
+		
 		
 
 		<% if (settings.env === 'development') { %>
@@ -85,13 +69,10 @@
 
 				<div class="side-nav" >
 					<ul class="nav navbar-nav events" scroll-glue ng-model="game.events">
-<!-- 						<li class="game-settings">
-							<span><strong><span class="glyphicon glyphicon-list"></span> Events</strong></span>
-						</li> -->
 						<li ng-repeat="event in game.events | reverse">
 							<span ng-bind-html-unsafe="event.event">{{ event.event }} </span>
 							<br>
-							<span class="event-time"><span class="glyphicon glyphicon-time"></span> <em>{{ fn.msToDateTime(event.time) }}</em></span>
+							<span class="event-time"><i class="fa fa-clock-o"></i> <em>{{ fn.msToDateTime(event.time) }}</em></span>
 						</li>
 					</ul>
 				</div>
@@ -102,11 +83,11 @@
 
 				<% if (!join) { %>
 					<li class="dropdown" ng-cloak ng-show="media.available">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;<span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-video-camera"></i>&nbsp;<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li>
 								<a ng-click="fn.toggleVideoStream()" href="">
-									<span class="glyphicon glyphicon-minus-sign"></span> 
+									<i class="fa fa-minus-square"></i>
 									<span ng-switch="media.video">
 										<span ng-switch-when="true">
 											<span>Stop Broadcasting Video</span> 
@@ -120,11 +101,11 @@
 						</ul>
 					</li>
 					<li class="dropdown" ng-cloak ng-show="media.available">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-headphones"></span>&nbsp;<span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-microphone"></i>&nbsp;<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li>
 								<a ng-click="fn.toggleAudioStream()" href="">
-									<span class="glyphicon glyphicon-minus-sign"></span> 
+									<i class="fa fa-minus-square"></i>
 
 									<span ng-switch="media.audio">
 										<span ng-switch-when="true">
@@ -142,7 +123,7 @@
 				<% } %>
 
 				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-question-sign"></span> Info <span class="caret"></span></a>
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-question-circle"></i> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
 							<a href=""><strong>Small Blind:</strong> <%= game.settings.smallBlind %></a>
@@ -164,17 +145,17 @@
 				</li>
 
 				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Room <span class="badge">{{room.players.length + room.observers.length}}</span> <span class="caret"></span></a>
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> <span class="badge">{{room.players.length + room.observers.length}}</span> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li ng-repeat="player in room.players">
 							<a href="">
-								<span class="glyphicon glyphicon-user"></span>
+								<i class="fa fa-user"></i>
 								<span>{{ player.name }}</span> <span class="label label-danger">Player</span>
 							</a>
 						</li>
 						<li ng-repeat="observer in room.observers">
 							<a href="">
-								<span class="glyphicon glyphicon-user"></span>
+								<i class="fa fa-user"></i>
 								<span>{{ observer.name }}</span>
 							</a>
 						</li>
@@ -182,16 +163,16 @@
 				</li>
 
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= user.name %>&nbsp;<span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
+						<li><a href="/account/games"><i class="fa fa-list"></i> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
 						<li class="divider"></li>
-						<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
-						<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
+						<li><a href="/game/new"><i class="fa fa-plus"></i> Create a Game</a></li>
+						<li><a href="/game/join"><i class="fa fa-share-square-o"></i> Join a Game</a></li>
 						<li class="divider"></li>
-						<li><a type="button" href="/user/<%= user.name %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-						<li><a href="/account"><span class="glyphicon glyphicon-wrench"></span> Account</a></li>
-						<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+						<li><a type="button" href="/user/<%= user.name %>"><i class="fa fa-user"></i> Profile</a></li>
+						<li><a href="/account"><i class="fa fa-gear"></i> Account</a></li>
+						<li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
 					</ul>
 				</li>
 			  </ul>
@@ -208,22 +189,22 @@
 					<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.id %>">
 						<input type="hidden" name="_csrf" value="<%= token %>"/>
 
-						<button type="submit" class="btn btn-md btn-block btn-success"><strong>Play Against <span class="notify-label notify-label-success"><span class="glyphicon glyphicon-user"></span> <%= room.creator.name%></span></strong></button>
+						<button type="submit" class="btn btn-md btn-block btn-success"><strong>Play Against <span class="notify-label notify-label-success"><i class="fa fa-user"></i> <%= room.creator.name%></span></strong></button>
 					</form>
 				<% } else { %>
 
 					<% if (room.creator.id === user.id) { %>
 
 						<div class="notify-player wrap">
-							<span class="glyphicon glyphicon-link"></span>
+							<i class="fa fa-link"></i>
 							<span><strong>Waiting for opponent: </strong></span>
 								
 							<span class="notify-label notify-label-primary">https://bitflop.me/game/play/<%= room.id %></span>
 						</div>
 					<% } else { %>
 						<div class="notify-player wrap">
-							<span class="glyphicon glyphicon-time"></span>
-							<span><strong>Waiting for <span class="notify-label notify-label-primary"><span class="glyphicon glyphicon-user"></span> <%= room.creator.name%></span> to join.</strong></span>
+							<i class="fa fa-clock-o"></i>
+							<span><strong>Waiting for <span class="notify-label notify-label-primary"><i class="fa fa-user"></i> <%= room.creator.name%></span> to join.</strong></span>
 						</div>
 					<% } %>
 
@@ -248,7 +229,7 @@
 							<div class="row">
 								<div class="col-md-12">
 									<% if (!join) { %>
-										<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id }" remote-video poster="/img/webcam.png" autoplay controls preload="none"></video>
+										<video id="remote-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.opponent.id && game.opponent.name != null}" remote-video poster="/img/webcam.png" autoplay controls preload="none"></video>
 										
 										<div ng-cloak ng-show="game.opponent.name != null" class="opp-player-name">
 											<span class="player-name">{{ game.opponent.name }}</span>
@@ -284,7 +265,7 @@
 								<div class="col-md-12">
 
 									<% if (!join) { %>
-										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id }" local-video autoplay poster="/img/webcam.png" controls preload="none"></video>
+										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id && game.player.name != null}" local-video autoplay poster="/img/webcam.png" controls preload="none"></video>
 										
 										<div ng-cloak ng-show="game.player.name != null" class="opp-player-name">
 											<span class="player-name">{{ game.player.name }}</span>

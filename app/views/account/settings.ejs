@@ -10,7 +10,7 @@
 <div class="container">
 
 
-	<h3><%= profile.username %></h3>
+	<h3><i class="fa fa-user"></i> <%= profile.username %></h3>
 	<p><strong>User since:</strong> <%= moment(profile.created).format("MMM D, YYYY h:mma ZZ") %> <em>(<%= moment().from(moment(profile.created), true) %>)</em></p>
 
 </div>

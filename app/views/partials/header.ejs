@@ -62,21 +62,21 @@
 
 							<% if (user.authenticated) { %>
 								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <%= user.name %>&nbsp;<span class="caret"></span></a>
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%= user.name %>&nbsp;<span class="caret"></span></a>
 									<ul class="dropdown-menu" role="menu">
-										<li><a href="/account/games"><span class="glyphicon glyphicon-list"></span> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
+										<li><a href="/account/games"><i class="fa fa-list"></i> My Games <span class="badge"><%= user.games.active.length %></span></a></li>
 										<li class="divider"></li>
-										<li><a href="/game/new"><span class="glyphicon glyphicon-plus"></span> Create a Game</a></li>
-										<li><a href="/game/join"><span class="glyphicon glyphicon-new-window"></span> Join a Game</a></li>
+										<li><a href="/game/new"><i class="fa fa-plus"></i> Create a Game</a></li>
+										<li><a href="/game/join"><i class="fa fa-share-square-o"></i> Join a Game</a></li>
 										<li class="divider"></li>
-										<li><a type="button" href="/user/<%= user.name %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-										<li><a href="/account"><span class="glyphicon glyphicon-wrench"></span> Account</a></li>
-										<li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+										<li><a type="button" href="/user/<%= user.name %>"><i class="fa fa-user"></i> Profile</a></li>
+										<li><a href="/account"><i class="fa fa-gear"></i> Account</a></li>
+										<li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
 									</ul>
 								</li>
 							<% } else { %>
-								<li><a href="/login">Login</a></li>
-								<li><a href="/register" class="action"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+								<li><a href="/login"><i class="fa fa-sign-in"></i> Login</a></li>
+								<li><a href="/register" class="action"><i class="fa fa-share-square-o"></i> Register</a></li>
 							<% } %>
 						</ul>
 					</div><!--/.nav-collapse -->
