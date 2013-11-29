@@ -10,8 +10,8 @@ module.exports = function(grunt) {
 			},
 			build: {
 				files: {
-					'public/js/build/app.<%= pkg.version %>.min.js': 'public/js/app.js',
-					'public/js/build/site.<%= pkg.version %>.min.js': 'public/js/site.js',
+					'public/js/app.<%= pkg.version %>.min.js': 'public/js/app.js',
+					'public/js/site.<%= pkg.version %>.min.js': 'public/js/site.js',
 					'public/js/vendor/angular.min.js': 'public/js/vendor/angular.js',
 					'public/js/vendor/angular-slider.min.js': 'public/js/vendor/angular-slider.js',
 					'public/js/vendor/adapter.min.js': 'public/js/vendor/adapter.js'
@@ -21,8 +21,8 @@ module.exports = function(grunt) {
 		cssmin: {
 			combine: {
 				files: {
-					'public/css/build/site.<%= pkg.version %>.min.css' : ['public/css/site.css'],
-					'public/css/build/game.<%= pkg.version %>.min.css' : ['public/css/game.css'],
+					'public/css/site.<%= pkg.version %>.min.css' : ['public/css/site.css'],
+					'public/css/game.<%= pkg.version %>.min.css' : ['public/css/game.css'],
 					'public/css/vendor/bootstrap.min.css': ['public/css/vendor/bootstrap.css'],
 				}
 			}
