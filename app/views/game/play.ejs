@@ -181,44 +181,54 @@
 
 		  <div id="page-wrapper">
 
-			<div ng-cloak ng-show="game.action.state == null">
+				<div ng-switch="game.action.state">
+					<div ng-cloak ng-switch-when="null">
+						<% if (join) { %>
+							<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.id %>">
+								<input type="hidden" name="_csrf" value="<%= token %>"/>
+
+								<button type="submit" class="btn btn-md btn-block btn-success"><strong>Play Against <span class="notify-label notify-label-success"><i class="fa fa-user"></i> <%= room.creator.name%></span></strong></button>
+							</form>
+						<% } else { %>
+
+							<% if (room.creator.id === user.id) { %>
+
+								<% if (room.players.length === 2) { %>
+									<div class="notify-player wrap">
+										<i class="fa fa-clock-o"></i>
+										<span><strong>Waiting for <span class="notify-label notify-label-primary"><i class="fa fa-user"></i> <%= room.players[1].name %></span> to join.</strong></span>
+									</div>
+
+								<% } else { %>
+
+									<div class="notify-player wrap">
+										<i class="fa fa-link"></i>
+										<span><strong>Invite another player: </strong></span>
+										<span class="notify-label notify-label-primary">https://bitflop.me/game/play/<%= room.id %></span>
+									</div>
+								<% } %>
 
 
-				<% if (join) { %>
+							<% } else { %>
+								<div class="notify-player wrap">
+									<i class="fa fa-clock-o"></i>
+									<span><strong>Waiting for <span class="notify-label notify-label-primary"><i class="fa fa-user"></i> <%= room.creator.name%></span> to join.</strong></span>
+								</div>
+							<% } %>
 
-					<form class="form-horizontal" role="form" method="post" action="/game/join/<%= room.id %>">
-						<input type="hidden" name="_csrf" value="<%= token %>"/>
+						<% } %>
+					</div>
 
-						<button type="submit" class="btn btn-md btn-block btn-success"><strong>Play Against <span class="notify-label notify-label-success"><i class="fa fa-user"></i> <%= room.creator.name%></span></strong></button>
-					</form>
-				<% } else { %>
-
-					<% if (room.creator.id === user.id) { %>
-
-						<div class="notify-player wrap">
-							<i class="fa fa-link"></i>
-							<span><strong>Waiting for opponent: </strong></span>
-								
-							<span class="notify-label notify-label-primary">https://bitflop.me/game/play/<%= room.id %></span>
+					<div ng-cloak ng-switch-when="END">
+						<div class="notify-player">
+							<strong>
+								<span class="notify-label notify-label-primary">{{ game.action.winner }}</span> 
+								<span>Wins Match!</span>
+							</strong>
 						</div>
-					<% } else { %>
-						<div class="notify-player wrap">
-							<i class="fa fa-clock-o"></i>
-							<span><strong>Waiting for <span class="notify-label notify-label-primary"><i class="fa fa-user"></i> <%= room.creator.name%></span> to join.</strong></span>
-						</div>
-					<% } %>
-
-				<% } %>
-
-			</div>
-
-
-			<div ng-cloak ng-show="game.action.state == 'END'">
-				<div class="notify-player">
-					<strong><span class="notify-label notify-label-primary">{{ game.action.winner }}</span> Wins Match!</strong>
+					</div>
 				</div>
 
-			</div>
 
 			<div class="row">
 

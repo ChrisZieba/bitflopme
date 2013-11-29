@@ -490,6 +490,7 @@ module.exports = function (app) {
 		var user = res.locals.user;
 		var room = {
 			id: game.id,
+			players: game.players,
 			creator: {
 				id: game.creator.id,
 				name: game.creator.name
@@ -499,7 +500,7 @@ module.exports = function (app) {
 		// if a player is accessing the table
 		if (helpers.getPlayerID(user.id, game.players) !== null) {
 			res.render('game/play.ejs', { 
-				title: 'Game ▶ | Bitflop',
+				title: 'Game Play | Bitflop',
 				user: user,
 				room: room,
 				join: false

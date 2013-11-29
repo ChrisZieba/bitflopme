@@ -43,11 +43,11 @@
 <url>
   <loc>https://bitflop.me/terms</loc>
   <changefreq>monthly</changefreq>
-  <priority>0.3</priority>
+  <priority>0.1</priority>
 </url>
 <url>
   <loc>https://bitflop.me/privacy</loc>
   <changefreq>monthly</changefreq>
-  <priority>0.3</priority>
+  <priority>0.1</priority>
 </url>
 </urlset>
