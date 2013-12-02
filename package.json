@@ -1,7 +1,7 @@
 {
   	"name": "Bitflop",
   	"description": "Bitflop lets you play heads-up poker tournaments with your webcam.",
-  	"version": "0.3.135",
+  	"version": "0.3.137",
   	"private": true,
 	"devDependencies": {
 		"grunt": "~0.4.1",

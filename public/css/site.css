@@ -78,7 +78,7 @@ span.email {
 }
 .jumbotron {
 
-	background: #222222;
+	background: #181818;
 	padding-top: 50px;
 	padding-bottom: 25px;
 	padding-left:0px;
@@ -96,7 +96,7 @@ span.email {
 }
 .jumbotron .btn {
 	margin-top: 10px;
-	margin-right: 20px;
+	margin-right: 15px;
 	margin-bottom: 10px;
 }
 
@@ -108,9 +108,6 @@ span.email {
     max-width: 100%;
     margin-bottom: 30px;
     vertical-align: middle;
-	-webkit-box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
-	box-shadow: 2px 3px 6px 0px rgba(0,0,0,0.75);
 }
 
 
@@ -196,7 +193,7 @@ code {
 
 
 #wrap .navbar-inverse {
-	background-color: #222222;
+	background-color: #181818;
 	text-shadow: none;
 	border-color: #000;
 	border-width: 0 0 1px;

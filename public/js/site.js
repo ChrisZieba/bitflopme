@@ -15,28 +15,6 @@ site.controller('NewGameCtrl', ['$scope', function($scope) {
 	$scope.token = null;
 	$scope.BBCount = null;
 
-	// $scope.setDefault = function () {
-	// 	$scope.smallBlind = 5;
-	// 	$scope.newgame.smallBlind.$pristine = false;
-	// 	$scope.newgame.smallBlind.$dirty = true;
-	// 	$scope.newgame.smallBlind.$setValidity("required", true);
-	// 	$scope.newgame.smallBlind.$setValidity("pattern", true);
-	// 	$scope.newgame.smallBlind.$setValidity("range", true);
-	// 	$scope.newgame.smallBlind.$setValidity("compare", true);
-
-	// 	$scope.bigBlind = 10;
-	// 	$scope.newgame.bigBlind.$pristine = false;
-	// 	$scope.newgame.bigBlind.$dirty = true;
-	// 	$scope.newgame.bigBlind.$setValidity("required", true);
-	// 	$scope.newgame.bigBlind.$setValidity("pattern", true);
-	// 	$scope.newgame.bigBlind.$setValidity("range", true);
-	// 	$scope.newgame.bigBlind.$setValidity("compare", true);
-
-	// 	$scope.chipStack = 500;
-	// 	$scope.newgame.chipStack.$pristine = false;
-	// 	$scope.newgame.chipStack.$dirty = true;
-	// };
-
 }]);
 
 site.directive('collapse', [function () {

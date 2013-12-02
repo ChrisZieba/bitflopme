@@ -1038,7 +1038,7 @@ Table.prototype.NewRound = function() {
 	var smallBlind, bigBlind;
 
 	this.AddEvent('Dealer','Starting new round');
-	this.AddEvent('Dealer','Dealing hold cards');
+	this.AddEvent('Dealer','Dealing hole cards');
 
 	//Deal 2 cards to each player
 	for (var i = 0; i < this.players.length; i += 1) {
