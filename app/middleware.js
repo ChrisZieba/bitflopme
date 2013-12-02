@@ -58,7 +58,6 @@ exports.validateUser = function (req, res, next) {
 exports.refererURL = function (req, res, next) {
 
 	req.session.refererURL = req.url || '/';
-	console.log(req.url);
 	next();
 
 };

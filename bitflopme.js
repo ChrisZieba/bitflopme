@@ -62,7 +62,7 @@ app.configure(function () {
 
 	// generae a toekn for the form...the form input must be created
 	app.use(function(req, res, next){
-		res.locals.token = req.session._csrf || (req.session._csrf = uid(24));console.log(res.locals.token);
+		res.locals.token = req.session._csrf || (req.session._csrf = uid(24));
 		next();
 	});
 

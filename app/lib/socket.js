@@ -212,7 +212,7 @@ exports.listen = function (server, sessionStore, app) {
 					Games[room].room.observers = helpers.removeUserFromRoom(user.id, Games[room].room.observers);
 				}
 
-				console.log('peers in room on disconnect' + JSON.stringify(Games[room].room.peers, null,4));
+				//console.log('peers in room on disconnect' + JSON.stringify(Games[room].room.peers, null,4));
 
 				var ready = helpers.isGameReady(room, io.sockets.manager.rooms, game.players);
 
@@ -450,7 +450,7 @@ exports.listen = function (server, sessionStore, app) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(502, 'Could not make connection to game');
 				if (!socket.handshake.sessionID) throw new Error(503, 'Could not make session connection');
-				
+
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
 					if (err) throw err;
 					if (!session) throw new Error(504, 'Could not make connection to session');
@@ -474,14 +474,14 @@ exports.listen = function (server, sessionStore, app) {
 					var ready = helpers.isCameraReady(Games[data.room].room.peers);
 					//var playerID = helpers.getPlayerID(session.user.id, game.players);
 
-					console.log ('\nis camera ready?' + ready);
-					console.log ('peers:' + JSON.stringify(Games[data.room].room.peers));
+					//console.log ('\nis camera ready?' + ready);
+					//console.log ('peers:' + JSON.stringify(Games[data.room].room.peers));
 
 					if (ready) {
-						console.log(JSON.stringify(io.sockets.manager.rooms,null,4));
-						console.log('data.room:' + data.room);
+						//console.log(JSON.stringify(io.sockets.manager.rooms,null,4));
+						//console.log('data.room:' + data.room);
 
-						console.log('socket.id:' + socket.id);
+						//console.log('socket.id:' + socket.id);
 
 						io.sockets.socket(socket.id).emit('peer:init', { 
 							uuid: Date.now()
@@ -656,7 +656,7 @@ exports.listen = function (server, sessionStore, app) {
 		});
 
 		socket.on('peer:send_offer', function (data, callback) {
-			console.log('\npeer:receive_offer\n');
+			//console.log('\npeer:receive_offer\n');
 			// broadcast to other player, but not the orginiaton socket connection
 			socket.broadcast.to(data.room).emit('peer:receive_offer', { 
 				sdp: data.sdp,
@@ -664,14 +664,14 @@ exports.listen = function (server, sessionStore, app) {
 		});
 
 		socket.on('peer:send_candidate', function (data, callback) {
-			console.log('\npeer:receive_candidate\n');
+			//console.log('\npeer:receive_candidate\n');
 			socket.broadcast.to(data.room).emit('peer:receive_candidate', { 
 				candidate: data.candidate
 			});
 		});
 
 		socket.on('peer:send_answer', function (data, callback) {
-			console.log('\npeer:receive_answer\n');
+			//console.log('\npeer:receive_answer\n');
 			socket.broadcast.to(data.room).emit('peer:receive_answer', { 
     			sdp: data.sdp
 			});
