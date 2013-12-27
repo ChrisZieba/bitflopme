@@ -673,6 +673,14 @@ module.exports = function (app) {
 		});
 	});
 
+	app.get('/changelog',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
+		// 	Show the errors on the form
+		res.render('changelog.ejs', { 
+			title: 'Change Log | Bitflop',
+			user: res.locals.user
+		});
+	});
+
 	app.get('/terms',  [middleware.refererURL, middleware.getUserGames], function (req, res) {
 		// 	Show the errors on the form
 		res.render('terms.ejs', { 

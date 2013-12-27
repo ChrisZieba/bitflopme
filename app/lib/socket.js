@@ -73,8 +73,6 @@ exports.listen = function (server, sessionStore, app) {
 			sessionStore.get(data.sessionID, function (err, session) {
 
 				if (err || !session) return accept(null, false);
-
-				// save the session data
 				//data.session = session;
 				//data.session.url = data.headers.referer;
 				return accept(null, true);
@@ -187,6 +185,8 @@ exports.listen = function (server, sessionStore, app) {
 
 		// Games is available to this function
 		var disconnect = function (room, user, player) {
+
+			console.log('save 3');
 			models.Games.findOne({ id: room }, function (err, game) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(505, 'Game could not be found');
@@ -217,6 +217,8 @@ exports.listen = function (server, sessionStore, app) {
 				var ready = helpers.isGameReady(room, io.sockets.manager.rooms, game.players);
 
 				game.events = Games[room].game.events;
+
+				console.log('save 5');
 				game.save(function (err) {
 
 					if (err) throw err;
@@ -449,6 +451,7 @@ exports.listen = function (server, sessionStore, app) {
 			models.Games.findOne({ id: data.room}, function (err, game) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(502, 'Could not make connection to game');
+				if (!socket.handshake) throw new Error(503, 'Could not make session connection');
 				if (!socket.handshake.sessionID) throw new Error(503, 'Could not make session connection');
 
 				sessionStore.get(socket.handshake.sessionID, function (err, session) {
@@ -531,10 +534,9 @@ exports.listen = function (server, sessionStore, app) {
 					var playerID = helpers.getPlayerID(session.user.id, game.players);
 					var ready = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
 
-
-
 					//	Are both players sitting at the table?
 					if (!ready) return;
+
 
 					// Check if the game object is in memory
 					if (!Games.hasOwnProperty(data.room)) {
@@ -593,48 +595,55 @@ exports.listen = function (server, sessionStore, app) {
 						// Add a new round to the history 
 						rounds.push(round);
 
-						// 	Update the database
-						game.events = Games[data.room].game.events;
-						game.rounds = rounds;
-						game.state = (isGameOver) ? 'END' : 'PLAYING'; 
-						game.save(function (err) {
-							if (err) throw err;
+						console.log('save 2');
+						//if (err) throw err;
 
-							var gameState = Games[data.room].game.getState();
-							var roundData = Games[data.room].game.getRoundData();
+						var gameState = Games[data.room].game.getState();
+						var roundData = Games[data.room].game.getRoundData();
 
 
-							// send out the data to the player
-							sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
+						// send out the data to the player
+						sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
 
-							// If a player folded we need to start a new round and send the new cards with Action()
-							if (isRedlineRound) {
+						// If a player folded we need to start a new round and send the new cards with Action()
+						if (isRedlineRound) {
+							Games[data.room].game.NewRound();
+							setTimeout(function () {Action();}, 2000);
+						} else if (isRoundOver) {
+							if (gameState === 'SHOWDOWN') {
+								// We need to start a new round of the game
 								Games[data.room].game.NewRound();
-								setTimeout(function () {Action();}, 2000);
-							} else if (isRoundOver) {
-
-								if (gameState === 'SHOWDOWN') {
-
-									Games[data.room].game.NewRound();
-									setTimeout(function () {Action();}, 5000);
-								} else if (gameState === 'RIVER') {
-
-									setTimeout(function () {Action();}, 5000);
-
-								} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
-
-									setTimeout(function () { Action(); }, 1000);
-								}
-							} else if (isGameOver) {
-								setTimeout(function () {
-									// once the table ends you cannot go back to it
-									endGame(Games[data.room], data.room);
-								}, 15000);
+								setTimeout(function () {Action();}, 5000);
+							} else if (gameState === 'RIVER') {
+								setTimeout(function () {Action();}, 5000);
+							} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
+								setTimeout(function () { Action(); }, 1000);
 							}
-						});
+						} else if (isGameOver) {
+							setTimeout(function () {
+								// once the table ends you cannot go back to it
+								endGame(Games[data.room], data.room);
+							}, 15000);
+						} 
+
+						if (update) {
+							// 	Update the database
+							game.events = Games[data.room].game.events;
+							game.rounds = rounds;
+							game.state = (isGameOver) ? 'END' : 'PLAYING'; 
+
+							//console.log('save 1');
+
+							// only save at the end
+							game.save(function (err) {
+								if (err) throw err;
+							});
+
+						}
 					};
 
-					setTimeout(function () {Action();}, 1000);
+					// wait 1 second and then run the 
+					setTimeout(function () { Action(); }, 1000);
 
 				});
 

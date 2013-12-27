@@ -219,16 +219,17 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	function waitUntilRemoteStreamStartsFlowing () {
 
-		console.log($scope.peer.remote.element.readyState);//0
-		console.log(HTMLMediaElement.HAVE_CURRENT_DATA);//2
-		console.log($scope.peer.remote.element.paused);//true
-		console.log($scope.peer.remote.element.currentTime);//0
+		console.log('readyState'+ $scope.peer.remote.element.readyState);//0
+		console.log('HAVE_CURRENT_DATA'+ HTMLMediaElement.HAVE_CURRENT_DATA);//2
+		console.log('paused'+ $scope.peer.remote.element.paused);//true
+		console.log('currenttime'+ $scope.peer.remote.element.currentTime);//0
 
 		// (! (0 <= 2 || true || 0 <= 0) )
-		if (!($scope.peer.remote.element.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || $scope.peer.remote.element.paused || $scope.peer.remote.element.currentTime <= 0)) {
-			$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
+		if (! ($scope.peer.remote.element.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || 
+			$scope.peer.remote.element.paused || $scope.peer.remote.element.currentTime <= 0)) {
+			console.log('BOOOOOM');
 		} else {
-			setTimeout(waitUntilRemoteStreamStartsFlowing, 100000);
+			setTimeout(waitUntilRemoteStreamStartsFlowing, 200);
 		}
 	}
 
@@ -287,9 +288,12 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		if (!$scope.peer.remote.element) return;
 
 		console.log('10. onAddStream has been called');
+
 		$scope.peer.remote.stream = event.stream;
 		$scope.peer.remote.element.src = URL.createObjectURL(event.stream);
-		//waitUntilRemoteStreamStartsFlowing();
+		$scope.peer.remote.element.play();
+
+		waitUntilRemoteStreamStartsFlowing();
 	}
 
 

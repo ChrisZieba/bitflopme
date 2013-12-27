@@ -262,7 +262,7 @@
 								<div class="col-md-12">
 
 									<% if (!join) { %>
-										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id && game.player.name != null}" local-video autoplay poster="/img/webcam.png" controls preload="none"></video>
+										<video id="local-video" class="video" ng-class="{ 'player-turn': game.action.turn == game.player.id && game.player.name != null}" local-video autoplay poster="/img/webcam.png" controls preload="none" muted="muted"></video>
 										
 										<div ng-cloak ng-show="game.player.name != null" class="opp-player-name">
 											<span class="player-name">{{ game.player.name }}</span>
@@ -295,51 +295,49 @@
 								</div>
 
 
-								<div class="opp-player-options" ng-cloak ng-show="game.action.turn == game.player.id && game.player.name != null">
-									<div ng-cloak ng-show="game.player.options['CHECK'].allowed" class="action-btn">
-										<button type="button" class="btn btn-check" ng-click="action(game.player.options['CHECK'].name)">Check</button>
-									</div>
-									<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-btn">
-										<button type="button" class="btn btn-bet" ng-click="action(game.player.options['BET'].name)">Bet {{fn.parseAmount(game.player.options['BET'].amount)}}</button>
-									</div>
-									<div ng-cloak ng-show="game.player.options['FOLD'].allowed" class="action-btn">
-										<button type="button" class="btn btn-fold" ng-click="action(game.player.options['FOLD'].name)">Fold</button>
-									</div>
-									<div ng-cloak ng-show="game.player.options['CALL'].allowed" class="action-btn">
-										<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{fn.parseAmount(game.player.options['CALL'].amount)}}</button>
-									</div>
-									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-btn">
-										<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{fn.parseAmount(game.player.options['RAISE'].amount)}}</span></button>
-									</div>
-									<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-slider">
-										<slider floor="{{fn.parseAmount(game.player.options['RAISE'].min)}}" ceiling="{{fn.parseAmount(game.player.options['RAISE'].max)}}" step="1" precision="0" ng-model="game.player.options['RAISE'].amount"></slider>
-									</div>
-									<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-slider">
-										<slider floor="{{fn.parseAmount(game.player.options['BET'].min)}}" ceiling="{{fn.parseAmount(game.player.options['BET'].max)}}" step="1" precision="0" ng-model="game.player.options['BET'].amount"></slider>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-
-
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 ">
-							<div class="table">
-								
-								<div class="board">
-									<div ng-repeat="card in game.action.board" class="card"><span class="card-{{card}}"></span></div>
-								</div>
-								<div class="pot" ng-cloak ng-show="game.action.pot != 0 && game.action.state != null">
-									<span class="chip-count">{{ game.action.pot }}</span>
-								</div>
-								
 							</div>
 						</div>
 					</div>
 				</div>
 				
+			</div>
+
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+					<div class="board">
+						<div ng-repeat="card in game.action.board" class="card"><span class="card-{{card}}"></span></div>
+					</div>
+					<div class="pot" ng-cloak ng-show="game.action.pot != 0 && game.action.state != null">
+						<span class="chip-count">{{ game.action.pot }}</span>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+
+					<div class="opp-player-options" ng-cloak ng-show="game.action.turn == game.player.id && game.player.name != null">
+						<div ng-cloak ng-show="game.player.options['CHECK'].allowed" class="action-btn">
+							<button type="button" class="btn btn-check" ng-click="action(game.player.options['CHECK'].name)">Check</button>
+						</div>
+						<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-btn">
+							<button type="button" class="btn btn-bet" ng-click="action(game.player.options['BET'].name)">Bet {{fn.parseAmount(game.player.options['BET'].amount)}}</button>
+						</div>
+						<div ng-cloak ng-show="game.player.options['FOLD'].allowed" class="action-btn">
+							<button type="button" class="btn btn-fold" ng-click="action(game.player.options['FOLD'].name)">Fold</button>
+						</div>
+						<div ng-cloak ng-show="game.player.options['CALL'].allowed" class="action-btn">
+							<button type="button" class="btn btn-call" ng-click="action(game.player.options['CALL'].name)">Call {{fn.parseAmount(game.player.options['CALL'].amount)}}</button>
+						</div>
+						<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-btn">
+							<button type="button" class="btn btn-raise" ng-click="action(game.player.options['RAISE'].name)">Raise {{fn.parseAmount(game.player.options['RAISE'].amount)}}</span></button>
+						</div>
+						<div ng-cloak ng-show="game.player.options['RAISE'].allowed" class="action-slider">
+							<slider floor="{{fn.parseAmount(game.player.options['RAISE'].min)}}" ceiling="{{fn.parseAmount(game.player.options['RAISE'].max)}}" step="1" precision="0" ng-model="game.player.options['RAISE'].amount"></slider>
+						</div>
+						<div ng-cloak ng-show="game.player.options['BET'].allowed" class="action-slider">
+							<slider floor="{{fn.parseAmount(game.player.options['BET'].min)}}" ceiling="{{fn.parseAmount(game.player.options['BET'].max)}}" step="1" precision="0" ng-model="game.player.options['BET'].amount"></slider>
+						</div>
+					</div>
+				</div>
 			</div>
 
 		  </div><!-- /#page-wrapper -->
