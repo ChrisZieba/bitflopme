@@ -1,4 +1,4 @@
-var app = angular.module('app', ['uiSlider']);
+var app = angular.module('app', ['uiSlider', 'ui.bootstrap']);
 
 
 app.factory('socket', function($rootScope) {
@@ -100,7 +100,7 @@ app.directive('scrollGlue', function(){
 			// when the event history changes
 			scope.$watch(function(){
 				if (ngModel.$viewValue){
-					element[0].scrollTop = 0;
+					element[0].scrollTop = element[0].scrollHeight + 1000;
 				}
 			});
 
@@ -113,10 +113,6 @@ app.directive('localVideo', ['socket', function (socket) {
 		priority: 1,
 		restrict: 'A',
 		link: function (scope, element, attrs) {
-
-
-
-
 
 			scope.peer.local.element = element[0];
 
@@ -184,19 +180,13 @@ app.directive('remoteVideo', ['socket', function (socket) {
 
 				// watch to see if the player disconnects remove the stream
 				scope.$watch('game.opponent.name', function (name) {
-
 					if (!name) {
-						//element.removeAttr('src');
-
-
 						if (scope.peer.remote.stream) {
-
 							element.attr('src', '/img/webcam.png');
 
 							if (scope.peer.connection && scope.peer.connection.removeStream) {
 								scope.peer.connection.removeStream(scope.peer.remote.stream);
 							}
-
 
 							if (scope.peer.remote.stream.stop) {
 								scope.peer.remote.stream.stop();
@@ -213,12 +203,93 @@ app.directive('remoteVideo', ['socket', function (socket) {
 	};
 }]);
 
-app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket) {
+app.directive('sendChatMsg', ['socket', function (socket) {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if (event.which === 13) {
+				scope.$apply(function () {
+					if (scope.chat.msg.trim() !== "" || scope.chat.msg !== null) {
+						socket.emit('chat:msg', { 
+							room: GLOBAL.ROOM,
+							msg: scope.chat.msg
+						});
+						scope.chat.msg = null;
+					}
+				});
+				event.preventDefault();
+			}
+		});
+	};
+}]);
+
+// Handle illegal character input
+
+app.directive('betAmount', [function () {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function (scope, elem , attrs, ctrl) {
+			scope.$watch(attrs.ngModel, function (amount, old) {
+				amount = parseInt(amount,10);
+				var type = attrs.name.toUpperCase();
+				var nan = isNaN(amount);
+
+				if (nan) {
+					return;
+				}
+
+				if (amount >= scope.game.player.options[type].min && amount <= scope.game.player.options[type].max) {
+					scope.game.player.options[type].amount = amount;
+				} 
+
+				return;
+
+			});
+		}
+	};
+}]);
+
+app.controller('GameOverCtrl', function($rootScope, $scope, $http, $timeout, $modalInstance) {
+	$scope.ok = function () {
+		$modalInstance.close('ok');
+	};
+});
+
+app.controller('InvitePlayerCtrl', function($rootScope, $scope, $http, $timeout, $modalInstance) {
+	$scope.ok = function () {
+		$modalInstance.close('ok');
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+
+	$scope.share = function (id) {
+		var text = "Anyone%20up%20to%20play%20some%20webcam%20poker%3F%20via%20%40bitflopme";
+		var url = "https%3A%2F%2Fbitflop.me%2Fgame%2Fplay%2F" + id;
+		var opts = 'status=1' +
+			',width=575' +
+			',height=375' +
+			',toolbar=no' +
+			',location=no' +
+			',status=no' +
+			',menubar=no' +
+			',scrollbars=no' +
+			',resizeable=yes' +
+			',top=' + Math.floor((window.innerHeight - 400)  / 2)  +
+			',left=' + Math.floor((window.innerWidth  - 575)  / 2
+		);
+
+		window.open("https://twitter.com/share?text=" + text + "&url=" + url, "Share", opts);
+		return false;
+	}
+});
+
+app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, $modal, socket) {
 
 	var CANDIDATE_RETRY = 0;
 
 	function waitUntilRemoteStreamStartsFlowing () {
-
 		console.log('readyState'+ $scope.peer.remote.element.readyState);//0
 		console.log('HAVE_CURRENT_DATA'+ HTMLMediaElement.HAVE_CURRENT_DATA);//2
 		console.log('paused'+ $scope.peer.remote.element.paused);//true
@@ -227,7 +298,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		// (! (0 <= 2 || true || 0 <= 0) )
 		if (! ($scope.peer.remote.element.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || 
 			$scope.peer.remote.element.paused || $scope.peer.remote.element.currentTime <= 0)) {
-			console.log('BOOOOOM');
 		} else {
 			setTimeout(waitUntilRemoteStreamStartsFlowing, 200);
 		}
@@ -363,6 +433,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	};
 
+	$scope.chat = {
+		msg: null
+	};
+
 	$scope.media = {
 		available: false,
 		audio: false,
@@ -405,7 +479,10 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 			cards: []
 		},
 		events: [],
-		action: null,
+		action: {
+			board: ['01','01','01','01','01'],
+			state: null
+		}
 
 	};
 
@@ -441,6 +518,46 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		}
 	};
 
+	$scope.betOption = function (name, option) {
+		var amount = $scope.game.player.options[name].amount;
+		var min = $scope.game.player.options[name].min;
+		var max = $scope.game.player.options[name].max;
+		var bet;
+
+		switch (option) {
+			case 'double':
+				bet = min * 2;
+				break;
+			case 'triple':
+				bet = min * 3;
+				break;
+			case 'allin':
+				bet = max;
+				break;
+			default:
+				break;
+		}
+
+		if (bet <= max) {
+			$scope.game.player.options[name].amount = bet
+		} else {
+			$scope.game.player.options[name].amount = max
+		}
+	};
+
+	$scope.invitePlayer = function (link) {
+		var modalInstance = $modal.open({
+			template: '<div class="modal-header"><h3>Invite a Player</h3></div><div class="modal-body"><p>Send the link below to the other player you wish to play against. They can copy and paste it into their browser window to join you!</p><p><strong>https://bitflop.me/game/play/' + link + '</strong></p><p>You can also send out a tweet using the link below to invite another player!</p><p><span class="share-link"><i class="fa fa-twitter" ng-click="share(' + link + ')"></i></span></p></div><div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+			controller: 'InvitePlayerCtrl'
+		});
+
+		modalInstance.result.then(function (selectedItem) {
+			console.log(selectedItem);
+		}, function () {
+			console.log(selectedItem)
+		});
+	};
+
 	$scope.action = function (name) {
 
 		var action = {};
@@ -457,7 +574,19 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 				action.amount = parseInt($scope.game.player.options['RAISE'].amount,10);
 				break;
 			case 'FOLD':
-				$scope.game.player.folded = true;
+				// alert the player if they click fold when checking is available
+				if ($scope.game.player.options['CHECK'].allowed) {
+					var fold = confirm('Are you sure you want to fold? Checking is free!');
+
+					if (fold) {
+						$scope.game.player.folded = true;
+					} else {
+						action.name = "CHECK";
+					}
+				} else {
+					$scope.game.player.folded = true;
+				}
+				
 				break;
 			default:
 				break;
@@ -483,7 +612,6 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 
 	socket.on('game:join', function (data) {
-
 		$scope.game.events = data.events;
 		$scope.room.players = data.room.players;
 		$scope.room.observers = data.room.observers;
@@ -503,19 +631,54 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 
 	});
 
+	var updateBoard = function (cards) {
+		for (var i = 0; i <= 4; i+=1) {
+			if (!cards[i]) cards[i] = '01';
+		}
+		$scope.game.action.board = cards;
+	}
 
 	socket.on('game:data', function (data) {
 
-		$scope.game.events = data.events;
-		$scope.game.action = data.action;
-		$scope.game.player = data.player;
-		$scope.game.opponent = data.opponent;
+		if (data.events) {
+			$scope.game.events = data.events;
+		}
+
+		if (data.action) {
+			$scope.game.action = data.action;
+			updateBoard($scope.game.action.board);
+
+			if ($scope.game.action.state === 'END') {
+
+				if (!$scope.game.action.winner) return;
+				
+				var modalInstance = $modal.open({
+					template: '<div class="modal-header"><h3>Game Over</h3></div><div class="modal-body"><strong>' + $scope.game.action.winner + '</strong> wins!!!</div><div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+					controller: 'GameOverCtrl'
+				});
+
+				modalInstance.result.then(function (selectedItem) {
+					console.log(selectedItem);
+				}, function () {
+					console.log(selectedItem)
+				});
+			}
+		}
+
+		if (data.player) {
+			$scope.game.player = data.player;
+		}
+
+		if (data.opponent) {
+			$scope.game.opponent = data.opponent;
+		}
 
 	});
 
 	socket.on('game:end', function (data) {
 
 		$scope.game.action = data.action;
+		updateBoard($scope.game.action.board);
 		$scope.game.player = data.player;
 		$scope.game.opponent = data.opponent;
 
@@ -528,11 +691,18 @@ app.controller('GameCtrl', function($rootScope, $scope, $http, $timeout, socket)
 		$scope.room.observers = data.room.observers;
 
 
-		if (data.action) $scope.game.action = data.action;
+		if (data.action) {
+			$scope.game.action = data.action;
+			updateBoard($scope.game.action.board);
+		}
 
-		if (data.player) $scope.game.player = data.player;
+		if (data.player) {
+			$scope.game.player = data.player;
+		}
 
-		if (data.opponent) $scope.game.opponent = data.opponent;
+		if (data.opponent) {
+			$scope.game.opponent = data.opponent;
+		}
 
 	});
 
@@ -642,3 +812,4 @@ app.directive('dropdownToggle', ['$document', function ($document) {
 		}
 	};
 }]);
+

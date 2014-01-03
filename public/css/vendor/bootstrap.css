@@ -4595,7 +4595,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-collapse {
-  max-height: 400px;
+  max-height: 420px;
   padding-right: 15px;
   padding-left: 15px;
   overflow-x: visible;
@@ -6117,8 +6117,9 @@ button.close {
 body.modal-open,
 .modal-open .navbar-fixed-top,
 .modal-open .navbar-fixed-bottom {
-  margin-right: 15px;
+  margin-right: 0 !important;
 }
+
 
 .modal {
   position: fixed;
@@ -6130,6 +6131,15 @@ body.modal-open,
   display: none;
   overflow: auto;
   overflow-y: scroll;
+}
+
+.modal {
+  overflow-y: auto;
+  outline: none;
+}
+
+.modal-open {
+  overflow: auto;
 }
 
 .modal.fade .modal-dialog {

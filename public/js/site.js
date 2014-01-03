@@ -13,7 +13,9 @@ site.controller('RegisterCtrl', ['$scope', function($scope) {
 site.controller('NewGameCtrl', ['$scope', function($scope) {
 	$scope.submitted = false;
 	$scope.token = null;
-	$scope.BBCount = null;
+	$scope.smallBlind = 5;
+	$scope.bigBlind = 10;
+	$scope.chipStack = 500;
 
 }]);
 
@@ -168,9 +170,7 @@ site.directive('smallBlind', [function () {
 		restrict: 'A',
 		require: 'ngModel',
 		link: function (scope, elem , attrs, ctrl) {
-
 			scope.$watch(attrs.ngModel, function (smallBlind) {
-
 				smallBlind = parseInt(smallBlind,10);
 				
 				if (isNaN(smallBlind)) return;
@@ -181,16 +181,13 @@ site.directive('smallBlind', [function () {
 				scope.bigBlind = smallBlind * 2;
 
 				// check if the chipstack has been entered
-				if (scope.newgame.chipStack.$dirty) {
-					if (chipStack < 5 *scope.bigBlind || chipStack > 100 * scope.bigBlind) {
+				//if (scope.newgame.chipStack.$dirty) {
+					if (chipStack < (5 * scope.bigBlind) || chipStack > (100 * scope.bigBlind)) {
 						scope.newgame.chipStack.$setValidity("range", false);
-						scope.BBCount = null;
 					} else {
 						scope.newgame.chipStack.$setValidity("range", true);
-						scope.BBCount = Math.round(chipStack / scope.bigBlind);
 					}
-
-				}
+				//}
 
 				return;
 			});
@@ -219,10 +216,8 @@ site.directive('chipStack', [function () {
 				// if the range fails, return without setting the big blind
 				if (chipStack < 5 * bigBlind || chipStack > 100 * bigBlind) {
 					ctrl.$setValidity("range", false);
-					scope.BBCount = null;
 				} else {
 					ctrl.$setValidity("range", true);
-					scope.BBCount = Math.round(chipStack / bigBlind);
 				}
 
 				return;

@@ -167,14 +167,14 @@ exports.listen = function (server, sessionStore, app) {
 				},
 				player: {
 					id: Game.game.players[0].id,
-					name: Game.game.players[0].name,
+					name: null,
 					cards: [],
 					chips: 0,
 					options: Game.game.players[0].Options(true)
 				},
 				opponent: {
 					id: Game.game.players[1].id,
-					name: Game.game.players[1].name,
+					name: null,
 					cards: [],
 					chips: 0,
 					options: Game.game.players[1].Options(true)
@@ -185,8 +185,6 @@ exports.listen = function (server, sessionStore, app) {
 
 		// Games is available to this function
 		var disconnect = function (room, user, player) {
-
-			console.log('save 3');
 			models.Games.findOne({ id: room }, function (err, game) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(505, 'Game could not be found');
@@ -218,7 +216,6 @@ exports.listen = function (server, sessionStore, app) {
 
 				game.events = Games[room].game.events;
 
-				console.log('save 5');
 				game.save(function (err) {
 
 					if (err) throw err;
@@ -285,6 +282,128 @@ exports.listen = function (server, sessionStore, app) {
 				});
 			});
 		};
+
+		var action = function (room, rooms, sid, play) {
+			models.Games.findOne({ id: room }, function (err, game) {
+				sessionStore.get(sid, function (err, session) {
+					if (err) throw err;
+
+					if (!session) {
+						console.log('Could not make connection to session');
+						return;
+					}
+
+					// a user must be logged in to play so check if they are authenticated
+					if (!session.user.authenticated) return;
+
+					var playerID = helpers.getPlayerID(session.user.id, game.players);
+					var ready = helpers.isGameReady(room, rooms, game.players);
+
+					// TODO	is at least one plaer sitting at the table?
+					//if (!ready) return;
+
+					// Check if the game object is in memory
+					if (!Games.hasOwnProperty(room)) {
+						Games[room] = {};
+						Games[room].room = {
+							id: room,
+							players: [],
+							observers: []
+						};
+						Games[room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+					}
+
+					if (play) {
+						switch (play.name) {
+							case 'BET':
+								Games[room].game.players[playerID].Bet(parseInt(play.amount, 10));
+								break;
+							case 'CALL':
+								Games[room].game.players[playerID].Call();
+								break;
+							case 'CHECK':
+								Games[room].game.players[playerID].Check();
+								break;
+							case 'RAISE':
+								Games[room].game.players[playerID].Raise(parseInt(play.amount, 10));
+								break;
+							case 'FOLD':
+								Games[room].game.players[playerID].Fold();
+								break;
+							default:
+								break;
+						}
+					}
+
+					// this gets called once before we progress the game, and gain after
+					var isRoundOver = Games[room].game.checkForEndOfRound();
+					var isRedlineRound = Games[room].game.checkForRedlineRound();
+					var isGameOver = Games[room].game.checkForEndOfGame();
+					var isRoundStarting =  Games[room].game.checkForStartOfRound();
+					var isShowdown = Games[room].game.checkForShowdown();
+
+					// This will either update to the next betting round, finish the redline round (player folds) 
+					// Only call progress if the round is NOT just starting (ie. After a new round)
+					if (!isRoundStarting && !isGameOver) {
+						Games[room].game.Progress();
+						isRoundOver = Games[room].game.checkForEndOfRound();
+						isGameOver = Games[room].game.checkForEndOfGame();
+						isShowdown = Games[room].game.checkForShowdown();
+					}
+
+					var rounds = game.rounds;
+					//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
+					var round = helpers.buildRoundObject(Games[room].game, rounds[rounds.length-1]);
+
+					// Add a new round to the history 
+					rounds.push(round);
+
+					var gameState = Games[room].game.getState();
+					var roundData = Games[room].game.getRoundData();
+
+					// send out the data to the player
+					sendGameData(Games[room], room, isShowdown, isRoundOver, isGameOver);
+
+					// If a player folded we need to start a new round and send the new cards with Action()
+					if (isRedlineRound) {
+						// start a new round
+						Games[room].game.NewRound();
+						// wait and then call action again
+						setTimeout(function () {
+							action(room, rooms, sid, null);
+						}, 2000);
+					} else if (isRoundOver) {
+						if (gameState === 'SHOWDOWN') {
+							// We need to start a new round of the game
+							Games[room].game.NewRound();
+							setTimeout(function () {
+								action(room, rooms, sid, null);
+							}, 5000);
+						} else if (gameState === 'RIVER') {
+							setTimeout(function () {
+								action(room, rooms, sid, null);
+							}, 5000);
+						} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
+							setTimeout(function () { 
+								action(room, rooms, sid, null);
+							}, 2000);
+						}
+					} else if (isGameOver) {
+						setTimeout(function () {
+							// once the table ends you cannot go back to it
+							endGame(Games[room], room);
+						}, 5000);
+					} 
+
+					// 	Update the database
+					game.events = Games[room].game.events;
+					game.rounds = rounds;
+					game.state = (isGameOver) ? 'END' : 'PLAYING'; 
+
+					game.save();
+				});
+			});
+		}
 
 		//	When someone joins the room
 		//	It can be a logged in player, or someone who is not logged in, and just wants to rail
@@ -431,9 +550,6 @@ exports.listen = function (server, sessionStore, app) {
 							sendGameData(Games[data.room], data.room, false, false, false);
 
 						});
-
-	
-
 					} 
 
 				});  
@@ -502,11 +618,14 @@ exports.listen = function (server, sessionStore, app) {
 				if (err) throw new Error(501, err);
 				if (!game) throw new Error(502, 'Could not make connection to game');
 
+				var sid = socket.handshake.sessionID;
+				var rooms = io.sockets.manager.rooms;
+
 				//	Grab the session data associoated with the socket client/ We will figure out if the client is player1, player2, or just a railbird
 				//	If the client is player1 (the person who created the game) then join the main room, and room.player1, which sends only player1 data
 				//	If the client is player2 (a player joining the game using the secret pass OR the second connected client if an open table)
 				//	then join the main room and room.player2 	
-				sessionStore.get(socket.handshake.sessionID, function (err, session) {
+				sessionStore.get(sid, function (err, session) {
 					if (err) throw err;
 
 					if (!session) throw new Error(504, 'Could not make connection to session');
@@ -516,139 +635,22 @@ exports.listen = function (server, sessionStore, app) {
 						socket.get('scope', function(err, scope) {
 							if (err) throw err;
 							if (!scope) return;
-
 							io.sockets.in(data.room + ':' + scope.player.id).emit('game:disconnect', { 
 								uuid: Date.now()
 							});
-
-							//socket.leave(data.room);
-							//socket.leave(data.room + ':' + scope.player.id);
-							//disconnect(scope.room, scope.user, scope.player);
 							return;
 						});
 
 						return;
+					} else {
+						game.save(function () {
+							setTimeout(function(){
+								action(data.room, rooms, sid, data.action)
+							}, 1000);
+						});
 					}
-
-					//	This is null if the socket is not a player
-					var playerID = helpers.getPlayerID(session.user.id, game.players);
-					var ready = helpers.isGameReady(data.room, io.sockets.manager.rooms, game.players);
-
-					//	Are both players sitting at the table?
-					if (!ready) return;
-
-
-					// Check if the game object is in memory
-					if (!Games.hasOwnProperty(data.room)) {
-						Games[data.room] = {};
-						Games[data.room].room = {
-							id: data.room,
-							players: [],
-							observers: []
-						};
-						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
-					}
-
-					switch (data.action.name) {
-						case 'BET':
-							Games[data.room].game.players[playerID].Bet(parseInt(data.action.amount,10));
-							break;
-						case 'CALL':
-							Games[data.room].game.players[playerID].Call();
-							break;
-						case 'CHECK':
-							Games[data.room].game.players[playerID].Check();
-							break;
-						case 'RAISE':
-							Games[data.room].game.players[playerID].Raise(parseInt(data.action.amount));
-							break;
-						case 'FOLD':
-							Games[data.room].game.players[playerID].Fold();
-							break;
-						default:
-							break;
-					}
-
-					var Action = function () {
-						// this gets called once before we progress the game, and gain after
-						var isRoundOver = Games[data.room].game.checkForEndOfRound();
-						var isRedlineRound = Games[data.room].game.checkForRedlineRound();
-						var isGameOver = Games[data.room].game.checkForEndOfGame();
-						var isRoundStarting =  Games[data.room].game.checkForStartOfRound();
-						var isShowdown = Games[data.room].game.checkForShowdown();
-
-						// This will either update to the next betting round, finish the redline round (player folds) 
-						// Only call progress if the round is NOT just starting (ie. After a new round)
-						if (!isRoundStarting && !isGameOver) {
-
-							Games[data.room].game.Progress();
-
-							isRoundOver = Games[data.room].game.checkForEndOfRound();
-							isGameOver = Games[data.room].game.checkForEndOfGame();
-							isShowdown = Games[data.room].game.checkForShowdown();
-						}
-
-						var rounds = game.rounds;
-						//	A round is just an array of objects that contain game data at a specific time, ie. after a player makes a call
-						var round = helpers.buildRoundObject(Games[data.room].game, rounds[rounds.length-1]);
-
-						// Add a new round to the history 
-						rounds.push(round);
-
-						console.log('save 2');
-						//if (err) throw err;
-
-						var gameState = Games[data.room].game.getState();
-						var roundData = Games[data.room].game.getRoundData();
-
-
-						// send out the data to the player
-						sendGameData(Games[data.room], data.room, isShowdown, isRoundOver, isGameOver);
-
-						// If a player folded we need to start a new round and send the new cards with Action()
-						if (isRedlineRound) {
-							Games[data.room].game.NewRound();
-							setTimeout(function () {Action();}, 2000);
-						} else if (isRoundOver) {
-							if (gameState === 'SHOWDOWN') {
-								// We need to start a new round of the game
-								Games[data.room].game.NewRound();
-								setTimeout(function () {Action();}, 5000);
-							} else if (gameState === 'RIVER') {
-								setTimeout(function () {Action();}, 5000);
-							} else if (gameState === 'DEAL' || gameState === 'FLOP' || gameState === 'TURN') {
-								setTimeout(function () { Action(); }, 1000);
-							}
-						} else if (isGameOver) {
-							setTimeout(function () {
-								// once the table ends you cannot go back to it
-								endGame(Games[data.room], data.room);
-							}, 15000);
-						} 
-
-						if (update) {
-							// 	Update the database
-							game.events = Games[data.room].game.events;
-							game.rounds = rounds;
-							game.state = (isGameOver) ? 'END' : 'PLAYING'; 
-
-							//console.log('save 1');
-
-							// only save at the end
-							game.save(function (err) {
-								if (err) throw err;
-							});
-
-						}
-					};
-
-					// wait 1 second and then run the 
-					setTimeout(function () { Action(); }, 1000);
 
 				});
-
-
-
 			});
 		});
 
@@ -683,6 +685,53 @@ exports.listen = function (server, sessionStore, app) {
 			//console.log('\npeer:receive_answer\n');
 			socket.broadcast.to(data.room).emit('peer:receive_answer', { 
     			sdp: data.sdp
+			});
+		});
+
+		socket.on('chat:msg', function (data, callback) {
+			models.Games.findOne({ id: data.room}, function (err, game) {
+				if (err) throw new Error(501, err);
+				if (!game) throw new Error(502, 'Could not make connection to game');
+
+				//	Grab the session data associoated with the socket client/ We will figure out if the client is player1, player2
+				sessionStore.get(socket.handshake.sessionID, function (err, session) {
+					if (err) throw err;
+					if (!session) throw new Error(504, 'Could not make connection to session');
+
+					// a user must be logged in to play so check if they are authenticated
+					if (!session.user.authenticated) {
+						return;
+					}
+
+					var playerID = helpers.getPlayerID(session.user.id, game.players);
+
+					// Look up the table to see if it's still in mem, or if we need to create a new one
+					if ( ! Games.hasOwnProperty(data.room)) {
+						Games[data.room] = {};
+						Games[data.room].room = {
+							id: data.room,
+							players: [],
+							observers: [],
+							// this array hold data pertaining to camera setup
+							peers: []
+						};
+						// Create the Game object
+						Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+						
+					} else {
+						// The game [Object] might have been created by the peer:init
+						if ( ! Games[data.room].game) {
+							Games[data.room].game = new poker.Game(parseInt(game.settings.smallBlind,10), parseInt(game.settings.bigBlind,10), parseInt(game.settings.chipStack,10));
+						}
+					}
+
+					Games[data.room].game.AddEvent(session.user.name, utils.htmlEscape(data.msg));
+
+					io.sockets.in(data.room).emit('game:data', { 
+						uuid: Date.now(), 
+						events: Games[data.room].game.events
+					});
+				});  
 			});
 		});
 

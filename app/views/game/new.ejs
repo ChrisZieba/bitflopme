@@ -30,7 +30,7 @@
 						</div>
 
 						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.pattern">
-							<span>Illegal Value! Only numbers are allowed.</span>
+							<span>Only numbers are allowed.</span>
 						</div>
 
 						<div class="alert alert-danger" ng-cloak ng-show="newgame.smallBlind.$dirty && newgame.smallBlind.$invalid && newgame.smallBlind.$error.range && !newgame.smallBlind.$error.required">
@@ -53,7 +53,7 @@
 
 
 				<div class='form-group <% if (errors.chipStack) { %>has-error<% } %>' ng-class="{ 'has-error': newgame.chipStack.$dirty && newgame.chipStack.$invalid, 'has-success': newgame.chipStack.$dirty && newgame.chipStack.$valid }">
-					<label class="control-label">Starting Chips</label> <span class="text-muted" ng-cloak ng-show="newgame.chipStack.$valid && BBCount != null">{{ BBCount }} BB's</span>
+					<label class="control-label">Starting Chips</label>
 					<input class="form-control mg-top-bot-5" name="chipStack" type="text" placeholder="500"  maxlength="7" required ng-required="true" ng-maxlength="7" ng-pattern="/^[0-9]+$/" ng-model="chipStack" chip-stack="bigBlind" ng-focus />
 					
 					<% if (errors.chipStack) { %>
@@ -68,7 +68,7 @@
 						<span>The chip amount must be a whole number!</span>
 					</div>
 
-					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$dirty && newgame.chipStack.$invalid && newgame.chipStack.$error.range && !newgame.chipStack.$error.required">
+					<div class="alert alert-danger" ng-cloak ng-show="newgame.chipStack.$invalid && newgame.chipStack.$error.range && !newgame.chipStack.$error.required">
 						<span>The chip amount must be between {{ 5 * bigBlind }} (5 BB's) and {{ 100 * bigBlind }} (100 BB's).</span>
 					</div>
 
