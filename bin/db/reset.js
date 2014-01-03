@@ -64,3 +64,8 @@ db.games.insert({
     // [new,playing,end]
     "state" : "NEW",
 });
+
+
+
+
+

@@ -145,41 +145,42 @@ exports.listen = function (server, sessionStore, app) {
 		// copy the relevent game data to a completed database, so we can resue the gamname
 		// @data is the game document from the database
 		var endGame = function (Game, room) {
+			for (var i = 0; i <  Game.game.players.length; i++) {
+				io.sockets.in(room + ':' + Game.game.players[i].id).emit('game:end', { 
 
-			// this gets sent to every connection
-			io.sockets.in(room).emit('game:end', { 
-				uuid: Date.now(), 
-				room: {
-					id: room,
-					players: Game.room.players,
-					observers: Game.room.observers
-				},
-				events: Game.game.events,
-				action: {
-					dealer: null,
-					turn: null,
-					smallBlind: null,
-					bigBlind: null,
-					pot: 0,
-					state: "END",
-					board: [],
-					winner: Game.game.getWinner()
-				},
-				player: {
-					id: Game.game.players[0].id,
-					name: null,
-					cards: [],
-					chips: 0,
-					options: Game.game.players[0].Options(true)
-				},
-				opponent: {
-					id: Game.game.players[1].id,
-					name: null,
-					cards: [],
-					chips: 0,
-					options: Game.game.players[1].Options(true)
-				}
-			});
+					uuid: Date.now(), 
+					room: {
+						id: room,
+						players: Game.room.players,
+						observers: Game.room.observers
+					},
+					events: Game.game.events,
+					action: {
+						dealer: null,
+						turn: null,
+						smallBlind: null,
+						bigBlind: null,
+						pot: 0,
+						state: "END",
+						board: [],
+						winner: Game.game.getWinner()
+					},
+					player: {
+						id: Game.game.players[i].id,
+						name: Game.game.players[i].name,
+						cards: [],
+						chips: 0,
+						options: Game.game.players[i].Options(true)
+					},
+					opponent: {
+						id: Game.game.players[(i+1) % 2].id,
+						name: Game.game.players[(i+1) % 2].name,
+						cards: [],
+						chips: 0,
+						options: Game.game.players[(i+1) % 2].Options(true)
+					}
+				});
+			}
 
 		};
 
