@@ -88,7 +88,7 @@ app.configure(function () {
 	app.use(app.router);
 
 });
-
+console.log('starting');
 //	Load the routing
 require('./app/routes')(app);
 
